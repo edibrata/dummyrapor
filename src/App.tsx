@@ -15,9 +15,10 @@ import ProfilPengembang from '@/views/ProfilPengembang';
 import Pengaturan from '@/views/Pengaturan';
 import Petunjuk from '@/views/Petunjuk';
 import LoginModal from '@/components/LoginModal';
+import DashboardView from '@/views/DashboardView';
 
 function Dashboard() {
-  const [activeView, setActiveView] = useState('data-sekolah');
+  const [activeView, setActiveView] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
@@ -28,6 +29,7 @@ function Dashboard() {
         <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         
         <main className="p-6 md:p-8 flex-1 overflow-x-hidden">
+          {activeView === 'dashboard' && <DashboardView />}
           {activeView === 'data-sekolah' && <DataSekolah />}
           {activeView === 'kegiatan-akademik' && <Placeholder title="Kegiatan Akademik" />}
           {activeView === 'data-siswa' && <DataSiswa />}

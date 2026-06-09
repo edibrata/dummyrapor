@@ -6,7 +6,7 @@ import {
   Target, PenTool, Activity, CheckSquare, 
   BookOpen, FileSpreadsheet, Printer, Book, Contact, 
   Archive, ArrowRightLeft, PieChart, Bot, Lightbulb, 
-  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut
+  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut, LayoutDashboard
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -18,6 +18,7 @@ interface SidebarProps {
 export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarProps) {
   const { updateState, updateSekolah } = useAppStore();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    'Utama': true,
     'Master Data': true,
     'Akademik & Penilaian': true,
     'Output / Cetak': true,
@@ -35,10 +36,16 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
   const handleLogout = () => {
     updateState('isAuthenticated', false);
     updateSekolah(INITIAL_STATE.sekolah);
-    setActiveView('data-sekolah');
+    setActiveView('dashboard');
   };
 
   const menuGroups = [
+    {
+      title: 'Utama',
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> }
+      ]
+    },
     {
       title: 'Master Data',
       items: [
