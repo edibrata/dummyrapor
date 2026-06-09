@@ -24,7 +24,7 @@ export default function LoginModal() {
       const { data, error: sbError } = await supabase
         .from('registrasirapor')
         .select('*')
-        .eq('data_payload->>npsn', npsn.trim())
+        .eq('npsn', npsn.trim())
         .single();
 
       if (sbError || !data) {
@@ -34,54 +34,52 @@ export default function LoginModal() {
         return;
       }
 
-      // Map the returned data to our `sekolah` object.
-      const payload = data.data_payload || {};
+      // Map the returned data directly from the row
+      const payload = data || {};
       const sekolahUpdates: any = {};
       
-      // Normalize payload keys for easier matching
+      // Normalize payload keys for easier matching (to handle case sensitivities or dashes)
       const normalizedPayload: Record<string, any> = {};
       Object.keys(payload).forEach(key => {
-        normalizedPayload[key.toLowerCase().trim()] = payload[key];
+        normalizedPayload[key.toLowerCase().trim().replace(/-/g, '_')] = payload[key];
       });
-
-      // Prevent keys overriding allowed classes wrongly unless explicitly parsed below
 
       // Helper function to find a value by multiple possible key names
       const findVal = (...keys: string[]) => {
         for (const k of keys) {
-          if (normalizedPayload[k] !== undefined) return normalizedPayload[k];
+          if (normalizedPayload[k.replace(/-/g, '_')] !== undefined) return normalizedPayload[k.replace(/-/g, '_')];
         }
         return undefined;
       };
 
-      const valNama = findVal('nama lengkap sekolah', 'nama sekolah', 'nama_sekolah', 'nama');
+      const valNama = findVal('nama_sekolah', 'nama sekolah', 'nama');
       if (valNama) sekolahUpdates.nama = valNama;
 
       const valNpsn = findVal('npsn');
       if (valNpsn) sekolahUpdates.npsn = valNpsn;
 
-      const valAlamat = findVal('jalan / blok / rt rw', 'alamat lengkap', 'alamat');
+      const valAlamat = findVal('alamat', 'alamat lengkap');
       if (valAlamat) sekolahUpdates.alamat = valAlamat;
       
-      const valJenisWilayah = findVal('desa/kelurahan', 'jenis wilayah', 'jenis_wilayah', 'jenis_desa_kelurahan');
+      const valJenisWilayah = findVal('desa_kelurahan_jenis', 'jenis wilayah');
       if (valJenisWilayah) sekolahUpdates.desaKelurahanJenis = valJenisWilayah.toString().toLowerCase();
       
-      const valNamaDesaKel = findVal('nama desa/kelurahan', 'nama desa/kel.', 'nama desa/kel', 'nama_desa_kelurahan', 'desa_kelurahan', 'desa', 'kelurahan');
+      const valNamaDesaKel = findVal('desa_kelurahan_nama', 'nama desa/kelurahan');
       if (valNamaDesaKel) sekolahUpdates.desaKelurahanNama = valNamaDesaKel;
       
       const valKecamatan = findVal('kecamatan');
       if (valKecamatan) sekolahUpdates.kecamatan = valKecamatan;
       
-      const valTipeDaerah = findVal('kabupaten/kota', 'tipe daerah', 'tipe_daerah', 'jenis_kabupaten_kota');
+      const valTipeDaerah = findVal('kabupaten_kota_jenis', 'kabupaten/kota');
       if (valTipeDaerah) sekolahUpdates.kabupatenKotaJenis = valTipeDaerah.toString().toLowerCase();
       
-      const valNamaKabKota = findVal('nama kabupaten/kota', 'nama kab/kota', 'nama_kab_kota', 'kab_kota', 'kabupaten_kota', 'kabupaten', 'kota');
+      const valNamaKabKota = findVal('kabupaten_kota_nama', 'nama kabupaten/kota');
       if (valNamaKabKota) sekolahUpdates.kabupatenKotaNama = valNamaKabKota;
       
       const valProvinsi = findVal('provinsi');
       if (valProvinsi) sekolahUpdates.provinsi = valProvinsi;
 
-      const classes = findVal('fase / kelas utama', 'kelas');
+      const classes = findVal('kelas', 'fase / kelas utama');
       if (Array.isArray(classes)) {
         sekolahUpdates.allowedKelas = classes;
       } else if (typeof classes === 'string' && classes.includes(',')) {
