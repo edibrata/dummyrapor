@@ -21,7 +21,7 @@ export default function Leger() {
       }
     });
 
-    const avgFormatif = countTp > 0 ? totalTp / countTp : 0;
+    const avgFormatif = countTp > 0 ? totalTp/countTp : 0;
     const sumatif = s.sumatifAkhir ?? 0;
 
     if (countTp === 0 && s.sumatifAkhir === null) return null;
@@ -40,7 +40,7 @@ export default function Leger() {
     }
 
     if (totalComponents === 0) return null;
-    return Math.round(finalScore / totalComponents);
+    return Math.round(finalScore/totalComponents);
   };
 
   return (
@@ -80,8 +80,8 @@ export default function Leger() {
                   return final;
                 });
 
-                const rataRata = countScore > 0 ? (totalScore / countScore).toFixed(1) : null;
-                const bulatRata = countScore > 0 ? Math.round(totalScore / countScore) : null;
+                const rataRata = countScore > 0 ? (totalScore/countScore).toFixed(1) : null;
+                const bulatRata = countScore > 0 ? Math.round(totalScore/countScore) : null;
 
                 return (
                   <tr key={s.id} className="hover:bg-indigo-50/30 transition-colors">

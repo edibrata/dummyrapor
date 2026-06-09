@@ -21,7 +21,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
     'Utama': true,
     'Master Data': true,
     'Akademik & Penilaian': true,
-    'Output / Cetak': true,
+    'Output/Cetak': true,
     'Fitur Professional': false,
     'Sistem': false
   });
@@ -69,7 +69,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
       ]
     },
     {
-      title: 'Output / Cetak',
+      title: 'Output/Cetak',
       items: [
         { id: 'jilid-identitas', label: 'Jilid & Identitas', icon: <Book size={18} /> },
         { id: 'biodata-murid', label: 'Biodata Murid', icon: <Contact size={18} /> },
@@ -161,7 +161,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
         <button 
           onClick={handleLogout}
           className="p-2 -mr-2 text-indigo-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
-          title="Ganti Sekolah / Logout"
+          title="Ganti Sekolah/Logout"
         >
           <LogOut size={16} />
         </button>

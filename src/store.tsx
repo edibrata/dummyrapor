@@ -98,7 +98,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const valNpsn = findVal('npsn', 'npsn_sekolah');
         if (valNpsn) sekolahUpdates.npsn = valNpsn;
 
-        const valAlamat = findVal('jalan / blok / rt rw', 'alamat', 'alamat lengkap', 'alamat_lengkap');
+        const valAlamat = findVal('jalan/blok/rt rw', 'alamat', 'alamat lengkap', 'alamat_lengkap');
         if (valAlamat) sekolahUpdates.alamat = valAlamat;
         
         const valJenisWilayah = findVal('desa/kelurahan', 'desa_kelurahan_jenis', 'jenis wilayah', 'jenis_wilayah');
@@ -119,7 +119,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const valProvinsi = findVal('provinsi', 'nama_provinsi', 'nama provinsi');
         if (valProvinsi) sekolahUpdates.provinsi = valProvinsi;
 
-        const classes = findVal('fase / kelas utama', 'kelas', 'fase', 'fase_kelas_utama');
+        const classes = findVal('fase/kelas utama', 'kelas', 'fase', 'fase_kelas_utama');
         if (Array.isArray(classes)) {
           sekolahUpdates.allowedKelas = classes.map(String);
         } else if (typeof classes === 'string' && classes.includes(',')) {

@@ -448,7 +448,7 @@ export default function DataSekolah() {
 
             <div className="bg-slate-50/50 p-5 -mx-4 sm:mx-0 sm:p-6 rounded-xl border border-slate-100 space-y-6">
               <div className="space-y-1.5">
-                <label htmlFor="alamat" className={getLabelClass('alamat')}>Jalan / Blok / RT RW</label>
+                <label htmlFor="alamat" className={getLabelClass('alamat')}>Jalan/Blok/RT RW</label>
                 <input id="alamat" name="alamat" type="text" value={sekolah.alamat || ''} onChange={handleChange} placeholder="Nama jalan, RT/RW lengkap" className={getFieldClass('alamat')} readOnly={isLocked} />
               </div>
               
@@ -548,7 +548,7 @@ export default function DataSekolah() {
                 </div>
                 
                 <div className="space-y-5">
-                   <h4 className="font-bold text-sm tracking-widest text-slate-400 uppercase border-b border-slate-100 pb-2">Guru / Wali Kelas</h4>
+                   <h4 className="font-bold text-sm tracking-widest text-slate-400 uppercase border-b border-slate-100 pb-2">Guru/Wali Kelas</h4>
                    <div className="space-y-1.5">
                      <label htmlFor="waliKelas" className={getLabelClass('waliKelas')}>Nama & Gelar</label>
                      <input id="waliKelas" name="waliKelas" type="text" value={sekolah.waliKelas || ''} onChange={handleChange} placeholder="Nama lengkap & gelar" className={getFieldClass('waliKelas')} />
@@ -636,7 +636,7 @@ export default function DataSekolah() {
         </section>
       </form>
 
-      {/* TOAST WARNING / SUCCESS OVERLAY */}
+      {/* TOAST WARNING/SUCCESS OVERLAY */}
       {toastMessage && (
         <div className={`fixed bottom-24 right-8 z-[60] px-5 py-3 rounded-xl shadow-xl shadow-slate-900/10 border text-[13px] font-bold flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300 max-w-sm ${
           toastType === 'success' 

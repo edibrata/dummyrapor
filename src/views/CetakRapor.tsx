@@ -49,7 +49,7 @@ export default function CetakRapor() {
       }
     });
 
-    const avgFormatif = countTp > 0 ? totalTp / countTp : 0;
+    const avgFormatif = countTp > 0 ? totalTp/countTp : 0;
     const sumatif = n.sumatifAkhir ?? 0;
 
     let totalComponents = 0;
@@ -64,7 +64,7 @@ export default function CetakRapor() {
       totalComponents++;
     }
 
-    const finalRata = totalComponents > 0 ? Math.round(finalScore / totalComponents) : null;
+    const finalRata = totalComponents > 0 ? Math.round(finalScore/totalComponents) : null;
 
     let deskTer = '';
     let deskRendah = '';
@@ -204,7 +204,7 @@ export default function CetakRapor() {
           {/* Footer signatures */}
           <div className="flex justify-between mt-12 text-sm pt-4 font-medium text-slate-800">
             <div className="text-center space-y-16">
-              <p>Mengetahui,<br/>Orang Tua / Wali</p>
+              <p>Mengetahui,<br/>Orang Tua/Wali</p>
               <div className="border-b border-slate-800 w-40 mx-auto"></div>
             </div>
             <div className="text-center space-y-16">
