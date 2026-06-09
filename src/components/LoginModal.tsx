@@ -91,11 +91,13 @@ export default function LoginModal() {
       console.log('Normalized DB Payload:', normalizedPayload);
       console.log('Mapped Updates:', sekolahUpdates);
       
-      // Load data from aplikasirapor if it exists
+      // Load data from aplikasirapor if it exists (get the latest modified payload)
       const { data: appData, error: appError } = await supabase
         .from('aplikasirapor')
         .select('*')
-        .eq('npsn', npsn.trim())
+        .like('npsn', `${npsn.trim()}%`)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .single();
         
       if (!appError && appData && appData.data_payload) {

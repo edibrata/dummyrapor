@@ -30,12 +30,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const syncToDatabase = async () => {
     if (!state.isAuthenticated || !state.sekolah?.npsn) return;
+    
+    // Create Composite Key: NPSN_TahunAjaran_Semester_Kelas_Rombel
+    const compositeNpsn = `${state.sekolah.npsn}_${state.sekolah.tahunAjaran || ''}_${state.sekolah.semester || ''}_${state.sekolah.kelas || ''}_${state.sekolah.rombel || ''}`.replace(/\s+/g, '-');
+
     try {
       const { error } = await supabase
         .from('aplikasirapor')
         .upsert(
           { 
-            npsn: state.sekolah.npsn, 
+            npsn: compositeNpsn, 
             data_payload: state 
           },
           { onConflict: 'npsn' }
