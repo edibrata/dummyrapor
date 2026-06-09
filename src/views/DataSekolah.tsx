@@ -52,8 +52,7 @@ export default function DataSekolah() {
       const num = parseInt(value, 10);
       let calculatedFase = '';
       if (num === 1 || num === 2) calculatedFase = 'A';
-      else if (num === 3) calculatedFase = 'B';
-      else if (num === 4) calculatedFase = 'V'; // Mengikuti instruksi (walau umumnya B)
+      else if (num === 3 || num === 4) calculatedFase = 'B';
       else if (num === 5 || num === 6) calculatedFase = 'C';
       
       updateSekolah({ kelas: value, fase: calculatedFase });

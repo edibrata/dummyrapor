@@ -130,12 +130,22 @@ export default function LoginModal() {
         .single();
         
       if (!appError && appData && appData.data_payload) {
+        // Backfill fase if missing from old data
+        let faseFallback = appData.data_payload.sekolah?.fase;
+        if (!faseFallback && appData.data_payload.sekolah?.kelas) {
+            const num = parseInt(appData.data_payload.sekolah.kelas.toString(), 10);
+            if (num === 1 || num === 2) faseFallback = 'A';
+            else if (num === 3 || num === 4) faseFallback = 'B';
+            else if (num === 5 || num === 6) faseFallback = 'C';
+        }
+
         setState(prev => ({
           ...appData.data_payload,
           isAuthenticated: true,
           sekolah: {
             ...appData.data_payload.sekolah,
             ...baselineData,
+            fase: faseFallback || appData.data_payload.sekolah?.fase
           }
         }));
       } else {
@@ -156,11 +166,18 @@ export default function LoginModal() {
     }
     
     // First login, just set baseline and authenticate
+    let fase = '';
+    const num = parseInt(newWorkspace.kelas, 10);
+    if (num === 1 || num === 2) fase = 'A';
+    else if (num === 3 || num === 4) fase = 'B';
+    else if (num === 5 || num === 6) fase = 'C';
+
     updateSekolah({
         ...baselineData,
         tahunAjaran: newWorkspace.tahunAjaran,
         semester: newWorkspace.semester,
         kelas: newWorkspace.kelas,
+        fase: fase,
         ruangRombel: newWorkspace.ruangRombel
     });
     updateState('isAuthenticated', true);
