@@ -69,8 +69,9 @@ export default function InputNilai() {
                 </tr>
                 <tr className="text-slate-600">
                   {mapelTps.map((tp, idx) => (
-                    <th key={tp.id} title={tp.deskripsi} className="border border-slate-200 p-2 w-16 text-center text-xs font-medium bg-slate-50 cursor-help">
+                    <th key={tp.id} className="border border-slate-200 p-2 w-16 text-center text-xs font-medium bg-slate-50 cursor-help group relative">
                       TP {idx + 1}
+                      <span className="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all bg-slate-800 text-white text-[10px] font-normal tracking-normal normal-case rounded px-2.5 py-1.5 bottom-full mb-1 left-1/2 -translate-x-1/2 z-[100] pointer-events-none shadow-sm min-w-[200px] whitespace-normal text-left before:absolute before:-bottom-1 before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-slate-800">{tp.deskripsi || 'Tidak ada deskripsi'}</span>
                     </th>
                   ))}
                 </tr>
