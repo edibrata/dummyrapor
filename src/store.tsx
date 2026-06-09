@@ -20,7 +20,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+          ...INITIAL_STATE,
+          ...parsed,
+          sekolah: {
+            ...INITIAL_STATE.sekolah,
+            ...(parsed.sekolah || {})
+          }
+        };
       }
     } catch (e) {
       console.error('Failed to load state from LS', e);
