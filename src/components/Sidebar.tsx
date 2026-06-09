@@ -102,7 +102,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
           <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-indigo-900 shadow-inner">
             <BookOpen size={24} />
           </div>
-          <h1 className="font-bold text-lg leading-tight tracking-tight">Rapor Merdeka <span className="text-amber-400 block text-xs">SD v5.0 PRO</span></h1>
+          <h1 className="font-bold text-lg leading-tight tracking-tight">Rapor Merdeka <span className="text-amber-400 block text-xs">SD v5.0 PRO • Edi Brata</span></h1>
         </div>
       </div>
       

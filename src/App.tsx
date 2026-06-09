@@ -57,6 +57,13 @@ function Dashboard() {
           {activeView === 'pengaturan' && <Pengaturan />}
           {activeView === 'profil-pengembang' && <ProfilPengembang />}
         </main>
+        <footer className="py-5 shrink-0 border-t border-slate-200/80 bg-slate-50/80 backdrop-blur-sm">
+          <div className="flex items-center justify-center gap-2 text-[13px] text-slate-500 font-medium">
+            Dikembangkan oleh
+            <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-5 h-5 rounded-full shadow-sm" />
+            <span className="font-bold text-slate-700">Edi Brata</span>
+          </div>
+        </footer>
       </div>
     </div>
   );

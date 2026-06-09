@@ -190,8 +190,14 @@ export default function LoginModal() {
           
           {step === 1 && (
               <>
-              <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex flex-center items-center justify-center mb-6">
-                <Lock size={24} />
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+                  <Lock size={24} />
+                </div>
+                <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                  <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-5 h-5 rounded-full" />
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Edi Brata</span>
+                </div>
               </div>
               
               <h2 className="text-2xl font-bold text-slate-800 mb-2">Autentikasi Aplikasi</h2>

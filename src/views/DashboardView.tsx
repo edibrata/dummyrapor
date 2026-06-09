@@ -62,10 +62,14 @@ export default function DashboardView() {
             <h1 className="text-3xl font-bold mb-3 tracking-tight">
               Selamat Datang di Rapor Merdeka
             </h1>
-            <p className="text-indigo-100/90 max-w-xl text-base leading-relaxed">
+            <p className="text-indigo-100/90 max-w-xl text-base leading-relaxed mb-4">
               Platform modern manajemen rapor akademik Kurikulum Merdeka. 
               Kelola data dasar, nilai sumatif, hingga cetak rapor dengan visualisasi yang mudah.
             </p>
+            <div className="flex items-center gap-2">
+              <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-6 h-6 rounded-full" />
+              <span className="text-indigo-200 text-sm font-medium">Dikembangkan oleh Edi Brata</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md px-5 py-4 rounded-2xl border border-white/10 shrink-0">
