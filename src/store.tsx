@@ -32,7 +32,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!state.isAuthenticated || !state.sekolah?.npsn) return;
     
     // Create Composite Key: NPSN_TahunAjaran_Semester_Kelas_Rombel
-    const compositeNpsn = `${state.sekolah.npsn}_${state.sekolah.tahunAjaran || ''}_${state.sekolah.semester || ''}_${state.sekolah.kelas || ''}_${state.sekolah.rombel || ''}`.replace(/\s+/g, '-');
+    const compositeNpsn = `${state.sekolah.npsn}_${state.sekolah.tahunAjaran || ''}_${state.sekolah.semester || ''}_${state.sekolah.kelas || ''}_${state.sekolah.ruangRombel || ''}`.replace(/\s+/g, '-');
 
     try {
       const { error } = await supabase
@@ -57,6 +57,90 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
+
+  useEffect(() => {
+    // Fetch baseline updates on mount/refresh if authenticated
+    const fetchLatestBaseline = async () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      try {
+        const currentState = JSON.parse(saved);
+        if (!currentState.isAuthenticated || !currentState.sekolah?.npsn) return;
+
+        const { data: dbData, error: dbError } = await supabase
+          .from('registrasirapor')
+          .select('*')
+          .eq('data_payload->>npsn', currentState.sekolah.npsn.trim())
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (dbError || !dbData || !dbData.data_payload) return;
+
+        const payload = dbData.data_payload;
+        const normalizedPayload: Record<string, any> = {};
+        Object.keys(payload).forEach(key => {
+          normalizedPayload[key.toLowerCase().trim().replace(/-/g, '_')] = payload[key];
+        });
+
+        const findVal = (...keys: string[]) => {
+          for (const k of keys) {
+            if (normalizedPayload[k.replace(/-/g, '_')] !== undefined) return normalizedPayload[k.replace(/-/g, '_')];
+          }
+          return undefined;
+        };
+
+        const sekolahUpdates: Partial<AppState['sekolah']> = {};
+
+        const valNama = findVal('nama lengkap sekolah', 'nama_sekolah', 'nama sekolah', 'nama_lengkap', 'nama');
+        if (valNama) sekolahUpdates.nama = valNama;
+
+        const valNpsn = findVal('npsn', 'npsn_sekolah');
+        if (valNpsn) sekolahUpdates.npsn = valNpsn;
+
+        const valAlamat = findVal('jalan / blok / rt rw', 'alamat', 'alamat lengkap', 'alamat_lengkap');
+        if (valAlamat) sekolahUpdates.alamat = valAlamat;
+        
+        const valJenisWilayah = findVal('desa/kelurahan', 'desa_kelurahan_jenis', 'jenis wilayah', 'jenis_wilayah');
+        if (valJenisWilayah) sekolahUpdates.desaKelurahanJenis = valJenisWilayah.toString().toLowerCase();
+        
+        const valNamaDesaKel = findVal('nama desa/kelurahan', 'desa_kelurahan_nama', 'nama desa/kel.', 'nama_desa_kelurahan', 'desa_kelurahan', 'desa', 'kelurahan');
+        if (valNamaDesaKel) sekolahUpdates.desaKelurahanNama = valNamaDesaKel;
+        
+        const valKecamatan = findVal('kecamatan', 'nama kecamatan');
+        if (valKecamatan) sekolahUpdates.kecamatan = valKecamatan;
+        
+        const valTipeDaerah = findVal('kabupaten/kota', 'kabupaten_kota_jenis', 'tipe daerah', 'tipe_daerah', 'jenis_kabupaten_kota');
+        if (valTipeDaerah) sekolahUpdates.kabupatenKotaJenis = valTipeDaerah.toString().toLowerCase();
+        
+        const valNamaKabKota = findVal('nama kabupaten/kota', 'kabupaten_kota_nama', 'nama kab/kota', 'nama_kab_kota', 'kab_kota');
+        if (valNamaKabKota) sekolahUpdates.kabupatenKotaNama = valNamaKabKota;
+        
+        const valProvinsi = findVal('provinsi', 'nama_provinsi', 'nama provinsi');
+        if (valProvinsi) sekolahUpdates.provinsi = valProvinsi;
+
+        const classes = findVal('fase / kelas utama', 'kelas', 'fase', 'fase_kelas_utama');
+        if (Array.isArray(classes)) {
+          sekolahUpdates.allowedKelas = classes.map(String);
+        } else if (typeof classes === 'string' && classes.includes(',')) {
+          sekolahUpdates.allowedKelas = classes.split(',').map(s => s.trim());
+        } else if (typeof classes === 'string' || typeof classes === 'number') {
+          sekolahUpdates.allowedKelas = [classes.toString()];
+        }
+
+        if (Object.keys(sekolahUpdates).length > 0) {
+          setState((prev) => ({
+            ...prev,
+            sekolah: { ...prev.sekolah, ...sekolahUpdates }
+          }));
+        }
+      } catch (e) {
+        console.error("Failed to fetch baseline on refresh", e);
+      }
+    };
+    
+    fetchLatestBaseline();
+  }, []);
 
   const updateSekolah = (data: Partial<AppState['sekolah']>) => {
     setState((prev) => ({

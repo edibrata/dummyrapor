@@ -18,7 +18,7 @@ export default function LoginModal() {
     tahunAjaran: '',
     semester: '1',
     kelas: '',
-    rombel: ''
+    ruangRombel: ''
   });
 
   const handleVerifyNpsn = async (e: React.FormEvent) => {
@@ -150,7 +150,7 @@ export default function LoginModal() {
 
   const createNewWorkspace = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newWorkspace.tahunAjaran || !newWorkspace.semester || !newWorkspace.kelas || !newWorkspace.rombel) {
+    if (!newWorkspace.tahunAjaran || !newWorkspace.semester || !newWorkspace.kelas || !newWorkspace.ruangRombel) {
       setError('Harap lengkapi semua isian ruang kerja baru.');
       return;
     }
@@ -161,7 +161,7 @@ export default function LoginModal() {
         tahunAjaran: newWorkspace.tahunAjaran,
         semester: newWorkspace.semester,
         kelas: newWorkspace.kelas,
-        rombel: newWorkspace.rombel
+        ruangRombel: newWorkspace.ruangRombel
     });
     updateState('isAuthenticated', true);
   };
@@ -253,7 +253,7 @@ export default function LoginModal() {
                                                 <FolderOpen size={18} />
                                             </div>
                                             <div>
-                                                 <p className="font-semibold text-slate-800">Kelas {ws.sekolah?.kelas} - {ws.sekolah?.rombel}</p>
+                                                 <p className="font-semibold text-slate-800">Kelas {ws.sekolah?.kelas} - {ws.sekolah?.ruangRombel}</p>
                                                  <p className="text-xs text-slate-500">{ws.sekolah?.tahunAjaran} | Smt {ws.sekolah?.semester}</p>
                                             </div>
                                         </div>
@@ -309,7 +309,7 @@ export default function LoginModal() {
                             </div>
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-semibold text-slate-700">Rombel</label>
-                                <select required value={newWorkspace.rombel} onChange={(e) => setNewWorkspace({...newWorkspace, rombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                                <select required value={newWorkspace.ruangRombel} onChange={(e) => setNewWorkspace({...newWorkspace, ruangRombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
                                     <option value="">Pilih</option>
                                     <option value="satu">Hanya Satu (Default)</option>
                                     <option value="A">A</option>

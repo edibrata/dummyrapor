@@ -128,7 +128,7 @@ export default function DataSekolah() {
   const handleReset = () => {
     if (isLocked) {
       // Only reset non-locked fields
-      const lockedKeys = ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'];
+      const lockedKeys = ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi', 'tahunAjaran', 'semester', 'kelas', 'ruangRombel'];
       const newSekolah = { ...INITIAL_STATE.sekolah };
       lockedKeys.forEach(k => {
         (newSekolah as any)[k] = sekolah[k as keyof typeof sekolah];
@@ -278,7 +278,7 @@ export default function DataSekolah() {
     let classes = "w-full rounded-lg px-3.5 py-2.5 text-sm transition-all focus:outline-none border shadow-sm ";
     if (isError) {
       classes += "border-red-500 bg-red-50/30 text-red-900 focus:ring-4 focus:ring-red-500/10 placeholder:text-red-300";
-    } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'].includes(name as string)) {
+    } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi', 'tahunAjaran', 'semester', 'kelas', 'ruangRombel'].includes(name as string)) {
       classes += "border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed";
     } else {
       classes += "border-slate-300 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-400";
@@ -349,11 +349,11 @@ export default function DataSekolah() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
                   <label htmlFor="tahunAjaran" className={getLabelClass('tahunAjaran')}>Tahun Ajaran</label>
-                  <input id="tahunAjaran" name="tahunAjaran" type="text" value={sekolah.tahunAjaran || ''} onChange={handleChange} placeholder="Misal: 2024/2025" className={getFieldClass('tahunAjaran')} />
+                  <input id="tahunAjaran" name="tahunAjaran" type="text" value={sekolah.tahunAjaran || ''} onChange={handleChange} placeholder="Misal: 2024/2025" className={getFieldClass('tahunAjaran')} readOnly={isLocked} />
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="semester" className={getLabelClass('semester')}>Semester</label>
-                  <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')}>
+                  <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')} disabled={isLocked}>
                     <option value="">Pilih Semester</option>
                     <option value="1">1 (Ganjil)</option>
                     <option value="2">2 (Genap)</option>
@@ -364,7 +364,7 @@ export default function DataSekolah() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="space-y-1.5">
                   <label htmlFor="kelas" className={getLabelClass('kelas')}>Kelas</label>
-                  <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')}>
+                  <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')} disabled={isLocked}>
                     <option value="">Pilih Kelas</option>
                     {(() => {
                       if (sekolah.allowedKelas && sekolah.allowedKelas.length > 0) {
@@ -394,7 +394,7 @@ export default function DataSekolah() {
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="ruangRombel" className={getLabelClass('ruangRombel')}>Ruang Rombongan Belajar</label>
-                  <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')}>
+                  <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')} disabled={isLocked}>
                     <option value="">Pilih Rombel</option>
                     <option value="satu">Hanya Satu (Default)</option>
                     <option value="A">A</option><option value="B">B</option><option value="C">C</option>
