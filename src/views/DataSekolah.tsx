@@ -33,20 +33,24 @@ export default function DataSekolah() {
     
     // Logic for Bobot Sumatif
     if (name === 'bobotSumatifLingkup') {
-      let val = parseInt(value) || 0;
-      if (val > 100) val = 100;
-      if (val < 0) val = 0;
+      let val: number | '' = value === '' ? '' : parseInt(value, 10);
+      if (typeof val === 'number') {
+        if (val > 100) val = 100;
+        if (val < 0) val = 0;
+      }
       updateSekolah({
         bobotSumatifLingkup: val,
-        bobotSumatifSemester: 100 - val
+        bobotSumatifSemester: val === '' ? '' : 100 - val
       });
     } else if (name === 'bobotSumatifSemester') {
-      let val = parseInt(value) || 0;
-      if (val > 100) val = 100;
-      if (val < 0) val = 0;
+      let val: number | '' = value === '' ? '' : parseInt(value, 10);
+      if (typeof val === 'number') {
+        if (val > 100) val = 100;
+        if (val < 0) val = 0;
+      }
       updateSekolah({
         bobotSumatifSemester: val,
-        bobotSumatifLingkup: 100 - val
+        bobotSumatifLingkup: val === '' ? '' : 100 - val
       });
     } else if (name === 'kelas') {
       const num = parseInt(value, 10);
@@ -290,7 +294,7 @@ export default function DataSekolah() {
     return `block text-[13px] font-semibold mb-1.5 ${isError ? 'text-red-600' : 'text-slate-700'}`;
   };
 
-  const totalBobot = (sekolah.bobotSumatifLingkup || 0) + (sekolah.bobotSumatifSemester || 0);
+  const totalBobot = (Number(sekolah.bobotSumatifLingkup) || 0) + (Number(sekolah.bobotSumatifSemester) || 0);
 
   return (
     <div className="max-w-5xl mx-auto pb-32 animate-in fade-in duration-500">
@@ -607,14 +611,14 @@ export default function DataSekolah() {
                   <div className="space-y-3">
                     <label htmlFor="bobotSumatifLingkup" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Lingkup Materi</label>
                     <div className="flex items-center gap-3">
-                      <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup ?? 75} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                      <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup === '' ? '' : (sekolah.bobotSumatifLingkup !== undefined ? String(sekolah.bobotSumatifLingkup) : '75')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                       <span className="text-indigo-600 font-bold text-lg">%</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <label htmlFor="bobotSumatifSemester" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Akhir Semester</label>
                     <div className="flex items-center gap-3">
-                      <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester ?? 25} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                      <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester === '' ? '' : (sekolah.bobotSumatifSemester !== undefined ? String(sekolah.bobotSumatifSemester) : '25')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                       <span className="text-indigo-600 font-bold text-lg">%</span>
                     </div>
                   </div>
