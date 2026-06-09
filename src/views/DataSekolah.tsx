@@ -48,6 +48,15 @@ export default function DataSekolah() {
         bobotSumatifSemester: val,
         bobotSumatifLingkup: 100 - val
       });
+    } else if (name === 'kelas') {
+      const num = parseInt(value, 10);
+      let calculatedFase = '';
+      if (num === 1 || num === 2) calculatedFase = 'A';
+      else if (num === 3) calculatedFase = 'B';
+      else if (num === 4) calculatedFase = 'V'; // Mengikuti instruksi (walau umumnya B)
+      else if (num === 5 || num === 6) calculatedFase = 'C';
+      
+      updateSekolah({ kelas: value, fase: calculatedFase });
     } else {
       updateSekolah({ [name]: value });
     }
@@ -336,43 +345,62 @@ export default function DataSekolah() {
             </p>
           </div>
           <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-1.5">
-                <label htmlFor="tahunAjaran" className={getLabelClass('tahunAjaran')}>Tahun Ajaran</label>
-                <input id="tahunAjaran" name="tahunAjaran" type="text" value={sekolah.tahunAjaran || ''} onChange={handleChange} placeholder="Misal: 2024/2025" className={getFieldClass('tahunAjaran')} />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-1.5">
+                  <label htmlFor="tahunAjaran" className={getLabelClass('tahunAjaran')}>Tahun Ajaran</label>
+                  <input id="tahunAjaran" name="tahunAjaran" type="text" value={sekolah.tahunAjaran || ''} onChange={handleChange} placeholder="Misal: 2024/2025" className={getFieldClass('tahunAjaran')} />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="semester" className={getLabelClass('semester')}>Semester</label>
+                  <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')}>
+                    <option value="">Pilih Semester</option>
+                    <option value="1">1 (Ganjil)</option>
+                    <option value="2">2 (Genap)</option>
+                  </select>
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <label htmlFor="semester" className={getLabelClass('semester')}>Semester</label>
-                <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')}>
-                  <option value="">Pilih Semester</option>
-                  <option value="1">1 (Ganjil)</option>
-                  <option value="2">2 (Genap)</option>
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label htmlFor="kelas" className={getLabelClass('kelas')}>Fase / Kelas Utama</label>
-                <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')}>
-                  <option value="">Pilih Kelas</option>
-                  {sekolah.allowedKelas && sekolah.allowedKelas.length > 0 ? (
-                    sekolah.allowedKelas.map((k) => (
-                      <option key={k} value={k.toString()}>{k}</option>
-                    ))
-                  ) : (
-                    <>
-                      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                    </>
-                  )}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label htmlFor="ruangRombel" className={getLabelClass('ruangRombel')}>Ruang Rombongan Belajar (Rombel)</label>
-                <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')}>
-                  <option value="">Pilih Rombel</option>
-                  <option value="satu">Hanya Satu (Default)</option>
-                  <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                  <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-                </select>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="space-y-1.5">
+                  <label htmlFor="kelas" className={getLabelClass('kelas')}>Kelas</label>
+                  <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')}>
+                    <option value="">Pilih Kelas</option>
+                    {(() => {
+                      if (sekolah.allowedKelas && sekolah.allowedKelas.length > 0) {
+                        const sorted = [...sekolah.allowedKelas].sort((a, b) => parseInt(a.toString(), 10) - parseInt(b.toString(), 10));
+                        return sorted.map((k) => (
+                          <option key={k} value={k.toString()}>{k}</option>
+                        ));
+                      } else {
+                         return [1, 2, 3, 4, 5, 6].map(k => (
+                           <option key={k} value={k.toString()}>{k}</option>
+                         ));
+                      }
+                    })()}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="fase" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Fase</label>
+                  <input 
+                    id="fase" 
+                    name="fase" 
+                    type="text" 
+                    value={sekolah.fase || ''} 
+                    readOnly 
+                    placeholder="Terisi otomatis"
+                    className="w-full rounded-lg px-3.5 py-2.5 text-sm transition-all focus:outline-none border shadow-sm border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed" 
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="ruangRombel" className={getLabelClass('ruangRombel')}>Ruang Rombongan Belajar</label>
+                  <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')}>
+                    <option value="">Pilih Rombel</option>
+                    <option value="satu">Hanya Satu (Default)</option>
+                    <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                    <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
