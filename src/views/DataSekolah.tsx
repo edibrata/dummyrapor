@@ -1,0 +1,640 @@
+import { useAppStore } from '@/store';
+import { 
+  FileText, Calendar, School, Users, 
+  MapPin, Percent, Info, Save, RotateCcw,
+  Download, Upload, FileJson, CheckCircle2,
+  AlertCircle, Lock
+} from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { INITIAL_STATE } from '@/constants';
+import * as XLSX from 'xlsx';
+
+export default function DataSekolah() {
+  const { state, updateSekolah } = useAppStore();
+  const { sekolah } = state;
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  
+  const excelInputRef = useRef<HTMLInputElement>(null);
+  const jsonInputRef = useRef<HTMLInputElement>(null);
+
+  const showToast = (message: string, isSuccess: boolean = true) => {
+    setToastMessage(message);
+    setToastType(isSuccess ? 'success' : 'error');
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 5000);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    // Logic for Bobot Sumatif
+    if (name === 'bobotSumatifLingkup') {
+      let val = parseInt(value) || 0;
+      if (val > 100) val = 100;
+      if (val < 0) val = 0;
+      updateSekolah({
+        bobotSumatifLingkup: val,
+        bobotSumatifSemester: 100 - val
+      });
+    } else if (name === 'bobotSumatifSemester') {
+      let val = parseInt(value) || 0;
+      if (val > 100) val = 100;
+      if (val < 0) val = 0;
+      updateSekolah({
+        bobotSumatifSemester: val,
+        bobotSumatifLingkup: 100 - val
+      });
+    } else {
+      updateSekolah({ [name]: value });
+    }
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: false }));
+    }
+  };
+
+  const requiredFields = [
+    { name: 'tahunAjaran', label: 'Tahun Ajaran' },
+    { name: 'semester', label: 'Semester' },
+    { name: 'kelas', label: 'Kelas' },
+    { name: 'ruangRombel', label: 'Ruang Rombel' },
+    { name: 'nama', label: 'Nama Lengkap Sekolah' },
+    { name: 'npsn', label: 'NPSN' },
+    { name: 'nss', label: 'Nomor Statistik Sekolah (NSS)' },
+    { name: 'nis', label: 'Nomor Induk Sekolah (NIS)' },
+    { name: 'alamat', label: 'Alamat Lengkap' },
+    { name: 'desaKelurahanJenis', label: 'Jenis Desa/Kelurahan' },
+    { name: 'desaKelurahanNama', label: 'Nama Desa/Kelurahan' },
+    { name: 'kecamatan', label: 'Kecamatan' },
+    { name: 'kabupatenKotaJenis', label: 'Jenis Kabupaten/Kota' },
+    { name: 'kabupatenKotaNama', label: 'Nama Kabupaten/Kota' },
+    { name: 'provinsi', label: 'Provinsi' },
+    { name: 'kodePos', label: 'Kode Pos' },
+    { name: 'kepsek', label: 'Nama Kepala Sekolah' },
+    { name: 'nipKepsek', label: 'NIP Kepala Sekolah' },
+    { name: 'waKepalaSekolah', label: 'WhatsApp Kepala Sekolah' },
+    { name: 'waliKelas', label: 'Nama Guru Kelas' },
+    { name: 'nipWaliKelas', label: 'NIP Guru Kelas' },
+    { name: 'waGuru', label: 'WhatsApp Guru' },
+    { name: 'lokasiTitimangsa', label: 'Lokasi Titimangsa' },
+    { name: 'tanggalBiodata', label: 'Tanggal Biodata' },
+    { name: 'tanggalRapor', label: 'Tanggal Rapor' }
+  ];
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const newErrors: Record<string, boolean> = {};
+    const emptyLabels: string[] = [];
+
+    requiredFields.forEach(field => {
+      const val = sekolah[field.name as keyof typeof sekolah] as string | undefined;
+      if (!val || val.toString().trim() === '') {
+        newErrors[field.name] = true;
+        emptyLabels.push(field.label);
+      }
+    });
+
+    if (emptyLabels.length > 0) {
+      setErrors(newErrors);
+      showToast('Terdapat isian yang masih kosong. Silakan periksa kolom dengan garis merah.', false);
+      
+      const firstErrorField = requiredFields.find(f => newErrors[f.name]);
+      if (firstErrorField) {
+        const el = document.getElementById(firstErrorField.name);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus();
+        }
+      }
+    } else {
+      setErrors({});
+      showToast('Data berhasil divalidasi dan disimpan secara lokal!');
+    }
+  };
+
+  const handleReset = () => {
+    if (isLocked) {
+      // Only reset non-locked fields
+      const lockedKeys = ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'];
+      const newSekolah = { ...INITIAL_STATE.sekolah };
+      lockedKeys.forEach(k => {
+        (newSekolah as any)[k] = sekolah[k as keyof typeof sekolah];
+      });
+      updateSekolah(newSekolah);
+    } else {
+      updateSekolah(INITIAL_STATE.sekolah);
+    }
+    setErrors({});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Data form non-sinkronisasi telah direset.');
+  };
+
+  // --- EXPORT & IMPORT LOGIC ---
+  const excelMap = [
+    { key: 'tahunAjaran', header: 'Tahun Ajaran' },
+    { key: 'semester', header: 'Semester' },
+    { key: 'nama', header: 'Nama Sekolah' },
+    { key: 'npsn', header: 'NPSN' },
+    { key: 'nss', header: 'Nomor Statistik Sekolah' },
+    { key: 'nis', header: 'Nomor Induk Sekolah' },
+    { key: 'alamat', header: 'Alamat' },
+    { key: 'desaKelurahanJenis', header: 'Desa/Kelurahan Jenis' },
+    { key: 'desaKelurahanNama', header: 'Desa/Kelurahan Nama' },
+    { key: 'kecamatan', header: 'Kecamatan' },
+    { key: 'kabupatenKotaJenis', header: 'Kabupaten/Kota Jenis' },
+    { key: 'kabupatenKotaNama', header: 'Kabupaten/Kota Nama' },
+    { key: 'provinsi', header: 'Provinsi' },
+    { key: 'kodePos', header: 'Kode Pos' },
+    { key: 'telepon', header: 'Telepon' },
+    { key: 'email', header: 'Email' },
+    { key: 'website', header: 'Website' },
+    { key: 'kelas', header: 'Kelas' },
+    { key: 'ruangRombel', header: 'Ruang Rombel' },
+    { key: 'kepsek', header: 'Nama Kepala Sekolah' },
+    { key: 'nipKepsek', header: 'NIP Kepala Sekolah' },
+    { key: 'waKepalaSekolah', header: 'WhatsApp Kepala Sekolah' },
+    { key: 'waliKelas', header: 'Nama Guru Kelas' },
+    { key: 'nipWaliKelas', header: 'NIP Guru Kelas' },
+    { key: 'waGuru', header: 'WhatsApp Guru' },
+    { key: 'lokasiTitimangsa', header: 'Lokasi Titimangsa' },
+    { key: 'tanggalBiodata', header: 'Tanggal Biodata' },
+    { key: 'tanggalRapor', header: 'Tanggal Rapor' },
+    { key: 'bobotSumatifLingkup', header: 'Bobot Sumatif Lingkup Materi' },
+    { key: 'bobotSumatifSemester', header: 'Bobot Sumatif Akhir Semester' }
+  ];
+
+  const handleDownloadExcel = () => {
+    const dataRow = excelMap.map(entry => {
+      const val = sekolah[entry.key as keyof typeof sekolah];
+      return val !== undefined && val !== null ? val : '';
+    });
+    const ws = XLSX.utils.aoa_to_sheet([excelMap.map(e => e.header), dataRow]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data Dasar");
+    XLSX.writeFile(wb, `Template_Data_Dasar_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  const handleImportExcel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary', cellDates: true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        
+        const dataRow = jsonData[1] as any[];
+        if (dataRow) {
+          const newData = { ...sekolah };
+          excelMap.forEach((entry, index) => {
+            let val = dataRow[index];
+            if (val instanceof Date) {
+              // Fix timezone issue when parsing dates from excel
+              const dateObj = new Date(val);
+              dateObj.setMinutes(dateObj.getMinutes() - dateObj.getTimezoneOffset());
+              val = dateObj.toISOString().split('T')[0];
+            } else if (val === undefined) {
+              val = '';
+            } else {
+              val = val.toString();
+            }
+            if (entry.key === 'bobotSumatifLingkup' || entry.key === 'bobotSumatifSemester') {
+              (newData as any)[entry.key] = parseInt(val) || 0;
+            } else {
+              (newData as any)[entry.key] = val;
+            }
+          });
+          updateSekolah(newData);
+          setErrors({});
+          showToast('Data Excel berhasil diimpor!');
+        } else {
+          showToast('File Excel kosong atau format tidak sesuai.', false);
+        }
+      } catch (err) {
+        showToast('Gagal memproses file Excel.', false);
+      }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = '';
+  };
+
+  const handleDownloadJSON = () => {
+    const jsonStr = JSON.stringify(sekolah, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Backup_Data_Dasar_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const json = JSON.parse(evt.target?.result as string);
+        updateSekolah(json);
+        setErrors({});
+        showToast('Data JSON berhasil dipulihkan!');
+      } catch (err) {
+        showToast('Gagal membaca file JSON.', false);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const isLocked = state.isAuthenticated;
+  
+  const getSelectValue = (val: any) => {
+    if (Array.isArray(val)) return '';
+    if (typeof val === 'object' && val !== null) return '';
+    return val || '';
+  };
+
+  // --- STYLING HELPERS ---
+  const getFieldClass = (name: keyof typeof sekolah) => {
+    const isError = errors[name];
+    let classes = "w-full rounded-lg px-3.5 py-2.5 text-sm transition-all focus:outline-none border shadow-sm ";
+    if (isError) {
+      classes += "border-red-500 bg-red-50/30 text-red-900 focus:ring-4 focus:ring-red-500/10 placeholder:text-red-300";
+    } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'].includes(name)) {
+      classes += "border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed";
+    } else {
+      classes += "border-slate-300 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-400";
+    }
+    return classes;
+  };
+
+  const getLabelClass = (name: keyof typeof sekolah) => {
+    const isError = errors[name];
+    return `block text-[13px] font-semibold mb-1.5 ${isError ? 'text-red-600' : 'text-slate-700'}`;
+  };
+
+  const totalBobot = (sekolah.bobotSumatifLingkup || 0) + (sekolah.bobotSumatifSemester || 0);
+
+  return (
+    <div className="max-w-5xl mx-auto pb-32 animate-in fade-in duration-500">
+      
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 pb-6 border-b border-slate-200">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Data Dasar Sekolah</h1>
+          <p className="text-slate-500 text-sm mt-1">Lengkapi profil dan identitas lembaga sebagai metadata cetak rapor.</p>
+        </div>
+        
+        <div className="flex flex-wrap items-center gap-2">
+          {!isLocked && (
+            <>
+              <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                <button type="button" onClick={handleDownloadExcel} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
+                  <Download size={14} /> <span className="hidden sm:inline">Unduh</span> Excel
+                </button>
+                <div className="w-px bg-slate-200 my-1 mx-1"></div>
+                <button type="button" onClick={() => excelInputRef.current?.click()} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
+                  <Upload size={14} /> Import Excel
+                </button>
+                <input type="file" ref={excelInputRef} onChange={handleImportExcel} accept=".xlsx, .xls" className="hidden" />
+              </div>
+
+              <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                <button type="button" onClick={handleDownloadJSON} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
+                   <Download size={14} /> Backup
+                </button>
+                <div className="w-px bg-slate-200 my-1 mx-1"></div>
+                <button type="button" onClick={() => jsonInputRef.current?.click()} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
+                  <FileJson size={14} /> Restore
+                </button>
+                <input type="file" ref={jsonInputRef} onChange={handleImportJSON} accept=".json" className="hidden" />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-12">
+        
+        {/* SECTION 1: AKADEMIK */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <div className="md:col-span-4 lg:col-span-3">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Calendar className="text-indigo-600" size={18} /> Akademik & Rombel
+            </h3>
+            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
+              Konfigurasi tahun ajaran, semester, dan kelompok belajar yang aktif saat ini.
+            </p>
+          </div>
+          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label htmlFor="tahunAjaran" className={getLabelClass('tahunAjaran')}>Tahun Ajaran</label>
+                <input id="tahunAjaran" name="tahunAjaran" type="text" value={sekolah.tahunAjaran || ''} onChange={handleChange} placeholder="Misal: 2024/2025" className={getFieldClass('tahunAjaran')} />
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="semester" className={getLabelClass('semester')}>Semester</label>
+                <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')}>
+                  <option value="">Pilih Semester</option>
+                  <option value="1">1 (Ganjil)</option>
+                  <option value="2">2 (Genap)</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="kelas" className={getLabelClass('kelas')}>Fase / Kelas Utama</label>
+                <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')}>
+                  <option value="">Pilih Kelas</option>
+                  {sekolah.allowedKelas && sekolah.allowedKelas.length > 0 ? (
+                    sekolah.allowedKelas.map((k) => (
+                      <option key={k} value={k.toString()}>{k}</option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    </>
+                  )}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="ruangRombel" className={getLabelClass('ruangRombel')}>Ruang Rombongan Belajar (Rombel)</label>
+                <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')}>
+                  <option value="">Pilih Rombel</option>
+                  <option value="satu">Hanya Satu (Default)</option>
+                  <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                  <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr className="border-slate-200" />
+
+        {/* SECTION 2: PROFIL SEKOLAH */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <div className="md:col-span-4 lg:col-span-3">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <School className="text-indigo-600" size={18} /> Profil Sekolah
+            </h3>
+            {isLocked && (
+              <span className="inline-block mt-3 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded border border-indigo-100">
+                <Lock size={12} className="inline mr-1" /> Terkunci (Sinkron DB)
+              </span>
+            )}
+            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
+              Mencakup identitas lengkap institusi sesuai data Dapodik untuk kebutuhan kop rapor.
+            </p>
+          </div>
+          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+              <div className="sm:col-span-12 space-y-1.5">
+                <label htmlFor="nama" className={getLabelClass('nama')}>Nama Lengkap Sekolah</label>
+                <input id="nama" name="nama" type="text" value={sekolah.nama || ''} onChange={handleChange} placeholder="Misal: SDN Legokmenteng Waringinkurung" className={getFieldClass('nama')} readOnly={isLocked} />
+              </div>
+              <div className="sm:col-span-4 space-y-1.5">
+                <label htmlFor="npsn" className={getLabelClass('npsn')}>NPSN</label>
+                <input id="npsn" name="npsn" type="text" value={sekolah.npsn || ''} onChange={handleChange} placeholder="8 Digit NPSN" className={getFieldClass('npsn')} readOnly={isLocked} />
+              </div>
+              <div className="sm:col-span-4 space-y-1.5">
+                <label htmlFor="nss" className={getLabelClass('nss')}>NSS</label>
+                <input id="nss" name="nss" type="text" value={sekolah.nss || ''} onChange={handleChange} placeholder="NSS Sekolah" className={getFieldClass('nss')} />
+              </div>
+              <div className="sm:col-span-4 space-y-1.5">
+                <label htmlFor="nis" className={getLabelClass('nis')}>NIS</label>
+                <input id="nis" name="nis" type="text" value={sekolah.nis || ''} onChange={handleChange} placeholder="NIS Sekolah" className={getFieldClass('nis')} />
+              </div>
+            </div>
+
+            <div className="bg-slate-50/50 p-5 -mx-4 sm:mx-0 sm:p-6 rounded-xl border border-slate-100 space-y-6">
+              <div className="space-y-1.5">
+                <label htmlFor="alamat" className={getLabelClass('alamat')}>Jalan / Blok / RT RW</label>
+                <input id="alamat" name="alamat" type="text" value={sekolah.alamat || ''} onChange={handleChange} placeholder="Nama jalan, RT/RW lengkap" className={getFieldClass('alamat')} readOnly={isLocked} />
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                <div className="sm:col-span-4 space-y-1.5">
+                    <label htmlFor="desaKelurahanJenis" className={getLabelClass('desaKelurahanJenis')}>Desa/Kelurahan</label>
+                    <select id="desaKelurahanJenis" name="desaKelurahanJenis" value={getSelectValue(sekolah.desaKelurahanJenis)} onChange={handleChange} className={getFieldClass('desaKelurahanJenis')} disabled={isLocked}>
+                        <option value="">Pilih</option><option value="desa">Desa</option><option value="kelurahan">Kelurahan</option>
+                    </select>
+                </div>
+                <div className="sm:col-span-8 space-y-1.5">
+                  <label htmlFor="desaKelurahanNama" className={getLabelClass('desaKelurahanNama')}>Nama Desa/Kelurahan</label>
+                  <input id="desaKelurahanNama" name="desaKelurahanNama" type="text" value={sekolah.desaKelurahanNama || ''} onChange={handleChange} placeholder="Nama wilayah desa/kelurahan" className={getFieldClass('desaKelurahanNama')} readOnly={isLocked} />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="kecamatan" className={getLabelClass('kecamatan')}>Kecamatan</label>
+                <input id="kecamatan" name="kecamatan" type="text" value={sekolah.kecamatan || ''} onChange={handleChange} placeholder="Nama kecamatan" className={getFieldClass('kecamatan')} readOnly={isLocked} />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                <div className="sm:col-span-4 space-y-1.5">
+                    <label htmlFor="kabupatenKotaJenis" className={getLabelClass('kabupatenKotaJenis')}>Kabupaten/Kota</label>
+                    <select id="kabupatenKotaJenis" name="kabupatenKotaJenis" value={getSelectValue(sekolah.kabupatenKotaJenis)} onChange={handleChange} className={getFieldClass('kabupatenKotaJenis')} disabled={isLocked}>
+                        <option value="">Pilih</option><option value="kabupaten">Kabupaten</option><option value="kota">Kota</option>
+                    </select>
+                </div>
+                <div className="sm:col-span-8 space-y-1.5">
+                  <label htmlFor="kabupatenKotaNama" className={getLabelClass('kabupatenKotaNama')}>Nama Kabupaten/Kota</label>
+                  <input id="kabupatenKotaNama" name="kabupatenKotaNama" type="text" value={sekolah.kabupatenKotaNama || ''} onChange={handleChange} placeholder="Nama wilayah kabupaten/kota" className={getFieldClass('kabupatenKotaNama')} readOnly={isLocked} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="sm:col-span-1 space-y-1.5">
+                  <label htmlFor="provinsi" className={getLabelClass('provinsi')}>Provinsi</label>
+                  <input id="provinsi" name="provinsi" type="text" value={sekolah.provinsi || ''} onChange={handleChange} placeholder="Provinsi" className={getFieldClass('provinsi')} readOnly={isLocked} />
+                </div>
+                <div className="sm:col-span-1 space-y-1.5">
+                  <label htmlFor="kodePos" className={getLabelClass('kodePos')}>Kode Pos</label>
+                  <input id="kodePos" name="kodePos" type="text" value={sekolah.kodePos || ''} onChange={handleChange} placeholder="12345" className={getFieldClass('kodePos')} />
+                </div>
+                <div className="sm:col-span-1 space-y-1.5">
+                  <label htmlFor="telepon" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Telepon <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                  <input id="telepon" name="telepon" type="text" value={sekolah.telepon || ''} onChange={handleChange} placeholder="0254-xxx" className={getFieldClass('telepon')} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-200/60">
+                <div className="space-y-1.5">
+                  <label htmlFor="email" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Email <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                  <input id="email" name="email" type="email" value={sekolah.email || ''} onChange={handleChange} placeholder="sekolah@email.com" className={getFieldClass('email')} />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="website" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Website <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                  <input id="website" name="website" type="url" value={sekolah.website || ''} onChange={handleChange} placeholder="https://..." className={getFieldClass('website')} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr className="border-slate-200" />
+
+        {/* SECTION 3: KEPSEK & GURU */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <div className="md:col-span-4 lg:col-span-3">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Users className="text-indigo-600" size={18} /> Kepala Sekolah & Guru
+            </h3>
+            {isLocked && (
+              <span className="inline-block mt-3 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded border border-indigo-100">
+                <Lock size={12} className="inline mr-1" /> Terkunci (Sinkron DB)
+              </span>
+            )}
+            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
+              Pegawai yang menandatangani halaman biodata dan leger rapor akhir.
+            </p>
+          </div>
+          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div className="space-y-5">
+                   <h4 className="font-bold text-sm tracking-widest text-slate-400 uppercase border-b border-slate-100 pb-2">Kepala Sekolah</h4>
+                   <div className="space-y-1.5">
+                     <label htmlFor="kepsek" className={getLabelClass('kepsek')}>Nama & Gelar</label>
+                     <input id="kepsek" name="kepsek" type="text" value={sekolah.kepsek || ''} onChange={handleChange} placeholder="Nama lengkap & gelar" className={getFieldClass('kepsek')} />
+                   </div>
+                   <div className="space-y-1.5">
+                     <label htmlFor="nipKepsek" className={getLabelClass('nipKepsek')}>NIP Kepala Sekolah</label>
+                     <input id="nipKepsek" name="nipKepsek" type="text" value={sekolah.nipKepsek || ''} onChange={handleChange} placeholder="Tanpa spasi, misal 1980..." className={getFieldClass('nipKepsek')} />
+                   </div>
+                   <div className="space-y-1.5">
+                     <label htmlFor="waKepalaSekolah" className={getLabelClass('waKepalaSekolah')}>Nomor WhatsApp</label>
+                     <input id="waKepalaSekolah" name="waKepalaSekolah" type="text" value={sekolah.waKepalaSekolah || ''} onChange={handleChange} placeholder="Contoh: 0812..." className={getFieldClass('waKepalaSekolah')} />
+                   </div>
+                </div>
+                
+                <div className="space-y-5">
+                   <h4 className="font-bold text-sm tracking-widest text-slate-400 uppercase border-b border-slate-100 pb-2">Guru / Wali Kelas</h4>
+                   <div className="space-y-1.5">
+                     <label htmlFor="waliKelas" className={getLabelClass('waliKelas')}>Nama & Gelar</label>
+                     <input id="waliKelas" name="waliKelas" type="text" value={sekolah.waliKelas || ''} onChange={handleChange} placeholder="Nama lengkap & gelar" className={getFieldClass('waliKelas')} />
+                   </div>
+                   <div className="space-y-1.5">
+                     <label htmlFor="nipWaliKelas" className={getLabelClass('nipWaliKelas')}>NIP Guru Kelas</label>
+                     <input id="nipWaliKelas" name="nipWaliKelas" type="text" value={sekolah.nipWaliKelas || ''} onChange={handleChange} placeholder="Tanpa spasi" className={getFieldClass('nipWaliKelas')} />
+                   </div>
+                   <div className="space-y-1.5">
+                     <label htmlFor="waGuru" className={getLabelClass('waGuru')}>Nomor WhatsApp</label>
+                     <input id="waGuru" name="waGuru" type="text" value={sekolah.waGuru || ''} onChange={handleChange} placeholder="Contoh: 0812..." className={getFieldClass('waGuru')} />
+                   </div>
+                </div>
+             </div>
+          </div>
+        </section>
+
+        <hr className="border-slate-200" />
+
+        {/* SECTION 4: CETAK & BOBOT */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <div className="md:col-span-4 lg:col-span-3">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Percent className="text-indigo-600" size={18} /> Pengaturan Output
+            </h3>
+            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
+              Atur lokasi tanda tangan, titimangsa, dan rasio pembobotan nilai akhir rapor.
+            </p>
+          </div>
+          <div className="md:col-span-8 lg:col-span-9 space-y-6">
+            
+            {/* Titimangsa Panel */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+              <h4 className="flex items-center gap-2 font-bold text-[15px] mb-5 text-slate-800"><MapPin size={18} className="text-slate-400" /> Titimangsa Penandatanganan</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="space-y-1.5">
+                  <label htmlFor="lokasiTitimangsa" className={getLabelClass('lokasiTitimangsa')}>Lokasi Cetak</label>
+                  <select id="lokasiTitimangsa" name="lokasiTitimangsa" value={getSelectValue(sekolah.lokasiTitimangsa)} onChange={handleChange} className={getFieldClass('lokasiTitimangsa')}>
+                    <option value="">Pilih Asal Referensi</option>
+                    <option value="kabupaten_kota">Kabupaten/Kota</option>
+                    <option value="kecamatan">Kecamatan</option>
+                    <option value="desa_kelurahan">Desa/Kelurahan</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="tanggalBiodata" className={getLabelClass('tanggalBiodata')}>Tanggal Biodata</label>
+                  <input id="tanggalBiodata" name="tanggalBiodata" type="date" value={sekolah.tanggalBiodata || ''} onChange={handleChange} className={getFieldClass('tanggalBiodata')} />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="tanggalRapor" className={getLabelClass('tanggalRapor')}>Tanggal Rapor</label>
+                  <input id="tanggalRapor" name="tanggalRapor" type="date" value={sekolah.tanggalRapor || ''} onChange={handleChange} className={getFieldClass('tanggalRapor')} />
+                </div>
+              </div>
+            </div>
+
+            {/* Bobot Panel */}
+            <div className="bg-indigo-50/50 rounded-2xl border border-indigo-100 p-6 md:p-8">
+                <h4 className="font-bold text-[15px] mb-5 text-indigo-900 border-b border-indigo-100 pb-3">Rasio Bobot Penilaian Rapor</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label htmlFor="bobotSumatifLingkup" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Lingkup Materi</label>
+                    <div className="flex items-center gap-3">
+                      <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup ?? 75} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                      <span className="text-indigo-600 font-bold text-lg">%</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <label htmlFor="bobotSumatifSemester" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Akhir Semester</label>
+                    <div className="flex items-center gap-3">
+                      <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester ?? 25} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                      <span className="text-indigo-600 font-bold text-lg">%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {totalBobot !== 100 && (
+                  <div className="mt-5 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3">
+                    <AlertCircle size={18} className="shrink-0" />
+                    <p>Total bobot wajib berjumlah 100%. Pembobotan Anda saat ini: {totalBobot}%. Silakan sesuaikan rasio.</p>
+                  </div>
+                )}
+            </div>
+
+          </div>
+        </section>
+      </form>
+
+      {/* TOAST WARNING / SUCCESS OVERLAY */}
+      {toastMessage && (
+        <div className={`fixed bottom-24 right-8 z-[60] px-5 py-3 rounded-xl shadow-xl shadow-slate-900/10 border text-[13px] font-bold flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300 max-w-sm ${
+          toastType === 'success' 
+            ? 'bg-emerald-800 text-white border-emerald-900' 
+            : 'bg-red-600 text-white border-red-700'
+        }`}>
+          {toastType === 'success' ? <CheckCircle2 size={18} className="text-emerald-300 shrink-0" /> : <Info size={18} className="text-red-300 shrink-0" />}
+          <span className="whitespace-pre-line truncate max-w-[280px]">{toastMessage}</span>
+        </div>
+      )}
+
+      {/* STICKY BOTTOM ACTION BAR */}
+      <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+         <div className="max-w-5xl mx-auto flex items-center justify-between">
+           <div className="hidden sm:flex items-center gap-2 text-[13px] text-slate-500 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1"></span>
+              Auto-save lokal diaktifkan. Pastikan tidak ada border form merah.
+           </div>
+           <div className="flex items-center gap-3 w-full sm:w-auto">
+             <button type="button" onClick={handleReset} className="flex-1 sm:flex-none border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-lg px-6 py-2.5 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-100">
+               Reset Form
+             </button>
+             <button type="button" onClick={handleSubmit} className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg px-8 py-2.5 flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/30">
+               <Save size={16} /> Simpan Data
+             </button>
+           </div>
+         </div>
+      </div>
+
+    </div>
+  );
+}
