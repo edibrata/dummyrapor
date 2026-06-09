@@ -24,7 +24,7 @@ export default function LoginModal() {
       const { data, error: sbError } = await supabase
         .from('registrasirapor')
         .select('*')
-        .eq('npsn', npsn.trim())
+        .eq('data_payload->>npsn', npsn.trim())
         .single();
 
       if (sbError || !data) {
