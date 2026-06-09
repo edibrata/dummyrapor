@@ -1,11 +1,15 @@
 import { useAppStore } from '@/store';
-import { Menu } from 'lucide-react';
+import { Menu, ZoomIn, ZoomOut, Type } from 'lucide-react';
 
 interface HeaderProps {
   toggleSidebar: () => void;
+  layoutZoom: number;
+  setLayoutZoom: (zoom: number | ((prev: number) => number)) => void;
+  fontZoom: number;
+  setFontZoom: (zoom: number | ((prev: number) => number)) => void;
 }
 
-export default function Header({ toggleSidebar }: HeaderProps) {
+export default function Header({ toggleSidebar, layoutZoom, setLayoutZoom, fontZoom, setFontZoom }: HeaderProps) {
   const { state } = useAppStore();
   const { sekolah } = state;
 
@@ -24,9 +28,51 @@ export default function Header({ toggleSidebar }: HeaderProps) {
           <p className="text-slate-800 font-bold text-base md:text-lg">Aplikasi Rapor Kurikulum Merdeka</p>
         </div>
       </div>
-      <div className="text-right hidden md:block">
-        <p className="text-xs font-bold text-indigo-600">{sekolah.nama}</p>
-        <p className="text-[10px] text-slate-400">Semester {sekolah.semester} {sekolah.tahunAjaran} | Kelas {sekolah.kelas} (Fase {sekolah.fase})</p>
+      
+      <div className="flex items-center gap-4">
+        {/* Zoom Controls */}
+        <div className="hidden md:flex items-center gap-4 border-r border-slate-200 pr-4">
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+            <button 
+              onClick={() => setLayoutZoom(prev => Math.max(0.5, prev - 0.1))}
+              className="p-1 text-slate-500 hover:text-indigo-600 hover:bg-white rounded shadow-sm transition-all"
+              title="Perkecil Layar"
+            >
+              <ZoomOut size={16} />
+            </button>
+            <span className="text-[10px] font-bold text-slate-600 w-8 text-center">{Math.round(layoutZoom * 100)}%</span>
+            <button 
+              onClick={() => setLayoutZoom(prev => Math.min(2, prev + 0.1))}
+              className="p-1 text-slate-500 hover:text-indigo-600 hover:bg-white rounded shadow-sm transition-all"
+              title="Perbesar Layar"
+            >
+              <ZoomIn size={16} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+             <button 
+              onClick={() => setFontZoom(prev => Math.max(0.5, prev - 0.1))}
+              className="p-1 text-slate-500 hover:text-indigo-600 hover:bg-white rounded shadow-sm transition-all"
+              title="Perkecil Teks"
+            >
+              <Type size={14} />
+            </button>
+            <span className="text-[10px] font-bold text-slate-600 w-8 text-center">{Math.round(fontZoom * 100)}%</span>
+            <button 
+              onClick={() => setFontZoom(prev => Math.min(2, prev + 0.1))}
+              className="p-1 text-slate-500 hover:text-indigo-600 hover:bg-white rounded shadow-sm transition-all"
+              title="Perbesar Teks"
+            >
+              <Type size={18} />
+            </button>
+          </div>
+        </div>
+
+        <div className="text-right hidden md:block">
+          <p className="text-xs font-bold text-indigo-600">{sekolah.nama}</p>
+          <p className="text-[10px] text-slate-400">Semester {sekolah.semester} {sekolah.tahunAjaran} | Kelas {sekolah.kelas} (Fase {sekolah.fase})</p>
+        </div>
       </div>
     </header>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppProvider, useAppStore } from '@/store';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -19,13 +19,29 @@ import LoginModal from '@/components/LoginModal';
 function Dashboard() {
   const [activeView, setActiveView] = useState('data-sekolah');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
+  const [layoutZoom, setLayoutZoom] = useState(1);
+  const [fontZoom, setFontZoom] = useState(1);
+
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontZoom * 16}px`;
+  }, [fontZoom]);
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans overflow-hidden">
       <Sidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} />
       
-      <div className="flex-1 flex flex-col min-w-0 main-content h-screen overflow-y-auto">
-        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <div 
+        className="flex-1 flex flex-col min-w-0 main-content h-screen overflow-y-auto"
+        style={{ zoom: layoutZoom }}
+      >
+        <Header 
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+          layoutZoom={layoutZoom}
+          setLayoutZoom={setLayoutZoom}
+          fontZoom={fontZoom}
+          setFontZoom={setFontZoom}
+        />
         
         <main className="p-6 md:p-8 flex-1 overflow-x-hidden">
           {activeView === 'data-sekolah' && <DataSekolah />}
