@@ -309,7 +309,16 @@ export default function LoginModal() {
                             </div>
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-semibold text-slate-700">Rombel</label>
-                                <input required type="text" placeholder="A, B, dll" value={newWorkspace.rombel} onChange={(e) => setNewWorkspace({...newWorkspace, rombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                                <select required value={newWorkspace.rombel} onChange={(e) => setNewWorkspace({...newWorkspace, rombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                                    <option value="">Pilih</option>
+                                    <option value="satu">Hanya Satu (Default)</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                </select>
                             </div>
                         </div>
 
