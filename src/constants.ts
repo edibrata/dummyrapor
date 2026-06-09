@@ -12,6 +12,23 @@ export const DAFTAR_MAPEL: Mapel[] = [
   { id: 'm9', nama: 'Muatan Lokal', singkatan: 'Mulok' },
 ];
 
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth();
+
+let defaultTahunAjaran = "";
+let defaultSemester = "";
+
+if (currentMonth >= 0 && currentMonth <= 5) {
+  // Jan - Jun
+  defaultTahunAjaran = `${currentYear - 1}/${currentYear}`;
+  defaultSemester = "1";
+} else {
+  // Jul - Dec
+  defaultTahunAjaran = `${currentYear}/${currentYear + 1}`;
+  defaultSemester = "2";
+}
+
 export const INITIAL_STATE: AppState = {
   isAuthenticated: false,
   sekolah: {
@@ -36,11 +53,11 @@ export const INITIAL_STATE: AppState = {
     waliKelas: 'Siti Aminah, S.Pd',
     nipWaliKelas: '19850202 201001 2 002',
     waGuru: '',
-    tahunAjaran: '2023/2024',
-    semester: '1',
-    fase: 'B',
-    kelas: '4',
-    ruangRombel: 'A',
+    tahunAjaran: defaultTahunAjaran,
+    semester: defaultSemester,
+    fase: '',
+    kelas: '',
+    ruangRombel: '',
     lokasiTitimangsa: 'kabupaten_kota',
     tanggalBiodata: '2024-07-15',
     tanggalRapor: '2024-12-20',

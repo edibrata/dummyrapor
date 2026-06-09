@@ -278,7 +278,7 @@ export default function DataSekolah() {
     let classes = "w-full rounded-lg px-3.5 py-2.5 text-sm transition-all focus:outline-none border shadow-sm ";
     if (isError) {
       classes += "border-red-500 bg-red-50/30 text-red-900 focus:ring-4 focus:ring-red-500/10 placeholder:text-red-300";
-    } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'].includes(name)) {
+    } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi'].includes(name as string)) {
       classes += "border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed";
     } else {
       classes += "border-slate-300 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-400";

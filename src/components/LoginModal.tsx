@@ -7,7 +7,7 @@ export default function LoginModal() {
   const [npsn, setNpsn] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { updateSekolah, updateState } = useAppStore();
+  const { updateSekolah, updateState, setState } = useAppStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,8 +91,28 @@ export default function LoginModal() {
       console.log('Normalized DB Payload:', normalizedPayload);
       console.log('Mapped Updates:', sekolahUpdates);
       
-      updateSekolah(sekolahUpdates);
-      updateState('isAuthenticated', true);
+      // Load data from aplikasirapor if it exists
+      const { data: appData, error: appError } = await supabase
+        .from('aplikasirapor')
+        .select('*')
+        .eq('npsn', npsn.trim())
+        .single();
+        
+      if (!appError && appData && appData.data_payload) {
+        // App state exists, merge and set
+        setState(prev => ({
+          ...appData.data_payload,
+          isAuthenticated: true,
+          sekolah: {
+            ...appData.data_payload.sekolah,
+            ...sekolahUpdates, // overrides with the latest baseline from registrasirapor
+          }
+        }));
+      } else {
+        // First login, just set baseline and authenticate
+        updateSekolah(sekolahUpdates);
+        updateState('isAuthenticated', true);
+      }
 
     } catch (err: any) {
       setError('Terjadi kesalahan jaringan atau database.');
