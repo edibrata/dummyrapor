@@ -34,8 +34,8 @@ export default function LoginModal() {
         return;
       }
 
-      // Map the returned data directly from the row
-      const payload = data || {};
+      // Map the returned data, checking if it's inside a data_payload JSON column
+      const payload = data.data_payload ? { ...data, ...data.data_payload } : data || {};
       const sekolahUpdates: any = {};
       
       // Normalize payload keys for easier matching (to handle case sensitivities or dashes)
@@ -52,34 +52,34 @@ export default function LoginModal() {
         return undefined;
       };
 
-      const valNama = findVal('nama_sekolah', 'nama sekolah', 'nama');
+      const valNama = findVal('nama lengkap sekolah', 'nama_sekolah', 'nama sekolah', 'nama_lengkap', 'nama');
       if (valNama) sekolahUpdates.nama = valNama;
 
-      const valNpsn = findVal('npsn');
+      const valNpsn = findVal('npsn', 'npsn_sekolah');
       if (valNpsn) sekolahUpdates.npsn = valNpsn;
 
-      const valAlamat = findVal('alamat', 'alamat lengkap');
+      const valAlamat = findVal('jalan / blok / rt rw', 'alamat', 'alamat lengkap', 'alamat_lengkap');
       if (valAlamat) sekolahUpdates.alamat = valAlamat;
       
-      const valJenisWilayah = findVal('desa_kelurahan_jenis', 'jenis wilayah');
+      const valJenisWilayah = findVal('desa/kelurahan', 'desa_kelurahan_jenis', 'jenis wilayah', 'jenis_wilayah');
       if (valJenisWilayah) sekolahUpdates.desaKelurahanJenis = valJenisWilayah.toString().toLowerCase();
       
-      const valNamaDesaKel = findVal('desa_kelurahan_nama', 'nama desa/kelurahan');
+      const valNamaDesaKel = findVal('nama desa/kelurahan', 'desa_kelurahan_nama', 'nama desa/kel.', 'nama_desa_kelurahan', 'desa_kelurahan', 'desa', 'kelurahan');
       if (valNamaDesaKel) sekolahUpdates.desaKelurahanNama = valNamaDesaKel;
       
-      const valKecamatan = findVal('kecamatan');
+      const valKecamatan = findVal('kecamatan', 'nama kecamatan');
       if (valKecamatan) sekolahUpdates.kecamatan = valKecamatan;
       
-      const valTipeDaerah = findVal('kabupaten_kota_jenis', 'kabupaten/kota');
+      const valTipeDaerah = findVal('kabupaten/kota', 'kabupaten_kota_jenis', 'tipe daerah', 'tipe_daerah', 'jenis_kabupaten_kota');
       if (valTipeDaerah) sekolahUpdates.kabupatenKotaJenis = valTipeDaerah.toString().toLowerCase();
       
-      const valNamaKabKota = findVal('kabupaten_kota_nama', 'nama kabupaten/kota');
+      const valNamaKabKota = findVal('nama kabupaten/kota', 'kabupaten_kota_nama', 'nama kab/kota', 'nama_kab_kota', 'kab_kota');
       if (valNamaKabKota) sekolahUpdates.kabupatenKotaNama = valNamaKabKota;
       
-      const valProvinsi = findVal('provinsi');
+      const valProvinsi = findVal('provinsi', 'nama_provinsi', 'nama provinsi');
       if (valProvinsi) sekolahUpdates.provinsi = valProvinsi;
 
-      const classes = findVal('kelas', 'fase / kelas utama');
+      const classes = findVal('fase / kelas utama', 'kelas', 'fase', 'fase_kelas_utama');
       if (Array.isArray(classes)) {
         sekolahUpdates.allowedKelas = classes;
       } else if (typeof classes === 'string' && classes.includes(',')) {
