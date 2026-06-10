@@ -83,9 +83,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           .limit(1)
           .single();
 
-        if (dbError || !dbData || !dbData.data_payload) return;
+        if (dbError || !dbData) return;
 
-        const payload = dbData.data_payload;
+        const payload = dbData.data_payload ? { ...dbData, ...dbData.data_payload } : dbData || {};
         const normalizedPayload: Record<string, any> = {};
         Object.keys(payload).forEach(key => {
           normalizedPayload[key.toLowerCase().trim().replace(/-/g, '_')] = payload[key];
