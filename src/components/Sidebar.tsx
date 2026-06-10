@@ -13,9 +13,10 @@ interface SidebarProps {
   activeView: string;
   setActiveView: (view: string) => void;
   isOpen: boolean;
+  onOpenDevProfile?: () => void;
 }
 
-export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarProps) {
+export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevProfile }: SidebarProps) {
   const { updateState, updateSekolah } = useAppStore();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     'Utama': true,
@@ -102,7 +103,15 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
           <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-indigo-900 shadow-inner">
             <BookOpen size={24} />
           </div>
-          <h1 className="font-bold text-lg leading-tight tracking-tight">Rapor Merdeka <span className="text-amber-400 block text-xs">SD v5.0 PRO • Edi Brata</span></h1>
+          <h1 className="font-bold text-lg leading-tight tracking-tight">
+            Rapor Merdeka 
+            <span 
+              className="text-amber-400 block text-xs cursor-pointer hover:text-amber-300 transition-colors"
+              onClick={onOpenDevProfile}
+            >
+              SD v5.0 PRO • Edi Brata
+            </span>
+          </h1>
         </div>
       </div>
       
@@ -151,11 +160,18 @@ export default function Sidebar({ activeView, setActiveView, isOpen }: SidebarPr
       </nav>
       
       <div className="p-4 bg-indigo-950/80 border-t border-indigo-800/50 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-xs text-white ring-2 ring-indigo-400/30">AD</div>
+        <div 
+          className="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1.5 -ml-1.5 rounded-lg transition-colors"
+          onClick={onOpenDevProfile}
+        >
+          <img 
+            src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" 
+            alt="Edi Brata" 
+            className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-400/30 group-hover:ring-indigo-300 transition-all duration-300 group-hover:scale-105"
+          />
           <div>
-            <p className="text-xs font-semibold text-slate-200">Admin Pusat</p>
-            <p className="text-[10px] text-indigo-300/70">EduDev 2026</p>
+            <p className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">Edi Brata</p>
+            <p className="text-[10px] text-indigo-300/70 group-hover:text-indigo-200/90 transition-colors">EduDev 2026</p>
           </div>
         </div>
         <button 

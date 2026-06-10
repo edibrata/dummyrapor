@@ -4,7 +4,7 @@ import {
   MapPin, CheckCircle2, Award, ArrowRight, Activity, Lightbulb, School
 } from 'lucide-react';
 
-export default function DashboardView() {
+export default function DashboardView({ onOpenDevProfile }: { onOpenDevProfile?: () => void }) {
   const { state } = useAppStore();
   const { sekolah, siswaList } = state;
 
@@ -66,9 +66,12 @@ export default function DashboardView() {
               Platform modern manajemen rapor akademik Kurikulum Merdeka. 
               Kelola data dasar, nilai sumatif, hingga cetak rapor dengan visualisasi yang mudah.
             </p>
-            <div className="flex items-center gap-2">
-              <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-6 h-6 rounded-full" />
-              <span className="text-indigo-200 text-sm font-medium">Dikembangkan oleh Edi Brata</span>
+            <div 
+              className="flex items-center gap-2 cursor-pointer group hover:opacity-80 transition-opacity"
+              onClick={onOpenDevProfile}
+            >
+              <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-6 h-6 rounded-full object-cover group-hover:ring-2 ring-indigo-400 group-hover:scale-105 transition-all" />
+              <span className="text-indigo-200 text-sm font-medium group-hover:text-white transition-colors">Dikembangkan oleh Edi Brata</span>
             </div>
           </div>
           

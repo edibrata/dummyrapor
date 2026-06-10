@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AppProvider, useAppStore } from '@/store';
+import { AnimatePresence } from 'motion/react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import DataSekolah from '@/views/DataSekolah';
@@ -16,20 +17,22 @@ import Pengaturan from '@/views/Pengaturan';
 import Petunjuk from '@/views/Petunjuk';
 import LoginModal from '@/components/LoginModal';
 import DashboardView from '@/views/DashboardView';
+import DeveloperProfileModal from '@/components/DeveloperProfileModal';
 
 function Dashboard() {
   const [activeView, setActiveView] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showDevProfileModal, setShowDevProfileModal] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans overflow-hidden">
-      <Sidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} />
+      <Sidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} onOpenDevProfile={() => setShowDevProfileModal(true)} />
       
       <div className="flex-1 flex flex-col min-w-0 main-content h-screen overflow-y-auto">
-        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} onOpenDevProfile={() => setShowDevProfileModal(true)} />
         
         <main className="p-6 md:p-8 flex-1 overflow-x-hidden">
-          {activeView === 'dashboard' && <DashboardView />}
+          {activeView === 'dashboard' && <DashboardView onOpenDevProfile={() => setShowDevProfileModal(true)} />}
           {activeView === 'data-sekolah' && <DataSekolah />}
           {activeView === 'kegiatan-akademik' && <Placeholder title="Kegiatan Akademik" />}
           {activeView === 'data-siswa' && <DataSiswa />}
@@ -55,16 +58,20 @@ function Dashboard() {
 
           {activeView === 'petunjuk' && <Petunjuk />}
           {activeView === 'pengaturan' && <Pengaturan />}
-          {activeView === 'profil-pengembang' && <ProfilPengembang />}
+          {activeView === 'profil-pengembang' && <ProfilPengembang onOpenDevProfile={() => setShowDevProfileModal(true)} />}
         </main>
         <footer className="py-5 shrink-0 border-t border-slate-200/80 bg-slate-50/80 backdrop-blur-sm">
-          <div className="flex items-center justify-center gap-2 text-[13px] text-slate-500 font-medium">
+          <div 
+            className="flex items-center justify-center gap-2 text-[13px] text-slate-500 font-medium cursor-pointer hover:text-indigo-600 transition-colors"
+            onClick={() => setShowDevProfileModal(true)}
+          >
             Dikembangkan oleh
-            <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-5 h-5 rounded-full shadow-sm" />
+            <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-5 h-5 rounded-full shadow-sm object-cover" />
             <span className="font-bold text-slate-700">Edi Brata</span>
           </div>
         </footer>
       </div>
+      <DeveloperProfileModal isOpen={showDevProfileModal} onClose={() => setShowDevProfileModal(false)} />
     </div>
   );
 }

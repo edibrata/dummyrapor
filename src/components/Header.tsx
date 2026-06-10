@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 interface HeaderProps {
   toggleSidebar: () => void;
+  onOpenDevProfile?: () => void;
 }
 
-export default function Header({ toggleSidebar }: HeaderProps) {
+export default function Header({ toggleSidebar, onOpenDevProfile }: HeaderProps) {
   const { state, syncToDatabase } = useAppStore();
   const { sekolah } = state;
   const [isSyncing, setIsSyncing] = useState(false);
@@ -40,7 +41,13 @@ export default function Header({ toggleSidebar }: HeaderProps) {
           <h2 className="text-slate-500 text-[10px] md:text-xs font-semibold uppercase tracking-wider">Dashboard &rsaquo; {sekolah.nama}</h2>
           <p className="text-slate-800 font-bold text-base md:text-lg flex items-center gap-2">
             Aplikasi Rapor Kurikulum Merdeka
-            <span className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase tracking-widest"><img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" className="w-3 h-3 rounded-full" /> Edi Brata</span>
+            <span 
+              className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase tracking-widest cursor-pointer hover:bg-indigo-100 transition-colors"
+              onClick={onOpenDevProfile}
+            >
+              <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" className="w-3 h-3 rounded-full object-cover" /> 
+              Edi Brata
+            </span>
           </p>
         </div>
       </div>

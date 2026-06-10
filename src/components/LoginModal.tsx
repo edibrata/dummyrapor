@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAppStore } from '@/store';
 import { Lock, AlertCircle, Loader2, ArrowRight, Home, Plus, FolderOpen } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
+import DeveloperProfileModal from './DeveloperProfileModal';
 
 export default function LoginModal() {
   const [step, setStep] = useState<1 | 2>(1);
   const [npsn, setNpsn] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showDevProfileModal, setShowDevProfileModal] = useState(false);
   const { updateSekolah, updateState, setState } = useAppStore();
   
   // State for step 2
@@ -194,9 +197,12 @@ export default function LoginModal() {
                 <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
                   <Lock size={24} />
                 </div>
-                <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                  <img src="https://placehold.co/40x40/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-5 h-5 rounded-full" />
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Edi Brata</span>
+                <div 
+                  className="flex items-center gap-2 bg-slate-50 hover:bg-white px-3 py-1.5 rounded-full border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all shadow-sm group"
+                  onClick={() => setShowDevProfileModal(true)}
+                >
+                  <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-5 h-5 rounded-full object-cover group-hover:ring-2 ring-indigo-400 transition-all" />
+                  <span className="text-[11px] font-bold text-slate-500 group-hover:text-indigo-600 uppercase tracking-wider transition-colors">Edi Brata</span>
                 </div>
               </div>
               
@@ -366,6 +372,7 @@ export default function LoginModal() {
           )}
         </div>
       </div>
+      <DeveloperProfileModal isOpen={showDevProfileModal} onClose={() => setShowDevProfileModal(false)} />
     </div>
   );
 }

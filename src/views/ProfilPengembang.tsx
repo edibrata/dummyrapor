@@ -1,14 +1,22 @@
-export default function ProfilPengembang() {
+export default function ProfilPengembang({ onOpenDevProfile }: { onOpenDevProfile?: () => void }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
       <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">Profil Pengembang</h2>
       
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 border-b border-slate-100 pb-6 mb-6">
-        <div className="w-32 h-32 rounded-full shadow-md border-4 border-indigo-50 bg-indigo-100 flex items-center justify-center overflow-hidden shrink-0">
-           <img src="https://placehold.co/150x150/4f46e5/ffffff?text=EB" alt="Edi Brata" className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" />
+        <div 
+          className="w-32 h-32 rounded-full shadow-md border-4 border-indigo-50 bg-indigo-100 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer group"
+          onClick={onOpenDevProfile}
+        >
+           <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
         </div>
         <div className="text-center md:text-left flex-grow">
-            <h2 className="text-2xl font-bold text-slate-800 leading-tight">Edi Brata</h2>
+            <h2 
+              className="text-2xl font-bold text-slate-800 leading-tight cursor-pointer hover:text-indigo-600 transition-colors inline-block"
+              onClick={onOpenDevProfile}
+            >
+              Edi Brata
+            </h2>
             <p className="text-sm text-slate-500 font-medium mt-1">Carita, Pandeglang Banten</p>
             <p className="text-xs text-slate-500 mt-1">S1 Pend. Bahasa Inggris, S2 Pend. Bahasa Inggris, S1 PGSD</p>
             <div className="mt-4 flex justify-center md:justify-start space-x-4">
