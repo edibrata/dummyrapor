@@ -48,7 +48,7 @@ export default function DataProjekView() {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
       <div className="flex justify-between items-center mb-6 pb-2 border-b border-slate-100">
-        <h2 className="text-lg font-bold text-slate-800">Data Projek (P5)</h2>
+        <h2 className="text-lg font-bold text-slate-800">Data Projek</h2>
         <button onClick={handleAddProjek} className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 text-sm font-medium shadow-sm transition-colors">
           <Plus size={16} /> Tambah Projek
         </button>

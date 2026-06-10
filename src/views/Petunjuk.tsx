@@ -10,7 +10,7 @@ export default function Petunjuk() {
         
         <div className="bg-slate-50 p-5 rounded-xl border-l-4 border-blue-500">
           <h3 className="font-semibold mb-2 text-blue-800 text-base">2. Input Nilai Akademik & Non-Akademik</h3>
-          <p className="text-slate-600 leading-relaxed">Masukkan nilai siswa pada menu <strong>Nilai Intrakurikuler</strong> per Mata Pelajaran. Jangan lupa mengisi nilai <strong>Ekstrakurikuler</strong> dan melaksanakan penilaian Projek (<strong>P5</strong>). Gunakan tombol TAB untuk mempercepat input layaknya spreadsheet.</p>
+          <p className="text-slate-600 leading-relaxed">Masukkan nilai siswa pada menu <strong>Nilai Intrakurikuler</strong> per Mata Pelajaran. Jangan lupa mengisi nilai <strong>Ekstrakurikuler</strong> dan melaksanakan penilaian <strong>Projek</strong>. Gunakan tombol TAB untuk mempercepat input layaknya spreadsheet.</p>
         </div>
         
         <div className="bg-slate-50 p-5 rounded-xl border-l-4 border-emerald-500">

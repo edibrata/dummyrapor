@@ -22,7 +22,7 @@ export default function NilaiProjek() {
   if (projek.length === 0 || dimensiProjek.length === 0) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 text-center">
-        <p className="text-gray-500 mb-4">Belum ada Projek atau Dimensi P5 yang didefinisikan.</p>
+        <p className="text-gray-500 mb-4">Belum ada Projek atau Dimensi yang didefinisikan.</p>
         <p className="text-sm">Silakan isi Data Projek terlebih dahulu.</p>
       </div>
     );
@@ -30,7 +30,7 @@ export default function NilaiProjek() {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-      <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">Input Nilai Projek Profil Pelajar Pancasila (P5)</h2>
+      <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">Input Nilai Projek Profil Pelajar Pancasila</h2>
 
       <div className="mb-4 text-xs space-x-4 bg-indigo-50/50 p-4 rounded-xl flex flex-wrap border border-indigo-100/50">
         <span className="font-bold text-indigo-800">Keterangan Penilaian:</span>

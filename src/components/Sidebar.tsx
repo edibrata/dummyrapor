@@ -64,8 +64,8 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
         { id: 'input-nilai', label: 'Nilai Intrakurikuler', icon: <PenTool size={18} /> },
         { id: 'sesuaikan-capaian', label: 'Sesuaikan Capaian', icon: <CheckSquare size={18} /> },
         { id: 'nilai-ekskul', label: 'Nilai Ekstrakurikuler', icon: <Activity size={18} /> },
-        { id: 'data-projek', label: 'Data Projek (P5)', icon: <FolderGit2 size={18} /> },
-        { id: 'nilai-projek', label: 'Nilai Kokurikuler (P5)', icon: <Star size={18} /> },
+        { id: 'data-projek', label: 'Data Projek', icon: <FolderGit2 size={18} /> },
+        { id: 'nilai-projek', label: 'Nilai Kokurikuler', icon: <Star size={18} /> },
         { id: 'leger', label: 'Leger Nilai', icon: <FileSpreadsheet size={18} /> },
       ]
     },
