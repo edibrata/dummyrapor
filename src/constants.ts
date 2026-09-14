@@ -1,15 +1,15 @@
 import { Mapel, AppState } from './types';
 
 export const DAFTAR_MAPEL: Mapel[] = [
-  { id: 'm1', nama: 'Pendidikan Agama dan Budi Pekerti', singkatan: 'PAI' },
-  { id: 'm2', nama: 'Pendidikan Pancasila', singkatan: 'PPKn' },
-  { id: 'm3', nama: 'Bahasa Indonesia', singkatan: 'B.Indo' },
-  { id: 'm4', nama: 'Matematika', singkatan: 'MTK' },
-  { id: 'm5', nama: 'Ilmu Pengetahuan Alam dan Sosial', singkatan: 'IPAS' },
-  { id: 'm6', nama: 'Pendidikan Jasmani, Olahraga, dan Kesehatan', singkatan: 'PJOK' },
-  { id: 'm7', nama: 'Seni dan Budaya', singkatan: 'Seni' },
-  { id: 'm8', nama: 'Bahasa Inggris', singkatan: 'B.Ing' },
-  { id: 'm9', nama: 'Muatan Lokal', singkatan: 'Mulok' },
+  { id: 'm1', nama: 'Pendidikan Agama dan Budi Pekerti', kode: 'pabp', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm2', nama: 'Pendidikan Pancasila', kode: 'pp', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm3', nama: 'Bahasa Indonesia', kode: 'ind', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm4', nama: 'Matematika', kode: 'mtk', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm5', nama: 'Ilmu Pengetahuan Alam dan Sosial', kode: 'ipas', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm6', nama: 'Pendidikan Jasmani, Olahraga, dan Kesehatan', kode: 'pjok', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm7', nama: 'Seni dan Budaya', kode: 'sdb', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm8', nama: 'Bahasa Inggris', kode: 'eng', kelompok: 'Pokok', tampilRapor: true },
+  { id: 'm9', nama: 'Bahasa Sunda', kode: 'sunda', kelompok: 'Muatan Lokal', tampilRapor: true },
 ];
 
 const now = new Date();
@@ -65,9 +65,11 @@ export const INITIAL_STATE: AppState = {
     bobotSumatifSemester: 25,
   },
   siswa: [],
+  mapel: DAFTAR_MAPEL,
   tujuanPembelajaran: [],
   nilai: {},
   projek: [],
   dimensiProjek: [],
-  nilaiP5: {}
+  nilaiP5: {},
+  trash: [],
 };

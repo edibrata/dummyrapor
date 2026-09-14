@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
-import { DAFTAR_MAPEL } from '@/constants';
 
 export default function InputNilai() {
   const { state, updateState } = useAppStore();
-  const [selectedMapel, setSelectedMapel] = useState<string>(DAFTAR_MAPEL[0].id);
+  const { siswa, mapel, tujuanPembelajaran, nilai } = state;
+  const [selectedMapel, setSelectedMapel] = useState<string>('');
 
-  const { siswa, tujuanPembelajaran, nilai } = state;
+  useEffect(() => {
+    if (mapel.length > 0 && !selectedMapel) {
+      setSelectedMapel(mapel[0].id);
+    }
+  }, [mapel, selectedMapel]);
   const mapelTps = tujuanPembelajaran.filter(tp => tp.mapelId === selectedMapel);
 
   const handleScoreChange = (studentId: string, type: 'tp' | 'sumatifAkhir', tpId: string | undefined, val: string) => {
@@ -49,7 +53,7 @@ export default function InputNilai() {
       <div className="mb-6 max-w-xs">
         <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Mata Pelajaran</label>
         <select value={selectedMapel} onChange={(e) => setSelectedMapel(e.target.value)} className="w-full border border-slate-200 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
-          {DAFTAR_MAPEL.map(m => (
+          {mapel.map(m => (
             <option key={m.id} value={m.id}>{m.nama}</option>
           ))}
         </select>

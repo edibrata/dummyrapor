@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
-import { DAFTAR_MAPEL } from '@/constants';
 import { Printer } from 'lucide-react';
 
 export default function CetakRapor() {
   const { state } = useAppStore();
-  const { sekolah, siswa, nilai, tujuanPembelajaran } = state;
+  const { sekolah, siswa, nilai, tujuanPembelajaran, mapel } = state;
+  const displayedMapel = mapel.filter(m => m.tampilRapor !== false);
   const [selectedStudent, setSelectedStudent] = useState<string>(siswa[0]?.id || '');
 
   // Effect to handle print mode styles
@@ -175,7 +175,7 @@ export default function CetakRapor() {
               </tr>
             </thead>
             <tbody>
-              {DAFTAR_MAPEL.map((m, idx) => {
+              {displayedMapel.map((m, idx) => {
                 const { finalScore, deskripsiTertinggi, deskripsiTerendah } = getNilaiDanDeskripsi(s.id, m.id);
                 
                 return (

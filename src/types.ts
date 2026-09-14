@@ -43,7 +43,9 @@ export interface Siswa {
 export interface Mapel {
   id: string;
   nama: string;
-  singkatan: string;
+  kode: string;
+  kelompok: string;
+  tampilRapor: boolean;
 }
 
 export interface TujuanPembelajaran {
@@ -72,10 +74,20 @@ export interface DimensiProjek {
 
 export type NilaiProjek = 'MB' | 'SB' | 'BSH' | 'SAB' | '';
 
+export interface TrashItem {
+  id: string;
+  originalId: string;
+  type: 'mapel' | 'siswa' | 'tp' | 'projek';
+  label: string;
+  data: any;
+  deletedAt: string;
+}
+
 export interface AppState {
   isAuthenticated: boolean;
   sekolah: Sekolah;
   siswa: Siswa[];
+  mapel: Mapel[];
   tujuanPembelajaran: TujuanPembelajaran[];
   // studentId -> mapelId -> NilaiMapelSiswa
   nilai: Record<string, Record<string, NilaiMapelSiswa>>;
@@ -83,4 +95,5 @@ export interface AppState {
   dimensiProjek: DimensiProjek[];
   // studentId -> dimensiId -> NilaiProjek
   nilaiP5: Record<string, Record<string, NilaiProjek>>;
+  trash: TrashItem[];
 }

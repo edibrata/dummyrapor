@@ -22,9 +22,19 @@ export default function DataSiswa() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Yakin ingin menghapus siswa ini?')) {
-      updateState('siswa', siswa.filter((s) => s.id !== id));
+    const studentToDelete = siswa.find(s => s.id === id);
+    if (studentToDelete) {
+      const newTrashItem = {
+        id: 'trash_' + Date.now() + Math.random().toString(36).substring(2, 9),
+        originalId: studentToDelete.id,
+        type: 'siswa' as const,
+        label: `Siswa: ${studentToDelete.nama} (${studentToDelete.nisn})`,
+        data: studentToDelete,
+        deletedAt: new Date().toISOString()
+      };
+      updateState('trash', [...(state.trash || []), newTrashItem]);
     }
+    updateState('siswa', siswa.filter((s) => s.id !== id));
   };
 
   const handleUpdate = (id: string, field: keyof Siswa, value: string) => {

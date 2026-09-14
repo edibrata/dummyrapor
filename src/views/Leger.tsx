@@ -1,9 +1,9 @@
 import { useAppStore } from '@/store';
-import { DAFTAR_MAPEL } from '@/constants';
 
 export default function Leger() {
   const { state } = useAppStore();
-  const { siswa, nilai, tujuanPembelajaran } = state;
+  const { siswa, nilai, tujuanPembelajaran, mapel } = state;
+  const displayedMapel = mapel.filter(m => m.tampilRapor !== false);
 
   const getNilaiAkhir = (studentId: string, mapelId: string) => {
     const s = nilai[studentId]?.[mapelId];
@@ -54,14 +54,14 @@ export default function Leger() {
               <tr className="text-slate-600">
                 <th rowSpan={2} className="border border-slate-200 p-3 w-10 text-center sticky left-0 z-30 bg-slate-100">No</th>
                 <th rowSpan={2} className="border border-slate-200 p-3 text-left w-48 sticky left-10 z-30 bg-slate-100 shadow-[1px_0_0_0_#e2e8f0]">Nama Siswa</th>
-                <th colSpan={DAFTAR_MAPEL.length} className="border border-slate-200 p-2 text-center text-[10px] uppercase font-bold tracking-wider">Nilai Rapor Mata Pelajaran</th>
+                <th colSpan={displayedMapel.length} className="border border-slate-200 p-2 text-center text-[10px] uppercase font-bold tracking-wider">Nilai Rapor Mata Pelajaran</th>
                 <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-indigo-50 text-[10px] uppercase tracking-wider">Jumlah</th>
                 <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-amber-50 text-[10px] uppercase tracking-wider">Rerata</th>
               </tr>
               <tr className="text-slate-600">
-                {DAFTAR_MAPEL.map((m) => (
+                {displayedMapel.map((m) => (
                   <th key={m.id} className="border border-slate-200 p-2 w-16 text-center text-xs font-semibold bg-slate-50 cursor-help group relative">
-                    {m.singkatan}
+                    {m.kode.toUpperCase()}
                     <span className="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all bg-slate-800 text-white text-[10px] font-normal tracking-normal normal-case rounded px-2.5 py-1.5 bottom-full mb-1 left-1/2 -translate-x-1/2 z-[100] pointer-events-none shadow-sm min-w-max text-center before:absolute before:-bottom-1 before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-slate-800">{m.nama}</span>
                   </th>
                 ))}
@@ -72,7 +72,7 @@ export default function Leger() {
                 let totalScore = 0;
                 let countScore = 0;
 
-                const mapelScores = DAFTAR_MAPEL.map(m => {
+                const mapelScores = displayedMapel.map(m => {
                   const final = getNilaiAkhir(s.id, m.id);
                   if (final !== null) {
                     totalScore += final;

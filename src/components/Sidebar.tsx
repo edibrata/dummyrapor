@@ -6,7 +6,7 @@ import {
   Target, PenTool, Activity, CheckSquare, 
   BookOpen, FileSpreadsheet, Printer, Book, Contact, 
   Archive, ArrowRightLeft, PieChart, Bot, Lightbulb, 
-  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut, LayoutDashboard
+  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut, LayoutDashboard, Trash2
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -40,7 +40,6 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
     {
       title: 'Akademik & Penilaian',
       items: [
-        { id: 'tujuan-pembelajaran', label: 'Tujuan Pembelajaran', icon: <Target size={18} /> },
         { id: 'input-nilai', label: 'Nilai Intrakurikuler', icon: <PenTool size={18} /> },
         { id: 'sesuaikan-capaian', label: 'Sesuaikan Capaian', icon: <CheckSquare size={18} /> },
         { id: 'nilai-ekskul', label: 'Nilai Ekstrakurikuler', icon: <Activity size={18} /> },
@@ -71,6 +70,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
       items: [
         { id: 'petunjuk', label: 'Petunjuk Penggunaan', icon: <Lightbulb size={18} /> },
         { id: 'pengaturan', label: 'Pengaturan', icon: <Settings size={18} /> },
+        { id: 'kotak-sampah', label: 'Kotak Sampah', icon: <Trash2 size={18} /> },
         { id: 'profil-pengembang', label: 'Profil Pengembang', icon: <UserCircle size={18} /> },
       ]
     }
@@ -171,7 +171,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
           />
           <div>
             <p className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">Edi Brata</p>
-            <p className="text-[10px] text-indigo-300/70 group-hover:text-indigo-200/90 transition-colors">&copy; {new Date().getFullYear()} EduDev</p>
+            <p className="text-[10px] text-indigo-300/70 group-hover:text-indigo-200/90 transition-colors">&copy; EduDev {new Date().getFullYear()}</p>
           </div>
         </div>
         <button 

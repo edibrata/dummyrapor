@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
-import { DAFTAR_MAPEL } from '@/constants';
 import { TujuanPembelajaran } from '@/types';
 import { Plus, Trash2 } from 'lucide-react';
 
 export default function TujuanPembelajaranView() {
   const { state, updateState } = useAppStore();
-  const [selectedMapel, setSelectedMapel] = useState<string>(DAFTAR_MAPEL[0].id);
+  const { mapel } = state;
+  const [selectedMapel, setSelectedMapel] = useState<string>('');
+
+  useEffect(() => {
+    if (mapel.length > 0 && !selectedMapel) {
+      setSelectedMapel(mapel[0].id);
+    }
+  }, [mapel, selectedMapel]);
 
   const tps = state.tujuanPembelajaran.filter(tp => tp.mapelId === selectedMapel);
 
@@ -33,20 +39,20 @@ export default function TujuanPembelajaranView() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    <div className="p-6 w-full">
       <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">Tujuan Pembelajaran (TP)</h2>
 
       <div className="mb-6 max-w-sm">
         <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pilih Mata Pelajaran</label>
         <select value={selectedMapel} onChange={(e) => setSelectedMapel(e.target.value)} className="w-full border border-slate-200 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
-          {DAFTAR_MAPEL.map(m => (
+          {mapel.map(m => (
             <option key={m.id} value={m.id}>{m.nama}</option>
           ))}
         </select>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <h3 className="font-semibold text-slate-700 text-sm">Daftar TP - {DAFTAR_MAPEL.find(m => m.id === selectedMapel)?.nama}</h3>
+        <h3 className="font-semibold text-slate-700 text-sm">Daftar TP - {mapel.find(m => m.id === selectedMapel)?.nama}</h3>
         <button onClick={handleAdd} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 shadow-md flex items-center gap-2">
           <Plus size={16} /> Tambah TP
         </button>

@@ -4,13 +4,14 @@ import { AnimatePresence } from 'motion/react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import DataSekolah from '@/views/DataSekolah';
+import KegiatanAkademik from '@/views/KegiatanAkademik';
 import DataSiswa from '@/views/DataSiswa';
-import TujuanPembelajaranView from '@/views/TujuanPembelajaran';
 import InputNilai from '@/views/InputNilai';
 import Leger from '@/views/Leger';
 import DataProjekView from '@/views/DataProjek';
 import NilaiProjek from '@/views/NilaiProjek';
 import CetakRapor from '@/views/CetakRapor';
+import KotakSampah from '@/views/KotakSampah';
 import Placeholder from '@/views/Placeholder';
 import ProfilPengembang from '@/views/ProfilPengembang';
 import Pengaturan from '@/views/Pengaturan';
@@ -34,12 +35,12 @@ function Dashboard() {
         <main className="p-6 md:p-8 flex-1 overflow-x-hidden">
           {activeView === 'dashboard' && <DashboardView onOpenDevProfile={() => setShowDevProfileModal(true)} />}
           {activeView === 'data-sekolah' && <DataSekolah />}
-          {activeView === 'kegiatan-akademik' && <Placeholder title="Kegiatan Akademik" />}
+          {activeView === 'kegiatan-akademik' && <KegiatanAkademik />}
           {activeView === 'data-siswa' && <DataSiswa />}
+          {activeView === 'kotak-sampah' && <KotakSampah />}
           {activeView === 'foto-murid' && <Placeholder title="Foto Murid" />}
           {activeView === 'data-pendukung' && <Placeholder title="Data Pendukung" />}
 
-          {activeView === 'tujuan-pembelajaran' && <TujuanPembelajaranView />}
           {activeView === 'input-nilai' && <InputNilai />}
           {activeView === 'sesuaikan-capaian' && <Placeholder title="Lihat & Sesuaikan Capaian" />}
           {activeView === 'nilai-ekskul' && <Placeholder title="Nilai Ekstrakurikuler" />}

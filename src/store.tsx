@@ -81,13 +81,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           { onConflict: 'npsn' }
         );
       if (error) {
-        console.error("Error syncing to Supabase", error);
+        console.warn("Error syncing to Supabase:", error.message || error);
         setSyncStatus('error');
       } else {
         setSyncStatus('synced');
       }
     } catch (error) {
-      console.error("Fetch error syncing to Supabase", error);
+      console.warn("Network offline, cannot sync to Supabase:", error);
       setSyncStatus('error');
     }
   };
@@ -144,7 +144,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           dbData = res.data;
           dbError = res.error;
         } catch (fetchErr) {
-          console.error("Fetch error baseline update", fetchErr);
+          console.warn("Fetch error or offline during baseline update:", fetchErr);
           return;
         }
 
