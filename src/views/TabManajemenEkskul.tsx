@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { Ekstrakurikuler } from '@/types';
 import { Plus, Trash2, GripVertical, Upload, Download, Medal } from 'lucide-react';

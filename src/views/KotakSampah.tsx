@@ -8,11 +8,11 @@ export default function KotakSampah() {
 
   const handleRestore = (item: TrashItem) => {
     if (item.type === 'mapel') {
-      updateState('mapel', [...state.mapel, item.data]);
+      updateState('mapel', [...(state.mapel || []), item.data]);
     } else if (item.type === 'siswa') {
-      updateState('siswa', [...state.siswa, item.data]);
+      updateState('siswa', [...(state.siswa || []), item.data]);
     } else if (item.type === 'tp') {
-      updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, item.data]);
+      updateState('tujuanPembelajaran', [...(state.tujuanPembelajaran || []), item.data]);
     } else if (item.type === 'ekskul') {
       updateState('ekstrakurikuler', [...(state.ekstrakurikuler || []), item.data]);
     } else if (item.type === 'tp-ekskul') {

@@ -35,9 +35,15 @@ export interface Sekolah {
 
 export interface Siswa {
   id: string;
-  nama: string;
+  fotoBase64?: string;
+  nis?: string;
   nisn: string;
-  jk: 'L' | 'P';
+  nama: string;
+  jk: 'L' | 'P' | 'Laki-Laki' | 'Perempuan' | '';
+  tempatLahir?: string;
+  tanggalLahir?: string;
+  alamat?: string;
+  namaWali?: string;
 }
 
 export interface Mapel {

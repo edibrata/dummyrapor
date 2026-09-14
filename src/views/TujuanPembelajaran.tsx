@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { TujuanPembelajaran } from '@/types';
 import { Plus, Trash2, Target, Download, Upload } from 'lucide-react';
