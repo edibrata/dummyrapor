@@ -10,8 +10,11 @@ export default function InputNilai() {
   const mapelTps = tujuanPembelajaran.filter(tp => tp.mapelId === selectedMapel);
 
   const handleScoreChange = (studentId: string, type: 'tp' | 'sumatifAkhir', tpId: string | undefined, val: string) => {
-    const numVal = val === '' ? null : Number(val);
-    if (numVal !== null && (numVal < 0 || numVal > 100)) return;
+    // Hindari tipe data string, cegah nilai NaN (Not a Number) dan nilai di luar 0-100
+    const rawVal = val.trim();
+    const numVal = rawVal === '' ? null : parseFloat(rawVal);
+    
+    if (numVal !== null && (isNaN(numVal) || numVal < 0 || numVal > 100)) return;
 
     const studentScores = nilai[studentId] || {};
     const mapelScores = studentScores[selectedMapel] || { tpScores: {}, sumatifAkhir: null };

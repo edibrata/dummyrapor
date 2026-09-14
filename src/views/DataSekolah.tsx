@@ -34,24 +34,28 @@ export default function DataSekolah() {
     // Logic for Bobot Sumatif
     if (name === 'bobotSumatifLingkup') {
       let val: number | '' = value === '' ? '' : parseInt(value, 10);
-      if (typeof val === 'number') {
+      if (typeof val === 'number' && !isNaN(val)) {
         if (val > 100) val = 100;
         if (val < 0) val = 0;
+        updateSekolah({
+          bobotSumatifLingkup: val,
+          bobotSumatifSemester: 100 - val
+        });
+      } else if (value === '') {
+        updateSekolah({ bobotSumatifLingkup: '', bobotSumatifSemester: '' });
       }
-      updateSekolah({
-        bobotSumatifLingkup: val,
-        bobotSumatifSemester: val === '' ? '' : 100 - val
-      });
     } else if (name === 'bobotSumatifSemester') {
       let val: number | '' = value === '' ? '' : parseInt(value, 10);
-      if (typeof val === 'number') {
+      if (typeof val === 'number' && !isNaN(val)) {
         if (val > 100) val = 100;
         if (val < 0) val = 0;
+        updateSekolah({
+          bobotSumatifSemester: val,
+          bobotSumatifLingkup: 100 - val
+        });
+      } else if (value === '') {
+        updateSekolah({ bobotSumatifSemester: '', bobotSumatifLingkup: '' });
       }
-      updateSekolah({
-        bobotSumatifSemester: val,
-        bobotSumatifLingkup: val === '' ? '' : 100 - val
-      });
     } else if (name === 'kelas') {
       const num = parseInt(value, 10);
       let calculatedFase = '';
@@ -399,11 +403,6 @@ export default function DataSekolah() {
             <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
               <School className="text-indigo-600" size={18} /> Profil Sekolah
             </h3>
-            {isLocked && (
-              <span className="inline-block mt-3 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded border border-indigo-100">
-                <Lock size={12} className="inline mr-1" /> Terkunci (Sinkron DB)
-              </span>
-            )}
             <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
               Mencakup identitas lengkap institusi sesuai data Dapodik untuk kebutuhan kop rapor.
             </p>
@@ -502,11 +501,6 @@ export default function DataSekolah() {
             <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
               <Users className="text-indigo-600" size={18} /> Kepala Sekolah & Guru
             </h3>
-            {isLocked && (
-              <span className="inline-block mt-3 px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded border border-indigo-100">
-                <Lock size={12} className="inline mr-1" /> Terkunci (Sinkron DB)
-              </span>
-            )}
             <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
               Pegawai yang menandatangani halaman biodata dan leger rapor akhir.
             </p>

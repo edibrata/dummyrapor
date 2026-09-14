@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { AppState } from './types';
 import { INITIAL_STATE } from './constants';
 import { supabase } from '@/lib/supabase';
@@ -56,11 +56,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return INITIAL_STATE;
   });
 
+  const stateRef = useRef<AppState>(state);
+  
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const syncToDatabase = async () => {
-    if (!state.isAuthenticated || !state.sekolah?.npsn) return;
+    const currentState = stateRef.current;
+    if (!currentState.isAuthenticated || !currentState.sekolah?.npsn) return;
     
     // Create Composite Key: NPSN_TahunAjaran_Semester_Kelas_Rombel
-    const compositeNpsn = `${state.sekolah.npsn}_${state.sekolah.tahunAjaran || ''}_${state.sekolah.semester || ''}_${state.sekolah.kelas || ''}_${state.sekolah.ruangRombel || ''}`.replace(/\s+/g, '-');
+    const compositeNpsn = `${currentState.sekolah.npsn}_${currentState.sekolah.tahunAjaran || ''}_${currentState.sekolah.semester || ''}_${currentState.sekolah.kelas || ''}_${currentState.sekolah.ruangRombel || ''}`.replace(/\s+/g, '-');
 
     setSyncStatus('syncing');
     try {
@@ -69,7 +76,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         .upsert(
           { 
             npsn: compositeNpsn, 
-            data_payload: state 
+            data_payload: currentState 
           },
           { onConflict: 'npsn' }
         );
