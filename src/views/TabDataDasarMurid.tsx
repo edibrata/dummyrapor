@@ -9,6 +9,8 @@ export default function TabDataDasarMurid() {
   const siswa = state.siswa || [];
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   
+  const [subTab, setSubTab] = useState<'identitas' | 'ortu'>('identitas');
+
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,8 +27,16 @@ export default function TabDataDasarMurid() {
 
   const handleDownloadTemplate = () => {
     const templateData = [
-      { NIS: '992', NISN: '3133316342', NAMA_MURID: 'BAGUS CANDRA ALFIANO', JENIS_KELAMIN: 'Laki-Laki', TEMPAT_LAHIR: 'Pandeglang', TANGGAL_LAHIR: '2013-12-30', ALAMAT: 'Kp. Mesjid', NAMA_WALI_ORTU: 'Aden Fitriana' },
-      { NIS: '990', NISN: '3132101248', NAMA_MURID: 'MAULANA YUSUP', JENIS_KELAMIN: 'Laki-Laki', TEMPAT_LAHIR: 'Pandeglang', TANGGAL_LAHIR: '2013-10-27', ALAMAT: 'Kp. Jayasakti', NAMA_WALI_ORTU: 'Tatang' }
+      { 
+        NIS: '992', NISN: '3133316342', TANGGAL_MASUK: '2020-07-15', NAMA_MURID: 'BAGUS CANDRA ALFIANO', JENIS_KELAMIN: 'Laki-Laki', TEMPAT_LAHIR: 'Pandeglang', TANGGAL_LAHIR: '2013-12-30', AGAMA: 'Islam', PENDIDIKAN_SEBELUMNYA: 'TK', 
+        ALAMAT_MURID: 'Kp. Mesjid', NAMA_AYAH: 'Budi', PEKERJAAN_AYAH: 'Wiraswasta', NAMA_IBU: 'Aden Fitriana', PEKERJAAN_IBU: 'Ibu Rumah Tangga', JALAN_ALAMAT_ORTU: 'Jl. Raya Mesjid No 1', DESA_KELURAHAN: 'Perdana', KECAMATAN: 'Sukaresmi', KABUPATEN_KOTA: 'Pandeglang', PROVINSI: 'Banten', 
+        NAMA_WALI: '', PEKERJAAN_WALI: '', ALAMAT_WALI: ''
+      },
+      { 
+        NIS: '990', NISN: '3132101248', TANGGAL_MASUK: '2020-07-15', NAMA_MURID: 'MAULANA YUSUP', JENIS_KELAMIN: 'Laki-Laki', TEMPAT_LAHIR: 'Pandeglang', TANGGAL_LAHIR: '2013-10-27', AGAMA: 'Islam', PENDIDIKAN_SEBELUMNYA: 'TK', 
+        ALAMAT_MURID: 'Kp. Jayasakti', NAMA_AYAH: 'Tatang', PEKERJAAN_AYAH: 'Petani', NAMA_IBU: 'Siti', PEKERJAAN_IBU: 'Ibu Rumah Tangga', JALAN_ALAMAT_ORTU: 'Kp. Jayasakti RT 01', DESA_KELURAHAN: 'Jayasakti', KECAMATAN: 'Sukaresmi', KABUPATEN_KOTA: 'Pandeglang', PROVINSI: 'Banten', 
+        NAMA_WALI: '', PEKERJAAN_WALI: '', ALAMAT_WALI: ''
+      }
     ];
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
@@ -67,24 +77,52 @@ export default function TabDataDasarMurid() {
         rows.forEach((row, index) => {
           const nis = row['NIS'];
           const nisn = row['NISN'];
+          const tglMasuk = row['TANGGAL_MASUK'];
           const nama = row['NAMA_MURID'];
           const jk = row['JENIS_KELAMIN'];
           const tptLahir = row['TEMPAT_LAHIR'];
           const tglLahir = row['TANGGAL_LAHIR'];
-          const alamat = row['ALAMAT'];
-          const wali = row['NAMA_WALI_ORTU'];
+          const agama = row['AGAMA'];
+          const pdkSblm = row['PENDIDIKAN_SEBELUMNYA'];
+          const alamatMurid = row['ALAMAT_MURID'];
+          const nmAyah = row['NAMA_AYAH'];
+          const pkrjAyah = row['PEKERJAAN_AYAH'];
+          const nmIbu = row['NAMA_IBU'];
+          const pkrjIbu = row['PEKERJAAN_IBU'];
+          const jlnOrtu = row['JALAN_ALAMAT_ORTU'];
+          const dsOrtu = row['DESA_KELURAHAN'];
+          const kecOrtu = row['KECAMATAN'];
+          const kabOrtu = row['KABUPATEN_KOTA'];
+          const provOrtu = row['PROVINSI'];
+          const wali = row['NAMA_WALI'];
+          const pkrjWali = row['PEKERJAAN_WALI'];
+          const almtWali = row['ALAMAT_WALI'];
           
           if (nama && (nisn || nis)) {
             newSiswas.push({
               id: 's_' + Date.now() + '_' + index,
               nis: nis ? String(nis).trim() : '',
               nisn: nisn ? String(nisn).trim() : '',
+              tanggalMasuk: tglMasuk ? String(tglMasuk).trim() : '',
               nama: String(nama).trim(),
               jk: String(jk).trim().toLowerCase() === 'perempuan' ? 'Perempuan' : 'Laki-Laki',
               tempatLahir: tptLahir ? String(tptLahir).trim() : '',
               tanggalLahir: tglLahir ? String(tglLahir).trim() : '',
-              alamat: alamat ? String(alamat).trim() : '',
-              namaWali: wali ? String(wali).trim() : ''
+              agama: agama ? String(agama).trim() : '',
+              pendidikanSebelumnya: pdkSblm ? String(pdkSblm).trim() : '',
+              alamat: alamatMurid ? String(alamatMurid).trim() : '',
+              namaAyah: nmAyah ? String(nmAyah).trim() : '',
+              pekerjaanAyah: pkrjAyah ? String(pkrjAyah).trim() : '',
+              namaIbu: nmIbu ? String(nmIbu).trim() : '',
+              pekerjaanIbu: pkrjIbu ? String(pkrjIbu).trim() : '',
+              jalanOrtu: jlnOrtu ? String(jlnOrtu).trim() : '',
+              desaKelurahanOrtu: dsOrtu ? String(dsOrtu).trim() : '',
+              kecamatanOrtu: kecOrtu ? String(kecOrtu).trim() : '',
+              kabupatenKotaOrtu: kabOrtu ? String(kabOrtu).trim() : '',
+              provinsiOrtu: provOrtu ? String(provOrtu).trim() : '',
+              namaWali: wali ? String(wali).trim() : '',
+              pekerjaanWali: pkrjWali ? String(pkrjWali).trim() : '',
+              alamatWali: almtWali ? String(almtWali).trim() : ''
             });
           }
         });
@@ -234,6 +272,29 @@ export default function TabDataDasarMurid() {
         </div>
       </div>
 
+      <div className="flex border-b border-gray-200 bg-slate-50/50">
+        <button
+          onClick={() => setSubTab('identitas')}
+          className={`flex-1 sm:flex-initial px-6 py-3 text-[11px] font-bold transition-all border-b-2 ${
+            subTab === 'identitas'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          Identitas Diri
+        </button>
+        <button
+          onClick={() => setSubTab('ortu')}
+          className={`flex-1 sm:flex-initial px-6 py-3 text-[11px] font-bold transition-all border-b-2 ${
+            subTab === 'ortu'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          Data Orang Tua & Wali
+        </button>
+      </div>
+
       {selectedIds.length > 0 && (
         <div className="bg-indigo-50/80 border-b border-indigo-100 px-6 py-3 flex items-center justify-between animate-in fade-in duration-200">
           <span className="text-indigo-700 font-bold text-sm">{selectedIds.length} data murid terpilih</span>
@@ -250,7 +311,7 @@ export default function TabDataDasarMurid() {
         <table className="w-full text-left text-xs whitespace-nowrap">
           <thead className="bg-[#F8FAFC] text-slate-500 font-bold border-b border-gray-200 sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-3 py-2 w-10 text-center">
+              <th className="px-3 py-2 w-10 text-center sticky left-0 z-20 bg-[#F8FAFC]">
                 <input 
                   type="checkbox" 
                   checked={siswa.length > 0 && selectedIds.length === siswa.length}
@@ -258,16 +319,42 @@ export default function TabDataDasarMurid() {
                   className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
                 />
               </th>
-              <th className="px-2 py-2 w-8 text-center text-[10px] uppercase tracking-wider">Gsr</th>
-              <th className="px-3 py-1.5 w-10 text-center text-[10px] uppercase tracking-wider">No</th>
-              <th className="px-4 py-1.5 w-12 text-center text-[10px] uppercase tracking-wider">Foto</th>
-              <th className="px-4 py-1.5 w-24 text-center text-[10px] uppercase tracking-wider">NIS</th>
-              <th className="px-4 py-1.5 w-28 text-center text-[10px] uppercase tracking-wider">NISN</th>
-              <th className="px-6 py-1.5 text-center text-[10px] uppercase tracking-wider">Nama Murid</th>
-              <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">J.Kelamin</th>
-              <th className="px-6 py-1.5 text-center text-[10px] uppercase tracking-wider">Tempat, Tanggal Lahir</th>
-              <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Alamat</th>
-              <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Wali/Ortu</th>
+              <th className="px-2 py-2 w-8 text-center text-[10px] uppercase tracking-wider sticky left-10 z-20 bg-[#F8FAFC]">Gsr</th>
+              <th className="px-3 py-1.5 w-10 text-center text-[10px] uppercase tracking-wider sticky left-[72px] z-20 bg-[#F8FAFC]">No</th>
+              
+              {subTab === 'identitas' && <th className="px-4 py-1.5 w-12 text-center text-[10px] uppercase tracking-wider">Foto</th>}
+              
+              <th className={`px-6 py-1.5 text-center text-[10px] uppercase tracking-wider sticky ${subTab === 'identitas' ? 'left-[112px]' : 'left-[112px]'} z-20 bg-[#F8FAFC] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]`}>Nama Murid</th>
+              
+              {subTab === 'identitas' && (
+                <>
+                  <th className="px-4 py-1.5 w-24 text-center text-[10px] uppercase tracking-wider">NIS</th>
+                  <th className="px-4 py-1.5 w-28 text-center text-[10px] uppercase tracking-wider">NISN</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Tgl Masuk</th>
+                  <th className="px-6 py-1.5 text-center text-[10px] uppercase tracking-wider">Tempat, Tanggal Lahir</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">J.Kelamin</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Agama</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Pddk Sblmnya</th>
+                </>
+              )}
+
+              {subTab === 'ortu' && (
+                <>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Alamat Murid</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Nama Ayah</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Pekerjaan Ayah</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Nama Ibu</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Pekerjaan Ibu</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Jalan Alamat Ortu</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Desa/Kelurahan</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Kecamatan</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Kabupaten/Kota</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Provinsi</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Nama Wali</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Pekerjaan Wali</th>
+                  <th className="px-4 py-1.5 text-center text-[10px] uppercase tracking-wider">Alamat Wali</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -284,7 +371,7 @@ export default function TabDataDasarMurid() {
                 onDragOver={(e) => e.preventDefault()}
                 className={`hover:bg-slate-50/80 transition-colors group ${selectedIds.includes(s.id) ? 'bg-indigo-50/30' : ''}`}
               >
-                <td className="px-3 py-1.5 text-center">
+                <td className="px-3 py-1.5 text-center sticky left-0 z-10 bg-white group-hover:bg-slate-50">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.includes(s.id)}
@@ -292,44 +379,30 @@ export default function TabDataDasarMurid() {
                     className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
                   />
                 </td>
-                <td className="px-2 py-1.5 text-center text-slate-300 cursor-grab active:cursor-grabbing hover:text-slate-500">
+                <td className="px-2 py-1.5 text-center text-slate-300 cursor-grab active:cursor-grabbing hover:text-slate-500 sticky left-10 z-10 bg-white group-hover:bg-slate-50">
                   <GripVertical className="w-3 h-3 mx-auto" />
                 </td>
-                <td className="px-3 py-1.5 text-center text-gray-400 font-mono text-[11px]">{i + 1}</td>
-                <td className="px-4 py-1.5 text-center">
-                  <label className="cursor-pointer group/photo relative block w-8 h-10 mx-auto rounded shadow-sm border border-slate-200 overflow-hidden bg-slate-100">
-                    {s.fotoBase64 ? (
-                      <img className="w-full h-full object-cover" alt="Foto" src={s.fotoBase64} />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
-                        <UploadCloud className="w-3.5 h-3.5" />
+                <td className="px-3 py-1.5 text-center text-gray-400 font-mono text-[11px] sticky left-[72px] z-10 bg-white group-hover:bg-slate-50">{i + 1}</td>
+                
+                {subTab === 'identitas' && (
+                  <td className="px-4 py-1.5 text-center">
+                    <label className="cursor-pointer group/photo relative block w-8 h-10 mx-auto rounded shadow-sm border border-slate-200 overflow-hidden bg-slate-100">
+                      {s.fotoBase64 ? (
+                        <img className="w-full h-full object-cover" alt="Foto" src={s.fotoBase64} />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                          <UploadCloud className="w-3.5 h-3.5" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-opacity">
+                        <Upload className="w-3 h-3" />
                       </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/40 text-white flex items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-opacity">
-                      <Upload className="w-3 h-3" />
-                    </div>
-                    <input accept="image/png, image/jpeg" className="hidden" type="file" onChange={(e) => handlePhotoUpload(s.id, e)} />
-                  </label>
-                </td>
-                <td className="px-4 py-1.5">
-                  <input
-                    type="text"
-                    value={s.nis || ''}
-                    onChange={(e) => handleUpdate(s.id, 'nis', e.target.value)}
-                    placeholder="NIS"
-                    className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none font-mono text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-800"
-                  />
-                </td>
-                <td className="px-4 py-1.5">
-                  <input
-                    type="text"
-                    value={s.nisn || ''}
-                    onChange={(e) => handleUpdate(s.id, 'nisn', e.target.value)}
-                    placeholder="NISN"
-                    className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none font-mono text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-800"
-                  />
-                </td>
-                <td className="px-6 py-1.5">
+                      <input accept="image/png, image/jpeg" className="hidden" type="file" onChange={(e) => handlePhotoUpload(s.id, e)} />
+                    </label>
+                  </td>
+                )}
+                
+                <td className={`px-6 py-1.5 sticky ${subTab === 'identitas' ? 'left-[112px]' : 'left-[112px]'} z-10 bg-white group-hover:bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]`}>
                   <input
                     type="text"
                     value={s.nama || ''}
@@ -338,52 +411,133 @@ export default function TabDataDasarMurid() {
                     className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none font-bold uppercase text-[11px] bg-transparent focus:bg-white transition-colors text-slate-800 min-w-[150px]"
                   />
                 </td>
-                <td className="px-4 py-1.5 text-center">
-                  <select
-                    value={s.jk || 'Laki-Laki'}
-                    onChange={(e) => handleUpdate(s.id, 'jk', e.target.value as 'Laki-Laki' | 'Perempuan')}
-                    className="w-full px-1 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none bg-transparent hover:bg-slate-50 focus:bg-white transition-colors text-[11px] text-slate-700 cursor-pointer min-w-[80px]"
-                  >
-                    <option value="Laki-Laki">Laki-Laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                  </select>
-                </td>
-                <td className="px-6 py-1.5">
-                  <div className="flex gap-1 items-center">
-                    <input
-                      type="text"
-                      value={s.tempatLahir || ''}
-                      onChange={(e) => handleUpdate(s.id, 'tempatLahir', e.target.value)}
-                      placeholder="Tempat"
-                      className="w-24 px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700"
-                    />
-                    <span className="text-gray-400 text-[10px]">,</span>
-                    <input
-                      type="date"
-                      value={s.tanggalLahir || ''}
-                      onChange={(e) => handleUpdate(s.id, 'tanggalLahir', e.target.value)}
-                      className="w-28 px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700"
-                    />
-                  </div>
-                </td>
-                <td className="px-4 py-1.5">
-                  <input
-                    type="text"
-                    value={s.alamat || ''}
-                    onChange={(e) => handleUpdate(s.id, 'alamat', e.target.value)}
-                    placeholder="Alamat"
-                    className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]"
-                  />
-                </td>
-                <td className="px-4 py-1.5">
-                  <input
-                    type="text"
-                    value={s.namaWali || ''}
-                    onChange={(e) => handleUpdate(s.id, 'namaWali', e.target.value)}
-                    placeholder="Nama Wali"
-                    className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]"
-                  />
-                </td>
+
+                {subTab === 'identitas' && (
+                  <>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="text"
+                        value={s.nis || ''}
+                        onChange={(e) => handleUpdate(s.id, 'nis', e.target.value)}
+                        placeholder="NIS"
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none font-mono text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-800 min-w-[80px]"
+                      />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="text"
+                        value={s.nisn || ''}
+                        onChange={(e) => handleUpdate(s.id, 'nisn', e.target.value)}
+                        placeholder="NISN"
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none font-mono text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-800 min-w-[90px]"
+                      />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="date"
+                        value={s.tanggalMasuk || ''}
+                        onChange={(e) => handleUpdate(s.id, 'tanggalMasuk', e.target.value)}
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-700 min-w-[110px]"
+                      />
+                    </td>
+                    <td className="px-6 py-1.5">
+                      <div className="flex gap-1 items-center">
+                        <input
+                          type="text"
+                          value={s.tempatLahir || ''}
+                          onChange={(e) => handleUpdate(s.id, 'tempatLahir', e.target.value)}
+                          placeholder="Tempat"
+                          className="w-24 px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700"
+                        />
+                        <span className="text-gray-400 text-[10px]">,</span>
+                        <input
+                          type="date"
+                          value={s.tanggalLahir || ''}
+                          onChange={(e) => handleUpdate(s.id, 'tanggalLahir', e.target.value)}
+                          className="w-28 px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700"
+                        />
+                      </div>
+                    </td>
+                    <td className="px-4 py-1.5 text-center">
+                      <select
+                        value={s.jk || 'Laki-Laki'}
+                        onChange={(e) => handleUpdate(s.id, 'jk', e.target.value as 'Laki-Laki' | 'Perempuan')}
+                        className="w-full px-1 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none bg-transparent hover:bg-slate-50 focus:bg-white transition-colors text-[11px] text-slate-700 cursor-pointer min-w-[80px]"
+                      >
+                        <option value="Laki-Laki">Laki-Laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                      </select>
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="text"
+                        value={s.agama || ''}
+                        onChange={(e) => handleUpdate(s.id, 'agama', e.target.value)}
+                        placeholder="Agama"
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-700 min-w-[80px]"
+                      />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="text"
+                        value={s.pendidikanSebelumnya || ''}
+                        onChange={(e) => handleUpdate(s.id, 'pendidikanSebelumnya', e.target.value)}
+                        placeholder="Pendidikan Sblm"
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-center text-slate-700 min-w-[100px]"
+                      />
+                    </td>
+                  </>
+                )}
+
+                {subTab === 'ortu' && (
+                  <>
+                    <td className="px-4 py-1.5">
+                      <input
+                        type="text"
+                        value={s.alamat || ''}
+                        onChange={(e) => handleUpdate(s.id, 'alamat', e.target.value)}
+                        placeholder="Alamat Murid"
+                        className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]"
+                      />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.namaAyah || ''} onChange={(e) => handleUpdate(s.id, 'namaAyah', e.target.value)} placeholder="Nama Ayah" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.pekerjaanAyah || ''} onChange={(e) => handleUpdate(s.id, 'pekerjaanAyah', e.target.value)} placeholder="Pekerjaan Ayah" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.namaIbu || ''} onChange={(e) => handleUpdate(s.id, 'namaIbu', e.target.value)} placeholder="Nama Ibu" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.pekerjaanIbu || ''} onChange={(e) => handleUpdate(s.id, 'pekerjaanIbu', e.target.value)} placeholder="Pekerjaan Ibu" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.jalanOrtu || ''} onChange={(e) => handleUpdate(s.id, 'jalanOrtu', e.target.value)} placeholder="Jalan Alamat Ortu" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[140px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.desaKelurahanOrtu || ''} onChange={(e) => handleUpdate(s.id, 'desaKelurahanOrtu', e.target.value)} placeholder="Desa/Kelurahan" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.kecamatanOrtu || ''} onChange={(e) => handleUpdate(s.id, 'kecamatanOrtu', e.target.value)} placeholder="Kecamatan" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.kabupatenKotaOrtu || ''} onChange={(e) => handleUpdate(s.id, 'kabupatenKotaOrtu', e.target.value)} placeholder="Kabupaten/Kota" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.provinsiOrtu || ''} onChange={(e) => handleUpdate(s.id, 'provinsiOrtu', e.target.value)} placeholder="Provinsi" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.namaWali || ''} onChange={(e) => handleUpdate(s.id, 'namaWali', e.target.value)} placeholder="Nama Wali" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.pekerjaanWali || ''} onChange={(e) => handleUpdate(s.id, 'pekerjaanWali', e.target.value)} placeholder="Pekerjaan Wali" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[100px]" />
+                    </td>
+                    <td className="px-4 py-1.5">
+                      <input type="text" value={s.alamatWali || ''} onChange={(e) => handleUpdate(s.id, 'alamatWali', e.target.value)} placeholder="Alamat Wali" className="w-full px-1.5 py-0.5 border border-transparent hover:border-gray-200 focus:border-indigo-400 rounded outline-none text-[11px] bg-transparent focus:bg-white transition-colors text-slate-700 min-w-[120px]" />
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
