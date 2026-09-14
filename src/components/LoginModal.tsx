@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useAppStore } from '@/store';
+import { useAppStore, deepMerge } from '@/store';
+import { INITIAL_STATE } from '@/constants';
 import { Lock, AlertCircle, Loader2, ArrowRight, Home, Plus, FolderOpen } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import DeveloperProfileModal from './DeveloperProfileModal';
@@ -165,15 +166,18 @@ export default function LoginModal() {
             else if (num === 5 || num === 6) faseFallback = 'C';
         }
 
-        setState(prev => ({
-          ...appData.data_payload,
-          isAuthenticated: true,
-          sekolah: {
-            ...appData.data_payload.sekolah,
-            ...baselineData,
-            fase: faseFallback || appData.data_payload.sekolah?.fase
-          }
-        }));
+        setState(prev => {
+          const merged = deepMerge(INITIAL_STATE, appData.data_payload);
+          return {
+            ...merged,
+            isAuthenticated: true,
+            sekolah: {
+              ...merged.sekolah,
+              ...baselineData,
+              fase: faseFallback || appData.data_payload.sekolah?.fase
+            }
+          };
+        });
       } else {
         setError('Gagal memuat data ruang kerja.');
       }

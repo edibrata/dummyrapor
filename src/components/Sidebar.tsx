@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store';
 import { INITIAL_STATE } from '@/constants';
 import { 
@@ -18,27 +18,7 @@ interface SidebarProps {
 
 export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevProfile }: SidebarProps) {
   const { updateState, updateSekolah } = useAppStore();
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    'Utama': true,
-    'Master Data': true,
-    'Akademik & Penilaian': true,
-    'Output/Cetak': true,
-    'Fitur Professional': false,
-    'Sistem': false
-  });
-
-  const toggleGroup = (title: string) => {
-    setExpandedGroups(prev => ({
-      ...prev,
-      [title]: !prev[title]
-    }));
-  };
-  
-  const handleLogout = () => {
-    updateState('isAuthenticated', false);
-    updateSekolah(INITIAL_STATE.sekolah);
-    setActiveView('dashboard');
-  };
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   const menuGroups = [
     {
@@ -96,6 +76,26 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
     }
   ];
 
+  useEffect(() => {
+    // Cari grup mana yang memiliki item yang sedang aktif
+    const activeGroup = menuGroups.find(group => 
+      group.items.some(item => item.id === activeView)
+    );
+    if (activeGroup) {
+      setExpandedGroup(activeGroup.title);
+    }
+  }, [activeView]);
+
+  const toggleGroup = (title: string) => {
+    setExpandedGroup(prev => prev === title ? null : title);
+  };
+  
+  const handleLogout = () => {
+    updateState('isAuthenticated', false);
+    updateSekolah(INITIAL_STATE.sekolah);
+    setActiveView('dashboard');
+  };
+
   return (
     <aside className={`sidebar bg-indigo-900 text-slate-100 flex flex-col h-screen sticky top-0 shadow-xl overflow-hidden transition-all duration-300 ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full opacity-0'}`}>
       <div className="p-6 border-b border-indigo-800/50 shrink-0">
@@ -125,7 +125,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
               <p className="text-[10px] uppercase tracking-widest text-indigo-300 font-bold">
                 {group.title}
               </p>
-              {expandedGroups[group.title] ? (
+              {expandedGroup === group.title ? (
                 <ChevronDown size={14} className="text-indigo-400 group-hover:text-amber-400 transition-colors" />
               ) : (
                 <ChevronRight size={14} className="text-indigo-400 group-hover:text-amber-400 transition-colors" />
@@ -134,7 +134,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
             
             <div 
               className={`space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
-                expandedGroups[group.title] ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'
+                expandedGroup === group.title ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'
               }`}
             >
               <ul className="space-y-1">

@@ -3,12 +3,37 @@ import { AppState } from './types';
 import { INITIAL_STATE } from './constants';
 import { supabase } from '@/lib/supabase';
 
+export type SyncStatus = 'synced' | 'syncing' | 'error';
+
+export function deepMerge(target: any, source: any): any {
+  if (target === null || typeof target !== 'object' || Array.isArray(target)) {
+    return source !== undefined ? source : target;
+  }
+  
+  if (source === null || typeof source !== 'object' || Array.isArray(source)) {
+    return source !== undefined ? source : target;
+  }
+
+  const output = { ...target };
+  Object.keys(source).forEach(key => {
+    if (source[key] !== undefined) {
+      if (key in target && typeof target[key] === 'object' && target[key] !== null && !Array.isArray(target[key])) {
+        output[key] = deepMerge(target[key], source[key]);
+      } else {
+        output[key] = source[key];
+      }
+    }
+  });
+  return output;
+}
+
 interface AppContextType {
   state: AppState;
   setState: React.Dispatch<React.SetStateAction<AppState>>;
   updateSekolah: (data: Partial<AppState['sekolah']>) => void;
   updateState: <K extends keyof AppState>(key: K, data: AppState[K]) => void;
   syncToDatabase: () => Promise<void>;
+  syncStatus: SyncStatus;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -16,19 +41,14 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const STORAGE_KEY = 'rapor_kumer_state';
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
+  
   const [state, setState] = useState<AppState>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        return {
-          ...INITIAL_STATE,
-          ...parsed,
-          sekolah: {
-            ...INITIAL_STATE.sekolah,
-            ...(parsed.sekolah || {})
-          }
-        };
+        return deepMerge(INITIAL_STATE, parsed);
       }
     } catch (e) {
       console.error('Failed to load state from LS', e);
@@ -42,6 +62,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // Create Composite Key: NPSN_TahunAjaran_Semester_Kelas_Rombel
     const compositeNpsn = `${state.sekolah.npsn}_${state.sekolah.tahunAjaran || ''}_${state.sekolah.semester || ''}_${state.sekolah.kelas || ''}_${state.sekolah.ruangRombel || ''}`.replace(/\s+/g, '-');
 
+    setSyncStatus('syncing');
     try {
       const { error } = await supabase
         .from('aplikasirapor')
@@ -54,15 +75,46 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         );
       if (error) {
         console.error("Error syncing to Supabase", error);
+        setSyncStatus('error');
+      } else {
+        setSyncStatus('synced');
       }
     } catch (error) {
       console.error("Fetch error syncing to Supabase", error);
+      setSyncStatus('error');
     }
   };
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    
+    // Auto-save ke Supabase dengan teknik Debounce (Tunda 2 detik)
+    if (state.isAuthenticated && state.sekolah?.npsn) {
+      const timeoutId = setTimeout(() => {
+        syncToDatabase().catch(err => console.error('Auto-sync error:', err));
+      }, 2000);
+      
+      // Bersihkan timer jika ada perubahan state baru sebelum 2 detik selesai
+      return () => clearTimeout(timeoutId);
+    }
   }, [state]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      if (syncStatus === 'error') {
+        syncToDatabase();
+      }
+    };
+    const handleOffline = () => setSyncStatus('error');
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [syncStatus]);
 
   useEffect(() => {
     // Fetch baseline updates on mount/refresh if authenticated
@@ -168,7 +220,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AppContext.Provider value={{ state, setState, updateSekolah, updateState, syncToDatabase }}>
+    <AppContext.Provider value={{ state, setState, updateSekolah, updateState, syncToDatabase, syncStatus }}>
       {children}
     </AppContext.Provider>
   );

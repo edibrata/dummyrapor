@@ -124,25 +124,7 @@ export default function DataSekolah() {
       }
     } else {
       setErrors({});
-      showToast('Data berhasil divalidasi dan disimpan secara lokal!');
     }
-  };
-
-  const handleReset = () => {
-    if (isLocked) {
-      // Only reset non-locked fields
-      const lockedKeys = ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi', 'tahunAjaran', 'semester', 'kelas', 'ruangRombel'];
-      const newSekolah = { ...INITIAL_STATE.sekolah };
-      lockedKeys.forEach(k => {
-        (newSekolah as any)[k] = sekolah[k as keyof typeof sekolah];
-      });
-      updateSekolah(newSekolah);
-    } else {
-      updateSekolah(INITIAL_STATE.sekolah);
-    }
-    setErrors({});
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    showToast('Data form non-sinkronisasi telah direset.');
   };
 
   // --- EXPORT & IMPORT LOGIC ---
@@ -647,24 +629,6 @@ export default function DataSekolah() {
           <span className="whitespace-pre-line truncate max-w-[280px]">{toastMessage}</span>
         </div>
       )}
-
-      {/* STICKY BOTTOM ACTION BAR */}
-      <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
-         <div className="max-w-5xl mx-auto flex items-center justify-between">
-           <div className="hidden sm:flex items-center gap-2 text-[13px] text-slate-500 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1"></span>
-              Auto-save lokal diaktifkan. Pastikan tidak ada border form merah.
-           </div>
-           <div className="flex items-center gap-3 w-full sm:w-auto">
-             <button type="button" onClick={handleReset} className="flex-1 sm:flex-none border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-lg px-6 py-2.5 transition-colors focus:outline-none focus:ring-4 focus:ring-slate-100">
-               Reset Form
-             </button>
-             <button type="button" onClick={handleSubmit} className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg px-8 py-2.5 flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/30">
-               <Save size={16} /> Simpan Data
-             </button>
-           </div>
-         </div>
-      </div>
 
     </div>
   );
