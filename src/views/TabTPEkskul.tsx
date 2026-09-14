@@ -4,72 +4,73 @@ import { TujuanPembelajaran } from '@/types';
 import { Plus, Trash2, Target, Download, Upload } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-export default function TujuanPembelajaranView() {
+export default function TabTPEkskul() {
   const { state, updateState } = useAppStore();
-  const { mapel } = state;
-  const [selectedMapel, setSelectedMapel] = useState<string>('');
+  const { ekstrakurikuler } = state;
+  const [selectedEkskul, setSelectedEkskul] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (mapel.length > 0 && !selectedMapel) {
-      setSelectedMapel(mapel[0].id);
+    if (ekstrakurikuler && ekstrakurikuler.length > 0 && !selectedEkskul) {
+      setSelectedEkskul(ekstrakurikuler[0].id);
     }
-  }, [mapel, selectedMapel]);
+  }, [ekstrakurikuler, selectedEkskul]);
 
-  const tps = state.tujuanPembelajaran.filter(tp => tp.mapelId === selectedMapel);
-  const activeMapel = mapel.find(m => m.id === selectedMapel);
+  const tpEkskulList = state.tpEkskul || [];
+  const tps = tpEkskulList.filter(tp => tp.mapelId === selectedEkskul);
+  const activeEkskul = ekstrakurikuler?.find(e => e.id === selectedEkskul);
 
   const handleAdd = () => {
-    if (!selectedMapel) {
-      alert("Pilih mata pelajaran terlebih dahulu.");
+    if (!selectedEkskul) {
+      alert("Pilih ekstrakurikuler terlebih dahulu.");
       return;
     }
     const newTp: TujuanPembelajaran = {
-      id: 'tp' + Date.now(),
-      mapelId: selectedMapel,
-      kode: `TP.${activeMapel?.kode || 'X'}.${tps.length + 1}`,
-      deskripsi: 'Deskripsi TP baru...'
+      id: 'tpeks' + Date.now(),
+      mapelId: selectedEkskul,
+      kode: `TP.${activeEkskul?.kode || 'X'}.${tps.length + 1}`,
+      deskripsi: 'Deskripsi TP Ekstrakurikuler baru...'
     };
-    updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, newTp]);
+    updateState('tpEkskul', [...tpEkskulList, newTp]);
   };
 
   const handleUpdate = (id: string, field: keyof TujuanPembelajaran, value: string) => {
-    updateState('tujuanPembelajaran', state.tujuanPembelajaran.map(tp => 
+    updateState('tpEkskul', tpEkskulList.map(tp => 
       tp.id === id ? { ...tp, [field]: value } : tp
     ));
   };
 
   const handleDelete = (id: string) => {
-    const tpToDelete = state.tujuanPembelajaran.find(tp => tp.id === id);
+    const tpToDelete = tpEkskulList.find(tp => tp.id === id);
     if (tpToDelete) {
       const newTrashItem = {
         id: 'trash_' + Date.now() + Math.random().toString(36).substring(2, 9),
         originalId: tpToDelete.id,
-        type: 'tp' as const,
-        label: `TP ${tpToDelete.kode} - ${activeMapel?.nama || 'Mapel'}`,
+        type: 'tp-ekskul' as const,
+        label: `TP Ekskul ${tpToDelete.kode} - ${activeEkskul?.nama || 'Ekskul'}`,
         data: tpToDelete,
         deletedAt: new Date().toISOString()
       };
       updateState('trash', [...(state.trash || []), newTrashItem]);
     }
-    updateState('tujuanPembelajaran', state.tujuanPembelajaran.filter(tp => tp.id !== id));
+    updateState('tpEkskul', tpEkskulList.filter(tp => tp.id !== id));
   };
 
   const handleDownloadTemplate = () => {
-    if (mapel.length === 0) {
-      alert("Anda belum memiliki data Mata Pelajaran.");
+    if (!ekstrakurikuler || ekstrakurikuler.length === 0) {
+      alert("Anda belum memiliki data Ekstrakurikuler.");
       return;
     }
     
     const workbook = XLSX.utils.book_new();
     
-    mapel.forEach((m) => {
+    ekstrakurikuler.forEach((e) => {
       // Safe sheet name (max 31 chars, forbidden chars removed)
-      const sheetName = m.kode.replace(/[\\/*?:[\]]/g, '').substring(0, 31) || `Mapel-${m.id.substring(0,6)}`;
+      const sheetName = e.kode.replace(/[\\/*?:[\]]/g, '').substring(0, 31) || `Ekskul-${e.id.substring(0,6)}`;
       
       const templateData = [
-        { KODE_TP: `TP.${m.kode}.1`, DESKRIPSI_TP: `Deskripsi contoh TP 1 untuk ${m.nama}` },
-        { KODE_TP: `TP.${m.kode}.2`, DESKRIPSI_TP: `Deskripsi contoh TP 2 untuk ${m.nama}` }
+        { KODE_TP: `TP.${e.kode}.1`, DESKRIPSI_TP: `Mampu memahami dasar-dasar ${e.nama}` },
+        { KODE_TP: `TP.${e.kode}.2`, DESKRIPSI_TP: `Mampu mempraktekkan keterampilan ${e.nama}` }
       ];
       
       const worksheet = XLSX.utils.json_to_sheet(templateData);
@@ -83,7 +84,7 @@ export default function TujuanPembelajaranView() {
     const hh = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
     const ss = String(now.getSeconds()).padStart(2, '0');
-    const filename = `E-Rapor Edi Brata Template Tujuan Pembelajaran ${yyyy}${mm}${dd} ${hh}.${min}.${ss}.xlsx`;
+    const filename = `E-Rapor Edi Brata Template TP Ekstrakurikuler ${yyyy}${mm}${dd} ${hh}.${min}.${ss}.xlsx`;
     
     XLSX.writeFile(workbook, filename);
   };
@@ -106,13 +107,13 @@ export default function TujuanPembelajaranView() {
         let indexCounter = 0;
         
         workbook.SheetNames.forEach((sheetName) => {
-          // Find matching mapel by kode
-          const matchedMapel = mapel.find(m => {
-            const expectedSheetName = m.kode.replace(/[\\/*?:[\]]/g, '').substring(0, 31) || `Mapel-${m.id.substring(0,6)}`;
+          // Find matching ekstrakurikuler by kode
+          const matchedEkskul = ekstrakurikuler?.find(eks => {
+            const expectedSheetName = eks.kode.replace(/[\\/*?:[\]]/g, '').substring(0, 31) || `Ekskul-${eks.id.substring(0,6)}`;
             return expectedSheetName === sheetName;
           });
           
-          if (matchedMapel) {
+          if (matchedEkskul) {
             const worksheet = workbook.Sheets[sheetName];
             const rows: any[] = XLSX.utils.sheet_to_json(worksheet);
             
@@ -122,8 +123,8 @@ export default function TujuanPembelajaranView() {
               
               if (kodeTp && deskripsiTp) {
                 newTps.push({
-                  id: 'tp_' + Date.now() + '_' + (indexCounter++),
-                  mapelId: matchedMapel.id,
+                  id: 'tpeks_' + Date.now() + '_' + (indexCounter++),
+                  mapelId: matchedEkskul.id,
                   kode: String(kodeTp).trim(),
                   deskripsi: String(deskripsiTp).trim()
                 });
@@ -133,7 +134,7 @@ export default function TujuanPembelajaranView() {
         });
         
         if (newTps.length > 0) {
-          updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, ...newTps]);
+          updateState('tpEkskul', [...tpEkskulList, ...newTps]);
         }
       } catch (err) {
         console.error("Error importing Excel file", err);
@@ -147,25 +148,25 @@ export default function TujuanPembelajaranView() {
 
   return (
     <div className="w-full animate-in fade-in duration-200">
-      <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-t-2xl">
+      <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-sm font-bold text-slate-800 flex items-center gap-2">
             <Target className="w-4 h-4 text-indigo-600" />
-            Manajemen Tujuan Pembelajaran
+            Tujuan Pembelajaran Ekstrakurikuler
           </h1>
-          <p className="text-[11px] text-slate-500 mt-1">Kelola data Tujuan Pembelajaran (TP) untuk setiap mata pelajaran.</p>
+          <p className="text-[11px] text-slate-500 mt-1">Kelola data Tujuan Pembelajaran (TP) untuk setiap ekstrakurikuler.</p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <div className="flex items-center gap-2">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Mapel:</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Ekskul:</label>
             <select 
-              value={selectedMapel} 
-              onChange={(e) => setSelectedMapel(e.target.value)} 
+              value={selectedEkskul} 
+              onChange={(e) => setSelectedEkskul(e.target.value)} 
               className="border border-slate-200 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
             >
-              {mapel.map(m => (
-                <option key={m.id} value={m.id}>{m.nama}</option>
+              {ekstrakurikuler?.map(e => (
+                <option key={e.id} value={e.id}>{e.nama}</option>
               ))}
             </select>
           </div>
@@ -193,7 +194,7 @@ export default function TujuanPembelajaranView() {
             >
               <Download className="w-4 h-4" />
               <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
-                Template Excel (Semua Mapel)
+                Template Excel (Semua Ekskul)
               </span>
             </button>
             <button 
@@ -223,7 +224,7 @@ export default function TujuanPembelajaranView() {
             {tps.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-10 text-center text-slate-400">
-                  Belum ada Tujuan Pembelajaran untuk mata pelajaran ini. Silakan klik Tambah TP.
+                  Belum ada Tujuan Pembelajaran untuk ekstrakurikuler ini. Silakan klik Tambah TP.
                 </td>
               </tr>
             ) : null}

@@ -11,6 +11,12 @@ export default function KotakSampah() {
       updateState('mapel', [...state.mapel, item.data]);
     } else if (item.type === 'siswa') {
       updateState('siswa', [...state.siswa, item.data]);
+    } else if (item.type === 'tp') {
+      updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, item.data]);
+    } else if (item.type === 'ekskul') {
+      updateState('ekstrakurikuler', [...(state.ekstrakurikuler || []), item.data]);
+    } else if (item.type === 'tp-ekskul') {
+      updateState('tpEkskul', [...(state.tpEkskul || []), item.data]);
     }
     updateState('trash', trash.filter(t => t.id !== item.id));
   };
@@ -90,7 +96,10 @@ export default function KotakSampah() {
                 <td className="px-6 py-1.5">
                   <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
                     item.type === 'mapel' ? 'bg-blue-100 text-blue-700' :
-                    item.type === 'siswa' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                    item.type === 'siswa' ? 'bg-green-100 text-green-700' : 
+                    item.type === 'tp' ? 'bg-purple-100 text-purple-700' : 
+                    item.type === 'tp-ekskul' ? 'bg-fuchsia-100 text-fuchsia-700' :
+                    item.type === 'ekskul' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-700'
                   }`}>
                     {item.type}
                   </span>

@@ -6,7 +6,7 @@ import {
   Target, PenTool, Activity, CheckSquare, 
   BookOpen, FileSpreadsheet, Printer, Book, Contact, 
   Archive, ArrowRightLeft, PieChart, Bot, Lightbulb, 
-  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut, LayoutDashboard, Trash2
+  Settings, UserCircle, Star, FolderGit2, ChevronDown, ChevronRight, LogOut, LayoutDashboard, Trash2, Medal
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -24,16 +24,16 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
     {
       title: 'Utama',
       items: [
-        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> }
+        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+        { id: 'data-sekolah', label: 'Data Dasar', icon: <School size={18} /> },
       ]
     },
     {
-      title: 'Master Data',
+      title: 'Perencanaan',
       items: [
-        { id: 'data-sekolah', label: 'Data Dasar', icon: <School size={18} /> },
-        { id: 'kegiatan-akademik', label: 'Kegiatan Akademik', icon: <Calendar size={18} /> },
+        { id: 'kegiatan-akademik', label: 'Intrakurikuler', icon: <Calendar size={18} /> },
+        { id: 'data-ekskul', label: 'Ekstrakurikuler', icon: <Medal size={18} /> },
         { id: 'data-siswa', label: 'Data Murid', icon: <Users size={18} /> },
-        { id: 'foto-murid', label: 'Foto Murid', icon: <Camera size={18} /> },
         { id: 'data-pendukung', label: 'Data Pendukung', icon: <FolderPlus size={18} /> },
       ]
     },

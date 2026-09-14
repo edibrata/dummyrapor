@@ -55,6 +55,13 @@ export interface TujuanPembelajaran {
   deskripsi: string;
 }
 
+export interface Ekstrakurikuler {
+  id: string;
+  kode: string;
+  nama: string;
+  jenis: 'Wajib' | 'Pilihan';
+}
+
 export interface NilaiMapelSiswa {
   tpScores: Record<string, number | null>; // tpId -> score (0-100)
   sumatifAkhir: number | null;
@@ -77,7 +84,7 @@ export type NilaiProjek = 'MB' | 'SB' | 'BSH' | 'SAB' | '';
 export interface TrashItem {
   id: string;
   originalId: string;
-  type: 'mapel' | 'siswa' | 'tp' | 'projek';
+  type: 'mapel' | 'siswa' | 'tp' | 'projek' | 'ekskul' | 'tp-ekskul';
   label: string;
   data: any;
   deletedAt: string;
@@ -89,6 +96,8 @@ export interface AppState {
   siswa: Siswa[];
   mapel: Mapel[];
   tujuanPembelajaran: TujuanPembelajaran[];
+  ekstrakurikuler: Ekstrakurikuler[];
+  tpEkskul: TujuanPembelajaran[];
   // studentId -> mapelId -> NilaiMapelSiswa
   nilai: Record<string, Record<string, NilaiMapelSiswa>>;
   projek: DataProjek[];

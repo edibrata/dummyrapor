@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import DataSekolah from '@/views/DataSekolah';
 import KegiatanAkademik from '@/views/KegiatanAkademik';
 import DataSiswa from '@/views/DataSiswa';
+import DataEkstrakurikuler from '@/views/DataEkstrakurikuler';
 import InputNilai from '@/views/InputNilai';
 import Leger from '@/views/Leger';
 import DataProjekView from '@/views/DataProjek';
@@ -37,8 +38,8 @@ function Dashboard() {
           {activeView === 'data-sekolah' && <DataSekolah />}
           {activeView === 'kegiatan-akademik' && <KegiatanAkademik />}
           {activeView === 'data-siswa' && <DataSiswa />}
+          {activeView === 'data-ekskul' && <DataEkstrakurikuler />}
           {activeView === 'kotak-sampah' && <KotakSampah />}
-          {activeView === 'foto-murid' && <Placeholder title="Foto Murid" />}
           {activeView === 'data-pendukung' && <Placeholder title="Data Pendukung" />}
 
           {activeView === 'input-nilai' && <InputNilai />}

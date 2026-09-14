@@ -67,6 +67,8 @@ export const INITIAL_STATE: AppState = {
   siswa: [],
   mapel: DAFTAR_MAPEL,
   tujuanPembelajaran: [],
+  ekstrakurikuler: [],
+  tpEkskul: [],
   nilai: {},
   projek: [],
   dimensiProjek: [],
