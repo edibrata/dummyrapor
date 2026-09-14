@@ -36,13 +36,25 @@ export default function LoginModal() {
     setIsLoading(true);
 
     try {
-      const { data, error: sbError } = await supabase
-        .from('registrasirapor')
-        .select('*')
-        .eq('data_payload->>npsn', npsn.trim())
-        .single();
+      let data = null;
+      let sbError = null;
 
-      if (sbError || !data) {
+      try {
+        const { data: dbData, error } = await supabase
+          .from('registrasirapor')
+          .select('*')
+          .eq('data_payload->>npsn', npsn.trim())
+          .single();
+        data = dbData;
+        sbError = error;
+      } catch (fetchErr) {
+        console.error("Fetch error:", fetchErr);
+        setError('Gagal menghubungi server database. Silakan coba lagi.');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!data && sbError) {
         console.error(sbError);
         setError('NPSN tidak ditemukan di database. Anda tidak memiliki akses ke aplikasi ini.');
         setIsLoading(false);
@@ -104,11 +116,20 @@ export default function LoginModal() {
       setBaselineData(sekolahUpdates);
 
       // Now fetch existing workspaces for this NPSN from aplikasirapor
-      const { data: workspacesData, error: workspacesError } = await supabase
-        .from('aplikasirapor')
-        .select('npsn, data_payload->sekolah')
-        .like('npsn', `${npsn.trim()}_%`)
-        .order('created_at', { ascending: false });
+      let workspacesData = null;
+      let workspacesError = null;
+
+      try {
+        const res = await supabase
+          .from('aplikasirapor')
+          .select('npsn, data_payload->sekolah')
+          .like('npsn', `${npsn.trim()}_%`)
+          .order('created_at', { ascending: false });
+        workspacesData = res.data;
+        workspacesError = res.error;
+      } catch (fetchErr) {
+        console.warn("Could not fetch workspaces", fetchErr);
+      }
 
       if (!workspacesError && workspacesData) {
         setAvailableWorkspaces(workspacesData);
@@ -117,7 +138,7 @@ export default function LoginModal() {
       setStep(2);
 
     } catch (err: any) {
-      setError('Terjadi kesalahan jaringan atau database.');
+      setError('Terjadi kesalahan tidak terduga.');
     } finally {
       setIsLoading(false);
     }
@@ -126,11 +147,13 @@ export default function LoginModal() {
   const loadWorkspace = async (workspaceNpsn: string) => {
     setIsLoading(true);
     try {
-      const { data: appData, error: appError } = await supabase
+      const res = await supabase
         .from('aplikasirapor')
         .select('*')
         .eq('npsn', workspaceNpsn)
         .single();
+      const appData = res.data;
+      const appError = res.error;
         
       if (!appError && appData && appData.data_payload) {
         // Backfill fase if missing from old data

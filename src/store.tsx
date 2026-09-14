@@ -54,11 +54,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         );
       if (error) {
         console.error("Error syncing to Supabase", error);
-        throw error;
       }
     } catch (error) {
-      console.error("Error syncing to Supabase", error);
-      throw error;
+      console.error("Fetch error syncing to Supabase", error);
     }
   };
 
@@ -75,13 +73,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const currentState = JSON.parse(saved);
         if (!currentState.isAuthenticated || !currentState.sekolah?.npsn) return;
 
-        const { data: dbData, error: dbError } = await supabase
-          .from('registrasirapor')
-          .select('*')
-          .eq('data_payload->>npsn', currentState.sekolah.npsn.trim())
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
+        let dbData, dbError;
+        try {
+          const res = await supabase
+            .from('registrasirapor')
+            .select('*')
+            .eq('data_payload->>npsn', currentState.sekolah.npsn.trim())
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+          dbData = res.data;
+          dbError = res.error;
+        } catch (fetchErr) {
+          console.error("Fetch error baseline update", fetchErr);
+          return;
+        }
 
         if (dbError || !dbData) return;
 
