@@ -3,7 +3,7 @@ import {
   FileText, Calendar, School, Users, 
   MapPin, Percent, Info, Save, RotateCcw,
   Download, Upload, FileJson, CheckCircle2,
-  AlertCircle, Lock, Settings
+  AlertCircle, Lock, Settings, Image
 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { INITIAL_STATE } from '@/constants';
@@ -13,7 +13,7 @@ export default function DataSekolah() {
   const { state, updateSekolah } = useAppStore();
   const { sekolah } = state;
 
-  const [activeTab, setActiveTab] = useState<'profil' | 'akademik' | 'guru' | 'output'>('profil');
+  const [activeTab, setActiveTab] = useState<'profil' | 'akademik' | 'guru' | 'output' | 'aplikasi'>('profil');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -71,6 +71,21 @@ export default function DataSekolah() {
 
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: false }));
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('Ukuran gambar maksimal 2MB', false);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateSekolah({ [name]: reader.result as string });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -276,7 +291,7 @@ export default function DataSekolah() {
     } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi', 'tahunAjaran', 'semester', 'kelas', 'ruangRombel'].includes(name as string)) {
       classes += "border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed";
     } else {
-      classes += "border-gray-300 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 placeholder:text-slate-400";
+      classes += "border-gray-300 bg-white focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20 placeholder:text-slate-400";
     }
     return classes;
   };
@@ -419,6 +434,17 @@ export default function DataSekolah() {
           }`}
         >
           <Settings className="w-3.5 h-3.5" /> PENGATURAN OUTPUT
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('aplikasi')}
+          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+            activeTab === 'aplikasi'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          <Image className="w-3.5 h-3.5" /> LOGO & TTD
         </button>
       </div>
 
@@ -662,21 +688,21 @@ export default function DataSekolah() {
               </div>
 
               {/* Bobot Panel */}
-              <div className="bg-indigo-50/50 rounded-2xl border border-indigo-100 p-6">
-                  <h4 className="font-bold text-xs tracking-widest text-indigo-900 uppercase mb-4 border-b border-indigo-100 pb-2">Rasio Bobot Penilaian Rapor</h4>
+              <div className="bg-slate-50/50 rounded-md border border-slate-100 p-6">
+                  <h4 className="font-bold text-xs tracking-widest text-slate-800 uppercase mb-4 border-b border-slate-100 pb-2">Rasio Bobot Penilaian Rapor</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div className="space-y-3 flex flex-col items-center text-center">
-                      <label htmlFor="bobotSumatifLingkup" className="block text-[10px] font-bold uppercase tracking-wider text-indigo-800 text-center">Bobot Sumatif Lingkup Materi</label>
+                      <label htmlFor="bobotSumatifLingkup" className="block text-[10px] font-bold uppercase tracking-wider text-slate-700 text-center">Bobot Sumatif Lingkup Materi</label>
                       <div className="flex items-center justify-center gap-3">
-                        <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup === '' ? '' : (sekolah.bobotSumatifLingkup !== undefined ? String(sekolah.bobotSumatifLingkup) : '75')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
-                        <span className="text-indigo-600 font-bold text-lg">%</span>
+                        <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup === '' ? '' : (sekolah.bobotSumatifLingkup !== undefined ? String(sekolah.bobotSumatifLingkup) : '75')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-slate-200 border bg-white focus:outline-none focus:ring-2 focus:ring-slate-500 shadow-sm" />
+                        <span className="text-slate-900 font-bold text-lg">%</span>
                       </div>
                     </div>
                     <div className="space-y-3 flex flex-col items-center text-center">
-                      <label htmlFor="bobotSumatifSemester" className="block text-[10px] font-bold uppercase tracking-wider text-indigo-800 text-center">Bobot Sumatif Akhir Semester</label>
+                      <label htmlFor="bobotSumatifSemester" className="block text-[10px] font-bold uppercase tracking-wider text-slate-700 text-center">Bobot Sumatif Akhir Semester</label>
                       <div className="flex items-center justify-center gap-3">
-                        <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester === '' ? '' : (sekolah.bobotSumatifSemester !== undefined ? String(sekolah.bobotSumatifSemester) : '25')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
-                        <span className="text-indigo-600 font-bold text-lg">%</span>
+                        <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester === '' ? '' : (sekolah.bobotSumatifSemester !== undefined ? String(sekolah.bobotSumatifSemester) : '25')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-slate-200 border bg-white focus:outline-none focus:ring-2 focus:ring-slate-500 shadow-sm" />
+                        <span className="text-slate-900 font-bold text-lg">%</span>
                       </div>
                     </div>
                   </div>
@@ -687,6 +713,102 @@ export default function DataSekolah() {
                       <p>Total bobot wajib berjumlah 100%. Pembobotan Anda saat ini: {totalBobot}%. Silakan sesuaikan rasio.</p>
                     </div>
                   )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB CONTENT: PENGATURAN APLIKASI */}
+          {activeTab === 'aplikasi' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {/* Logo Settings */}
+              <div>
+                <h4 className="flex items-center gap-2 font-bold text-xs tracking-widest text-slate-800 uppercase mb-4">Logo Rapor</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-5 border border-slate-200 rounded-md bg-slate-50 flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-full border border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group">
+                      {sekolah.logoKiri ? (
+                        <img src={sekolah.logoKiri} alt="Logo Kiri" className="w-full h-full object-contain p-2" />
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-bold text-center px-1">Tut Wuri</span>
+                      )}
+                      <label className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-[10px] font-bold uppercase tracking-wider">
+                        Ubah
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'logoKiri')} />
+                      </label>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800 mb-1">Logo Kiri (Default: Tut Wuri)</p>
+                      <p className="text-xs text-slate-500 leading-relaxed mb-2">Tampil di sudut kiri atas rapor.</p>
+                      {sekolah.logoKiri && (
+                        <button type="button" onClick={() => updateSekolah({ logoKiri: '' })} className="text-[10px] uppercase font-bold text-red-600 hover:text-red-700">Hapus Logo</button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-5 border border-slate-200 rounded-md bg-slate-50 flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-full border border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group">
+                      {sekolah.logoKanan ? (
+                        <img src={sekolah.logoKanan} alt="Logo Kanan" className="w-full h-full object-contain p-2" />
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-bold text-center px-1">Logo Pemda</span>
+                      )}
+                      <label className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-[10px] font-bold uppercase tracking-wider">
+                        Ubah
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'logoKanan')} />
+                      </label>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800 mb-1">Logo Kanan (Pemda)</p>
+                      <p className="text-xs text-slate-500 leading-relaxed mb-2">Tampil di sudut kanan atas rapor.</p>
+                      {sekolah.logoKanan && (
+                        <button type="button" onClick={() => updateSekolah({ logoKanan: '' })} className="text-[10px] uppercase font-bold text-red-600 hover:text-red-700">Hapus Logo</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Digital Signature */}
+              <div className="pt-6 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-bold text-xs tracking-widest text-slate-800 uppercase">Tanda Tangan Digital</h4>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" checked={sekolah.useDigitalSignature || false} onChange={(e) => updateSekolah({ useDigitalSignature: e.target.checked })} />
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  </label>
+                </div>
+                
+                {sekolah.useDigitalSignature && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 animate-in fade-in slide-in-from-top-2">
+                    <div className="p-5 border border-slate-200 rounded-md bg-slate-50 text-center">
+                      <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Wali Kelas</p>
+                      <label className="block w-full h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center bg-white mb-3 hover:bg-slate-50 transition-colors cursor-pointer relative overflow-hidden group">
+                        {sekolah.ttdWaliKelas ? (
+                          <img src={sekolah.ttdWaliKelas} alt="TTD Wali Kelas" className="h-full w-full object-contain p-2" />
+                        ) : (
+                          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Pilih Gambar (PNG)</span>
+                        )}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'ttdWaliKelas')} />
+                      </label>
+                      {sekolah.ttdWaliKelas && (
+                        <button type="button" onClick={() => updateSekolah({ ttdWaliKelas: '' })} className="text-[10px] uppercase font-bold text-red-600 hover:text-red-700">Hapus Tanda Tangan</button>
+                      )}
+                    </div>
+                    <div className="p-5 border border-slate-200 rounded-md bg-slate-50 text-center">
+                      <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Kepala Sekolah</p>
+                      <label className="block w-full h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center bg-white mb-3 hover:bg-slate-50 transition-colors cursor-pointer relative overflow-hidden group">
+                        {sekolah.ttdKepsek ? (
+                          <img src={sekolah.ttdKepsek} alt="TTD Kepsek" className="h-full w-full object-contain p-2" />
+                        ) : (
+                          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Pilih Gambar (PNG)</span>
+                        )}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'ttdKepsek')} />
+                      </label>
+                      {sekolah.ttdKepsek && (
+                        <button type="button" onClick={() => updateSekolah({ ttdKepsek: '' })} className="text-[10px] uppercase font-bold text-red-600 hover:text-red-700">Hapus Tanda Tangan</button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

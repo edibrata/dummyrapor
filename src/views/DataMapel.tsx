@@ -194,7 +194,7 @@ export default function DataMapel() {
       
       {isAddingMode && (
         <div className="bg-slate-50 border-b border-gray-200 p-6 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex items-center gap-2 mb-4 text-indigo-800 font-bold text-sm">
+          <div className="flex items-center gap-2 mb-4 text-slate-700 font-bold text-sm">
             <Book className="w-4 h-4" /> Form Penambahan Mata Pelajaran Baru
           </div>
           <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -205,7 +205,7 @@ export default function DataMapel() {
                 value={newMapelData.kode || ''}
                 onChange={(e) => setNewMapelData({ ...newMapelData, kode: e.target.value })}
                 placeholder="misal: mtk, ipa-ter"
-                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 font-mono text-slate-700"
+                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500/20 font-mono text-slate-700"
               />
             </div>
             <div className="w-full md:w-2/4">
@@ -215,7 +215,7 @@ export default function DataMapel() {
                 value={newMapelData.nama || ''}
                 onChange={(e) => setNewMapelData({ ...newMapelData, nama: e.target.value })}
                 placeholder="contoh: Pendidikan Matematika Terapan"
-                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 font-bold text-slate-700"
+                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500/20 font-bold text-slate-700"
               />
             </div>
             <div className="w-full md:w-1/4">
@@ -223,7 +223,7 @@ export default function DataMapel() {
               <select
                 value={newMapelData.kelompok || 'Pokok'}
                 onChange={(e) => setNewMapelData({ ...newMapelData, kelompok: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700"
+                className="w-full border border-gray-300 rounded-lg bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500/20 text-slate-700"
               >
                 <option value="Pokok">Pokok</option>
                 <option value="Muatan Lokal">Muatan Lokal</option>
@@ -242,8 +242,8 @@ export default function DataMapel() {
       )}
 
       {selectedIds.length > 0 && (
-        <div className="bg-indigo-50/80 border-b border-indigo-100 px-6 py-3 flex items-center justify-between animate-in fade-in duration-200">
-          <span className="text-indigo-700 font-bold text-sm">{selectedIds.length} mata pelajaran terpilih</span>
+        <div className="bg-slate-50/80 border-b border-slate-100 px-6 py-3 flex items-center justify-between animate-in fade-in duration-200">
+          <span className="text-slate-950 font-bold text-sm">{selectedIds.length} mata pelajaran terpilih</span>
           <button 
             onClick={handleDeleteSelected}
             className="flex items-center gap-2 bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-colors"
@@ -262,7 +262,7 @@ export default function DataMapel() {
                   type="checkbox" 
                   checked={mapel.length > 0 && selectedIds.length === mapel.length}
                   onChange={handleToggleSelectAll}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
+                  className="rounded border-gray-300 text-slate-900 focus:ring-slate-500 w-3.5 h-3.5 cursor-pointer" 
                 />
               </th>
               <th className="px-2 py-2 w-10 text-center text-[10px] uppercase tracking-wider">Geser</th>
@@ -285,14 +285,14 @@ export default function DataMapel() {
                 onDragEnter={() => (dragOverItem.current = i)}
                 onDragEnd={handleSort}
                 onDragOver={(e) => e.preventDefault()}
-                className={`hover:bg-slate-50/80 transition-colors group ${selectedIds.includes(m.id) ? 'bg-indigo-50/30' : ''}`}
+                className={`hover:bg-slate-50/80 transition-colors group ${selectedIds.includes(m.id) ? 'bg-slate-50/30' : ''}`}
               >
                 <td className="px-3 py-1.5 text-center">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.includes(m.id)}
                     onChange={() => handleToggleSelect(m.id)}
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
+                    className="rounded border-gray-300 text-slate-900 focus:ring-slate-500 w-3.5 h-3.5 cursor-pointer" 
                   />
                 </td>
                 <td className="px-2 py-1.5 text-center text-slate-300 cursor-grab active:cursor-grabbing hover:text-slate-500">
@@ -330,7 +330,7 @@ export default function DataMapel() {
                 <td className="px-4 py-1.5 text-center">
                   <button 
                     onClick={() => handleUpdate(m.id, 'tampilRapor', !m.tampilRapor)}
-                    className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${m.tampilRapor ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                    className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 ${m.tampilRapor ? 'bg-emerald-500' : 'bg-slate-300'}`}
                     role="switch"
                     aria-checked={m.tampilRapor}
                   >

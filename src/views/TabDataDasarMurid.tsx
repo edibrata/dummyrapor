@@ -296,8 +296,8 @@ export default function TabDataDasarMurid() {
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="bg-indigo-50/80 border-b border-indigo-100 px-6 py-3 flex items-center justify-between animate-in fade-in duration-200">
-          <span className="text-indigo-700 font-bold text-sm">{selectedIds.length} data murid terpilih</span>
+        <div className="bg-slate-50/80 border-b border-slate-100 px-6 py-3 flex items-center justify-between animate-in fade-in duration-200">
+          <span className="text-slate-950 font-bold text-sm">{selectedIds.length} data murid terpilih</span>
           <button 
             onClick={handleDeleteSelected}
             className="flex items-center gap-2 bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-colors"
@@ -316,7 +316,7 @@ export default function TabDataDasarMurid() {
                   type="checkbox" 
                   checked={siswa.length > 0 && selectedIds.length === siswa.length}
                   onChange={handleToggleSelectAll}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
+                  className="rounded border-gray-300 text-slate-900 focus:ring-slate-500 w-3.5 h-3.5 cursor-pointer" 
                 />
               </th>
               <th className="px-2 py-2 w-8 text-center text-[10px] uppercase tracking-wider sticky left-10 z-20 bg-[#F8FAFC]">Gsr</th>
@@ -369,14 +369,14 @@ export default function TabDataDasarMurid() {
                 onDragEnter={() => (dragOverItem.current = i)}
                 onDragEnd={handleSort}
                 onDragOver={(e) => e.preventDefault()}
-                className={`hover:bg-slate-50/80 transition-colors group ${selectedIds.includes(s.id) ? 'bg-indigo-50/30' : ''}`}
+                className={`hover:bg-slate-50/80 transition-colors group ${selectedIds.includes(s.id) ? 'bg-slate-50/30' : ''}`}
               >
                 <td className="px-3 py-1.5 text-center sticky left-0 z-10 bg-white group-hover:bg-slate-50">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.includes(s.id)}
                     onChange={() => handleToggleSelect(s.id)}
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" 
+                    className="rounded border-gray-300 text-slate-900 focus:ring-slate-500 w-3.5 h-3.5 cursor-pointer" 
                   />
                 </td>
                 <td className="px-2 py-1.5 text-center text-slate-300 cursor-grab active:cursor-grabbing hover:text-slate-500 sticky left-10 z-10 bg-white group-hover:bg-slate-50">

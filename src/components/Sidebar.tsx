@@ -69,7 +69,6 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
       title: 'Sistem',
       items: [
         { id: 'petunjuk', label: 'Petunjuk Penggunaan', icon: <Lightbulb size={18} /> },
-        { id: 'pengaturan', label: 'Pengaturan', icon: <Settings size={18} /> },
         { id: 'kotak-sampah', label: 'Kotak Sampah', icon: <Trash2 size={18} /> },
         { id: 'profil-pengembang', label: 'Profil Pengembang', icon: <UserCircle size={18} /> },
       ]
@@ -97,21 +96,23 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
   };
 
   return (
-    <aside className={`sidebar bg-indigo-900 text-slate-100 flex flex-col h-screen sticky top-0 shadow-xl overflow-hidden transition-all duration-300 ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full opacity-0'}`}>
-      <div className="p-6 border-b border-indigo-800/50 shrink-0">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center text-indigo-900 shadow-inner">
-            <BookOpen size={24} />
+    <aside className={`sidebar bg-white border-r border-slate-200 text-slate-800 flex flex-col h-screen sticky top-0 shadow-sm overflow-hidden transition-all duration-300 ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full opacity-0'}`}>
+      <div className="h-16 flex items-center justify-center border-b border-slate-200 shrink-0 px-4">
+        <div className="flex items-center gap-3 mb-2 w-full">
+          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-600 text-white font-bold font-sans shrink-0 overflow-hidden border border-blue-200 cursor-pointer transition-transform duration-200 hover:scale-110">
+            <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-full h-full object-cover" />
           </div>
-          <h1 className="font-bold text-lg leading-tight tracking-tight">
-            Rapor Merdeka 
+          <div className="flex-1 whitespace-nowrap transition-opacity duration-300">
+            <h1 className="font-extrabold text-base tracking-tight text-slate-800 leading-none mb-1">
+              E-Rapor <span className="text-blue-600 font-black">SD</span>
+            </h1>
             <span 
-              className="text-amber-400 block text-xs cursor-pointer hover:text-amber-300 transition-colors"
+              className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none hover:text-blue-800 transition-colors cursor-pointer"
               onClick={onOpenDevProfile}
             >
-              SD v5.0 PRO • Edi Brata
+              v5.0 PRO
             </span>
-          </h1>
+          </div>
         </div>
       </div>
       
@@ -120,15 +121,15 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
           <div key={idx} className="mb-2">
             <button 
               onClick={() => toggleGroup(group.title)}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-white/5 transition-colors focus:outline-none group opacity-90 hover:opacity-100"
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors rounded-md focus:outline-none group opacity-90 hover:opacity-100"
             >
-              <p className="text-[10px] uppercase tracking-widest text-indigo-300 font-bold">
+              <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
                 {group.title}
               </p>
               {expandedGroup === group.title ? (
-                <ChevronDown size={14} className="text-indigo-400 group-hover:text-amber-400 transition-colors" />
+                <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600 transition-colors" />
               ) : (
-                <ChevronRight size={14} className="text-indigo-400 group-hover:text-amber-400 transition-colors" />
+                <ChevronRight size={14} className="text-slate-400 group-hover:text-slate-600 transition-colors" />
               )}
             </button>
             
@@ -141,14 +142,22 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
                 {group.items.map(item => (
                   <li key={item.id}>
                     <button
-                      onClick={() => setActiveView(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                      onClick={() => {
+                        if (item.id === 'profil-pengembang' && onOpenDevProfile) {
+                          onOpenDevProfile();
+                        } else {
+                          setActiveView(item.id);
+                        }
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-xs transition-all ${
                         activeView === item.id 
-                          ? 'bg-indigo-700/50 border border-white/10 text-white shadow-sm font-medium translate-x-1' 
-                          : 'hover:bg-white/10 text-slate-300 hover:text-white'
+                          ? 'bg-indigo-50 text-blue-700 font-bold' 
+                          : 'hover:bg-slate-50 text-slate-500 hover:text-slate-800'
                       }`}
                     >
-                      {item.icon}
+                      <div className={activeView === item.id ? 'text-blue-700' : 'text-slate-400 group-hover:text-slate-600'}>
+                        {item.icon}
+                      </div>
                       {item.label}
                     </button>
                   </li>
@@ -159,24 +168,24 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
         ))}
       </nav>
       
-      <div className="p-4 bg-indigo-950/80 border-t border-indigo-800/50 flex items-center justify-between shrink-0">
+      <div className="p-4 bg-slate-50/20 border-t border-slate-100 flex items-center justify-between shrink-0">
         <div 
-          className="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-1.5 -ml-1.5 rounded-lg transition-colors"
+          className="flex items-center gap-3 cursor-pointer group hover:bg-slate-50 p-1.5 -ml-1.5 rounded-lg transition-colors"
           onClick={onOpenDevProfile}
         >
           <img 
             src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" 
             alt="Edi Brata" 
-            className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-400/30 group-hover:ring-indigo-300 transition-all duration-300 group-hover:scale-105"
+            className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-200 group-hover:ring-blue-300 transition-all duration-300 group-hover:scale-105"
           />
           <div>
-            <p className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">Edi Brata</p>
-            <p className="text-[10px] text-indigo-300/70 group-hover:text-indigo-200/90 transition-colors">&copy; EduDev {new Date().getFullYear()}</p>
+            <p className="text-xs font-semibold text-slate-700 group-hover:text-blue-700 transition-colors">Edi Brata</p>
+            <p className="text-[10px] text-slate-500 transition-colors">&copy; EduDev {new Date().getFullYear()}</p>
           </div>
         </div>
         <button 
           onClick={handleLogout}
-          className="p-2 -mr-2 text-indigo-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none group relative"
+          className="p-2 -mr-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors focus:outline-none group relative"
         >
           <LogOut size={16} />
           <span className="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 bottom-full mb-2 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-bottom-1 before:right-2 before:border-4 before:border-transparent before:border-t-slate-800">Ganti Sekolah/Logout</span>

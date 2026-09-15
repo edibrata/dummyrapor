@@ -67,9 +67,9 @@ export default function DataProjekView() {
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-3">
                     <span className="font-bold text-slate-800 bg-white border border-slate-200 rounded-md px-2 py-1 text-sm shadow-sm">Projek {idx + 1}</span>
-                    <input type="text" value={p.tema} onChange={(e) => handleUpdateProjek(p.id, 'tema', e.target.value)} className="font-semibold text-slate-900 bg-transparent border-b-2 border-slate-200 focus:border-indigo-500 outline-none p-1 flex-1 transition-colors" placeholder="Tema Projek" />
+                    <input type="text" value={p.tema} onChange={(e) => handleUpdateProjek(p.id, 'tema', e.target.value)} className="font-semibold text-slate-900 bg-transparent border-b-2 border-slate-200 focus:border-slate-500 outline-none p-1 flex-1 transition-colors" placeholder="Tema Projek" />
                   </div>
-                  <textarea value={p.deskripsi} onChange={(e) => handleUpdateProjek(p.id, 'deskripsi', e.target.value)} className="w-full text-sm text-slate-700 bg-white border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-lg outline-none p-3 resize-y min-h-[80px] shadow-sm transition-all" placeholder="Deskripsi/Judul Projek" />
+                  <textarea value={p.deskripsi} onChange={(e) => handleUpdateProjek(p.id, 'deskripsi', e.target.value)} className="w-full text-sm text-slate-700 bg-white border border-slate-200 focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 rounded-lg outline-none p-3 resize-y min-h-[80px] shadow-sm transition-all" placeholder="Deskripsi/Judul Projek" />
                 </div>
                 <button onClick={() => handleDeleteProjek(p.id)} className="text-slate-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors mt-1">
                   <Trash2 size={18} />
@@ -78,7 +78,7 @@ export default function DataProjekView() {
               <div className="p-5 bg-white">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500">Dimensi yang diukur</h4>
-                  <button onClick={() => handleAddDimensi(p.id)} className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center gap-1 font-medium bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">
+                  <button onClick={() => handleAddDimensi(p.id)} className="text-sm text-slate-900 hover:text-slate-700 flex items-center gap-1 font-medium bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors">
                     <Plus size={14} /> Tambah Dimensi
                   </button>
                 </div>
@@ -89,8 +89,8 @@ export default function DataProjekView() {
                   <ul className="space-y-2">
                     {dims.map(d => (
                       <li key={d.id} className="flex gap-3 items-center group">
-                        <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                        <input type="text" value={d.nama} onChange={(e) => handleUpdateDimensi(d.id, e.target.value)} className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium text-slate-700" placeholder="Misal: Bernalar Kritis" />
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                        <input type="text" value={d.nama} onChange={(e) => handleUpdateDimensi(d.id, e.target.value)} className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 transition-all font-medium text-slate-700" placeholder="Misal: Bernalar Kritis" />
                         <button onClick={() => handleDeleteDimensi(d.id)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-2">
                           <Trash2 size={16} />
                         </button>

@@ -150,7 +150,7 @@ export default function TujuanPembelajaranView() {
       <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-t-2xl">
         <div>
           <h1 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <Target className="w-4 h-4 text-indigo-600" />
+            <Target className="w-4 h-4 text-slate-900" />
             Manajemen Tujuan Pembelajaran
           </h1>
           <p className="text-[11px] text-slate-500 mt-1">Kelola data Tujuan Pembelajaran (TP) untuk setiap mata pelajaran.</p>
@@ -162,7 +162,7 @@ export default function TujuanPembelajaranView() {
             <select 
               value={selectedMapel} 
               onChange={(e) => setSelectedMapel(e.target.value)} 
-              className="border border-slate-200 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+              className="border border-slate-200 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/20 cursor-pointer"
             >
               {mapel.map(m => (
                 <option key={m.id} value={m.id}>{m.nama}</option>

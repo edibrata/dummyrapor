@@ -31,6 +31,11 @@ export interface Sekolah {
   tanggalRapor?: string;
   bobotSumatifLingkup?: number;
   bobotSumatifSemester?: number;
+  logoKiri?: string;
+  logoKanan?: string;
+  useDigitalSignature?: boolean;
+  ttdWaliKelas?: string;
+  ttdKepsek?: string;
 }
 
 export interface Siswa {

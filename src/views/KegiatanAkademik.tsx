@@ -8,7 +8,7 @@ export default function KegiatanAkademik() {
 
   return (
     <div className="animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 w-full overflow-hidden">
+      <div className="bg-white rounded-md shadow-sm border border-slate-200 w-full overflow-hidden">
         <div className="flex border-b border-slate-200 bg-slate-50/50">
           <button
             onClick={() => setActiveTab('mapel')}

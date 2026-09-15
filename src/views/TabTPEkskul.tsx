@@ -151,7 +151,7 @@ export default function TabTPEkskul() {
       <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <Target className="w-4 h-4 text-indigo-600" />
+            <Target className="w-4 h-4 text-slate-900" />
             Tujuan Pembelajaran Ekstrakurikuler
           </h1>
           <p className="text-[11px] text-slate-500 mt-1">Kelola data Tujuan Pembelajaran (TP) untuk setiap ekstrakurikuler.</p>
@@ -163,7 +163,7 @@ export default function TabTPEkskul() {
             <select 
               value={selectedEkskul} 
               onChange={(e) => setSelectedEkskul(e.target.value)} 
-              className="border border-slate-200 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+              className="border border-slate-200 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/20 cursor-pointer"
             >
               {ekstrakurikuler?.map(e => (
                 <option key={e.id} value={e.id}>{e.nama}</option>

@@ -97,7 +97,7 @@ export default function CetakRapor() {
         <div className="flex items-end gap-4 max-w-lg">
           <div className="flex-1">
             <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pilih Siswa</label>
-            <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50 outline-none text-sm font-medium text-slate-700 transition-all cursor-pointer">
+            <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 bg-slate-50 outline-none text-sm font-medium text-slate-700 transition-all cursor-pointer">
               <option value="">-- Pilih Siswa --</option>
               {siswa.map(sw => (
                 <option key={sw.id} value={sw.id}>{sw.nama}</option>
@@ -182,7 +182,7 @@ export default function CetakRapor() {
                   <tr key={m.id} className="even:bg-slate-50/50 print:even:bg-transparent">
                     <td className="border border-slate-800 p-2 text-center align-top font-mono text-xs">{idx + 1}</td>
                     <td className="border border-slate-800 p-2 font-semibold align-top text-slate-800">{m.nama}</td>
-                    <td className="border border-slate-800 p-2 text-center font-bold align-top text-indigo-900 bg-indigo-50/30 print:bg-transparent">
+                    <td className="border border-slate-800 p-2 text-center font-bold align-top text-slate-800 bg-slate-50/30 print:bg-transparent">
                       {finalScore !== null ? finalScore : ''}
                     </td>
                     <td className="border border-slate-800 p-3 text-xs text-justify leading-relaxed align-top space-y-1.5 text-slate-700">

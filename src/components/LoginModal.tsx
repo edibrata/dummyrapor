@@ -214,27 +214,27 @@ export default function LoginModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-900/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-xl border border-zinc-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-300">
         <div className="p-6 md:p-8">
           
           {step === 1 && (
               <>
               <div className="flex items-center justify-between mb-6">
-                <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-zinc-100 text-zinc-900 rounded-xl flex items-center justify-center">
                   <Lock size={24} />
                 </div>
                 <div 
-                  className="flex items-center gap-2 bg-slate-50 hover:bg-white px-3 py-1.5 rounded-full border border-slate-100 hover:border-indigo-200 cursor-pointer transition-all shadow-sm group"
+                  className="flex items-center gap-2 bg-zinc-50 hover:bg-white px-3 py-1.5 rounded-full border border-zinc-100 hover:border-zinc-200 cursor-pointer transition-all shadow-sm group"
                   onClick={() => setShowDevProfileModal(true)}
                 >
                   <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-5 h-5 rounded-full object-cover group-hover:ring-2 ring-indigo-400 transition-all" />
-                  <span className="text-[11px] font-bold text-slate-500 group-hover:text-indigo-600 uppercase tracking-wider transition-colors">Edi Brata</span>
+                  <span className="text-[11px] font-bold text-zinc-500 group-hover:text-zinc-900 uppercase tracking-wider transition-colors">Edi Brata</span>
                 </div>
               </div>
               
-              <h2 className="text-2xl font-bold text-slate-800 mb-2">Autentikasi Aplikasi</h2>
-              <p className="text-sm text-slate-500 mb-8">
+              <h2 className="text-2xl font-bold text-zinc-800 mb-2">Autentikasi Aplikasi</h2>
+              <p className="text-sm text-zinc-500 mb-8">
                 Silakan masukkan NPSN sekolah Anda untuk sinkronisasi data dasar dan membuka kunci akses pelaporan.
               </p>
 
@@ -247,14 +247,14 @@ export default function LoginModal() {
 
               <form onSubmit={handleVerifyNpsn} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="npsn" className="block text-sm font-semibold text-slate-700">NPSN</label>
+                  <label htmlFor="npsn" className="block text-sm font-semibold text-zinc-700">NPSN</label>
                   <input
                     id="npsn"
                     type="text"
                     placeholder="Masukkan 8 Digit NPSN"
                     value={npsn}
                     onChange={(e) => setNpsn(e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 text-slate-800"
+                    className="w-full px-4 py-3 border border-zinc-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-zinc-500/10 focus:border-zinc-500 text-zinc-800"
                     disabled={isLoading}
                   />
                 </div>
@@ -262,7 +262,7 @@ export default function LoginModal() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold flex items-center justify-center py-3 px-4 rounded-lg transition-colors focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-zinc-900 hover:bg-zinc-950 text-white font-semibold flex items-center justify-center py-3 px-4 rounded-lg transition-colors focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <Loader2 size={18} className="animate-spin" />
@@ -277,12 +277,12 @@ export default function LoginModal() {
           {step === 2 && (
              <>
                 <div className="flex items-center gap-4 mb-6">
-                    <button onClick={() => { setStep(1); setIsCreatingNew(false); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 transition-colors">
+                    <button onClick={() => { setStep(1); setIsCreatingNew(false); }} className="p-2 bg-zinc-100 hover:bg-zinc-200 rounded-lg text-zinc-600 transition-colors">
                         <ArrowRight size={16} className="rotate-180" />
                     </button>
                     <div>
-                        <h2 className="text-xl font-bold text-slate-800">Pilih Ruang Kerja</h2>
-                        <p className="text-xs text-slate-500">{baselineData?.nama} ({npsn})</p>
+                        <h2 className="text-xl font-bold text-zinc-800">Pilih Ruang Kerja</h2>
+                        <p className="text-xs text-zinc-500">{baselineData?.nama} ({npsn})</p>
                     </div>
                 </div>
 
@@ -297,32 +297,32 @@ export default function LoginModal() {
                     <div className="space-y-4">
                         {availableWorkspaces.length > 0 && (
                             <div className="space-y-3 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Lanjutkan Pekerjaan</label>
+                                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Lanjutkan Pekerjaan</label>
                                 {availableWorkspaces.map((ws, i) => (
                                     <button 
                                         key={i} 
                                         onClick={() => loadWorkspace(ws.npsn)}
-                                        className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors text-left group"
+                                        className="w-full flex items-center justify-between p-4 rounded-xl border border-zinc-200 hover:border-indigo-300 hover:bg-zinc-50/50 transition-colors text-left group"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-200 transition-colors">
+                                            <div className="p-2 bg-zinc-100 text-zinc-900 rounded-lg group-hover:bg-zinc-200 transition-colors">
                                                 <FolderOpen size={18} />
                                             </div>
                                             <div>
-                                                 <p className="font-semibold text-slate-800">Kelas {ws.sekolah?.kelas} - {ws.sekolah?.ruangRombel}</p>
-                                                 <p className="text-xs text-slate-500">{ws.sekolah?.tahunAjaran} | Smt {ws.sekolah?.semester}</p>
+                                                 <p className="font-semibold text-zinc-800">Kelas {ws.sekolah?.kelas} - {ws.sekolah?.ruangRombel}</p>
+                                                 <p className="text-xs text-zinc-500">{ws.sekolah?.tahunAjaran} | Smt {ws.sekolah?.semester}</p>
                                             </div>
                                         </div>
-                                        <ArrowRight size={16} className="text-slate-400 group-hover:text-indigo-600" />
+                                        <ArrowRight size={16} className="text-zinc-400 group-hover:text-zinc-900" />
                                     </button>
                                 ))}
                             </div>
                         )}
 
-                        <div className="pt-2 border-t border-slate-100">
+                        <div className="pt-2 border-t border-zinc-100">
                              <button
                                 onClick={() => setIsCreatingNew(true)}
-                                className="w-full border-2 border-dashed border-slate-300 text-slate-600 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 font-medium flex items-center justify-center py-3 px-4 rounded-xl transition-all focus:outline-none"
+                                className="w-full border-2 border-dashed border-zinc-300 text-zinc-600 hover:border-indigo-400 hover:text-zinc-900 hover:bg-zinc-50 font-medium flex items-center justify-center py-3 px-4 rounded-xl transition-all focus:outline-none"
                             >
                                 <Plus size={18} className="mr-2" />
                                 Buat Ruang Kerja Baru
@@ -331,22 +331,22 @@ export default function LoginModal() {
                     </div>
                 ) : (
                     <form onSubmit={createNewWorkspace} className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300 mb-2">
-                        <label className="block text-xs font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b border-indigo-100 pb-2">Identitas Ruang Kelas</label>
+                        <label className="block text-xs font-bold text-zinc-900 uppercase tracking-wider mb-4 border-b border-zinc-100 pb-2">Identitas Ruang Kelas</label>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-semibold text-slate-700">Tahun Ajaran</label>
-                                <input required type="text" placeholder="2023/2024" value={newWorkspace.tahunAjaran} onChange={(e) => setNewWorkspace({...newWorkspace, tahunAjaran: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                                <label className="block text-xs font-semibold text-zinc-700">Tahun Ajaran</label>
+                                <input required type="text" placeholder="2023/2024" value={newWorkspace.tahunAjaran} onChange={(e) => setNewWorkspace({...newWorkspace, tahunAjaran: e.target.value})} className="w-full px-3 py-2 text-sm border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500" />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-semibold text-slate-700">Semester</label>
-                                <select value={newWorkspace.semester} onChange={(e) => setNewWorkspace({...newWorkspace, semester: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                                <label className="block text-xs font-semibold text-zinc-700">Semester</label>
+                                <select value={newWorkspace.semester} onChange={(e) => setNewWorkspace({...newWorkspace, semester: e.target.value})} className="w-full px-3 py-2 text-sm border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500">
                                     <option value="1">1 (Ganjil)</option>
                                     <option value="2">2 (Genap)</option>
                                 </select>
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-semibold text-slate-700">Kelas</label>
-                                <select required value={newWorkspace.kelas} onChange={(e) => setNewWorkspace({...newWorkspace, kelas: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                                <label className="block text-xs font-semibold text-zinc-700">Kelas</label>
+                                <select required value={newWorkspace.kelas} onChange={(e) => setNewWorkspace({...newWorkspace, kelas: e.target.value})} className="w-full px-3 py-2 text-sm border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500">
                                     <option value="">Pilih</option>
                                     {baselineData?.allowedKelas?.map((k: string) => (
                                          <option key={k} value={k}>{k}</option>
@@ -364,8 +364,8 @@ export default function LoginModal() {
                                 </select>
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-semibold text-slate-700">Rombel</label>
-                                <select required value={newWorkspace.ruangRombel} onChange={(e) => setNewWorkspace({...newWorkspace, ruangRombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                                <label className="block text-xs font-semibold text-zinc-700">Rombel</label>
+                                <select required value={newWorkspace.ruangRombel} onChange={(e) => setNewWorkspace({...newWorkspace, ruangRombel: e.target.value})} className="w-full px-3 py-2 text-sm border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500">
                                     <option value="">Pilih</option>
                                     <option value="satu">Hanya Satu (Default)</option>
                                     <option value="A">A</option>
@@ -378,17 +378,17 @@ export default function LoginModal() {
                             </div>
                         </div>
 
-                         <div className="flex gap-3 pt-6 mt-6 border-t border-slate-100">
+                         <div className="flex gap-3 pt-6 mt-6 border-t border-zinc-100">
                              <button
                                 type="button"
                                 onClick={() => setIsCreatingNew(false)}
-                                className="flex-1 border bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700 font-semibold flex items-center justify-center py-2.5 px-4 rounded-lg transition-colors focus:outline-none"
+                                className="flex-1 border bg-zinc-100 hover:bg-zinc-200 border-zinc-200 text-zinc-700 font-semibold flex items-center justify-center py-2.5 px-4 rounded-lg transition-colors focus:outline-none"
                             >
                                 Batal
                             </button>
                             <button
                                 type="submit"
-                                className="flex-[2] bg-indigo-600 hover:bg-indigo-700 text-white font-semibold flex items-center justify-center py-2.5 px-4 rounded-lg transition-colors focus:outline-none shadow-sm"
+                                className="flex-[2] bg-zinc-900 hover:bg-zinc-950 text-white font-semibold flex items-center justify-center py-2.5 px-4 rounded-lg transition-colors focus:outline-none shadow-sm"
                             >
                                 Masuk Aplikasi
                             </button>

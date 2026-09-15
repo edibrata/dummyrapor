@@ -14,8 +14,6 @@ import NilaiProjek from '@/views/NilaiProjek';
 import CetakRapor from '@/views/CetakRapor';
 import KotakSampah from '@/views/KotakSampah';
 import Placeholder from '@/views/Placeholder';
-import ProfilPengembang from '@/views/ProfilPengembang';
-import Pengaturan from '@/views/Pengaturan';
 import Petunjuk from '@/views/Petunjuk';
 import LoginModal from '@/components/LoginModal';
 import DashboardView from '@/views/DashboardView';
@@ -27,7 +25,7 @@ function Dashboard() {
   const [showDevProfileModal, setShowDevProfileModal] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans overflow-hidden">
+    <div className="flex min-h-screen bg-[#F8FAFC] text-slate-800 font-sans overflow-hidden">
       <Sidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} onOpenDevProfile={() => setShowDevProfileModal(true)} />
       
       <div className="flex-1 flex flex-col min-w-0 main-content h-screen overflow-y-auto">
@@ -59,8 +57,6 @@ function Dashboard() {
           {activeView === 'ai-assistant' && <Placeholder title="AI Assistant" />}
 
           {activeView === 'petunjuk' && <Petunjuk />}
-          {activeView === 'pengaturan' && <Pengaturan />}
-          {activeView === 'profil-pengembang' && <ProfilPengembang onOpenDevProfile={() => setShowDevProfileModal(true)} />}
         </main>
         <footer className="py-5 shrink-0 border-t border-slate-200/80 bg-slate-50/80 backdrop-blur-sm">
           <div 

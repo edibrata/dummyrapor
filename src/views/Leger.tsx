@@ -55,8 +55,8 @@ export default function Leger() {
                 <th rowSpan={2} className="border border-slate-200 p-3 w-10 text-center sticky left-0 z-30 bg-slate-100">No</th>
                 <th rowSpan={2} className="border border-slate-200 p-3 text-left w-48 sticky left-10 z-30 bg-slate-100 shadow-[1px_0_0_0_#e2e8f0]">Nama Siswa</th>
                 <th colSpan={displayedMapel.length} className="border border-slate-200 p-2 text-center text-[10px] uppercase font-bold tracking-wider">Nilai Rapor Mata Pelajaran</th>
-                <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-indigo-50 text-[10px] uppercase tracking-wider">Jumlah</th>
-                <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-amber-50 text-[10px] uppercase tracking-wider">Rerata</th>
+                <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-slate-50 text-[10px] uppercase tracking-wider">Jumlah</th>
+                <th rowSpan={2} className="border border-slate-200 p-3 w-20 text-center font-bold bg-slate-50 text-[10px] uppercase tracking-wider">Rerata</th>
               </tr>
               <tr className="text-slate-600">
                 {displayedMapel.map((m) => (
@@ -85,7 +85,7 @@ export default function Leger() {
                 const bulatRata = countScore > 0 ? Math.round(totalScore/countScore) : null;
 
                 return (
-                  <tr key={s.id} className="hover:bg-indigo-50/30 transition-colors">
+                  <tr key={s.id} className="hover:bg-slate-50/30 transition-colors">
                     <td className="border border-slate-200 p-3 text-center sticky left-0 bg-white z-10 font-mono text-slate-400">{i + 1}</td>
                     <td className="border border-slate-200 p-3 truncate sticky left-10 bg-white z-10 shadow-[1px_0_0_0_#e2e8f0] font-medium">{s.nama}</td>
                     
@@ -95,10 +95,10 @@ export default function Leger() {
                       </td>
                     ))}
                     
-                    <td className="border border-slate-200 p-3 text-center font-bold text-slate-500 bg-indigo-50/30">
+                    <td className="border border-slate-200 p-3 text-center font-bold text-slate-500 bg-slate-50/30">
                       {totalScore || '-'}
                     </td>
-                    <td className="border border-slate-200 p-3 text-center font-bold text-indigo-700 bg-amber-50/30">
+                    <td className="border border-slate-200 p-3 text-center font-bold text-slate-950 bg-slate-50/30">
                       {bulatRata !== null ? bulatRata : '-'}
                     </td>
                   </tr>
