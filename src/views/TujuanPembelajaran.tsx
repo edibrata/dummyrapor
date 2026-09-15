@@ -1,5 +1,7 @@
 import { KriteriaKetuntasan } from '../components/KriteriaKetuntasan';
 import { defaultTpPancasila } from '../data/defaultTpPancasila';
+import { defaultTpBahasaInggris } from '../data/defaultTpBahasaInggris';
+import { defaultTpBahasaIndonesia } from '../data/defaultTpBahasaIndonesia';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { TujuanPembelajaran } from '@/types';
@@ -69,8 +71,14 @@ export default function TujuanPembelajaranView() {
     const mapelObj = mapel.find(m => m.id === selectedMapel);
     if (!mapelObj) return;
 
-    if (!mapelObj.nama.toLowerCase().includes('pancasila')) {
-      showNotif("Maaf, muat TP otomatis saat ini baru tersedia untuk mapel Pendidikan Pancasila.", "error");
+    
+    
+    const isPancasila = mapelObj.nama.toLowerCase().includes('pancasila');
+    const isInggris = mapelObj.nama.toLowerCase().includes('inggris') || mapelObj.nama.toLowerCase().includes('english');
+    const isIndonesia = mapelObj.nama.toLowerCase().includes('indonesia');
+
+    if (!isPancasila && !isInggris && !isIndonesia) {
+      showNotif("Maaf, muat TP otomatis saat ini baru tersedia untuk mapel: Pancasila, Bahasa Inggris, dan Bahasa Indonesia.", "error");
       return;
     }
 
@@ -105,7 +113,11 @@ export default function TujuanPembelajaranView() {
       return;
     }
 
-    const kelasData = defaultTpPancasila[parsedKelas];
+    let kelasData;
+    if (isPancasila) kelasData = defaultTpPancasila[parsedKelas];
+    if (isInggris) kelasData = defaultTpBahasaInggris[parsedKelas];
+    if (isIndonesia) kelasData = defaultTpBahasaIndonesia[parsedKelas];
+
     if (!kelasData) {
       showNotif(`Maaf, data TP default untuk Kelas ${parsedKelas} belum tersedia.`, "error");
       return;
@@ -117,6 +129,8 @@ export default function TujuanPembelajaranView() {
       return;
     }
 
+
+
     
       let indexCounter = 0;
       const newTps = tpsToInject.map(item => ({
@@ -127,7 +141,7 @@ export default function TujuanPembelajaranView() {
       }));
 
       updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, ...newTps]);
-      showNotif(`Berhasil memuat ${newTps.length} TP default Pendidikan Pancasila!`, "success");
+      showNotif(`Berhasil memuat ${newTps.length} TP default ${mapelObj.nama}!`, "success");
     
   };
 
