@@ -52,6 +52,7 @@ export interface Siswa {
 }
 
 export interface Mapel {
+  intervalBatas?: number[]; // [batas1, batas2, batas3, batas4] e.g. [20, 40, 60, 80]
   id: string;
   nama: string;
   kode: string;

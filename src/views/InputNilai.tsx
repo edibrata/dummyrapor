@@ -12,6 +12,19 @@ export default function InputNilai() {
     }
   }, [mapel, selectedMapel]);
   const mapelTps = tujuanPembelajaran.filter(tp => tp.mapelId === selectedMapel);
+  const selectedMapelData = mapel.find(m => m.id === selectedMapel);
+  const intervalBatas = selectedMapelData?.intervalBatas || [20, 40, 60, 80];
+
+  const getScoreColorClass = (scoreStr: string | number) => {
+    if (scoreStr === '' || scoreStr === null || scoreStr === undefined) return 'bg-transparent text-slate-800';
+    const score = Number(scoreStr);
+    if (isNaN(score)) return 'bg-transparent text-slate-800';
+    if (score <= intervalBatas[0]) return 'bg-rose-50 text-rose-700 font-bold focus:bg-rose-100';
+    if (score <= intervalBatas[1]) return 'bg-orange-50 text-orange-700 font-bold focus:bg-orange-100';
+    if (score <= intervalBatas[2]) return 'bg-amber-50 text-amber-700 font-bold focus:bg-amber-100';
+    if (score <= intervalBatas[3]) return 'bg-emerald-50 text-emerald-700 font-bold focus:bg-emerald-100';
+    return 'bg-teal-50 text-teal-700 font-bold focus:bg-teal-100';
+  };
 
   const handleScoreChange = (studentId: string, type: 'tp' | 'sumatifAkhir', tpId: string | undefined, val: string) => {
     // Hindari tipe data string, cegah nilai NaN (Not a Number) dan nilai di luar 0-100
@@ -95,7 +108,7 @@ export default function InputNilai() {
                           min="0" max="100"
                           value={getScore(s.id, 'tp', tp.id)} 
                           onChange={(e) => handleScoreChange(s.id, 'tp', tp.id, e.target.value)}
-                          className="w-full h-full p-2 outline-none text-center bg-transparent focus:bg-white" 
+                          className={`w-full h-full p-2 outline-none text-center transition-colors ${getScoreColorClass(getScore(s.id, 'tp', tp.id))}`} 
                         />
                       </td>
                     ))}

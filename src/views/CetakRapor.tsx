@@ -7,6 +7,7 @@ export default function CetakRapor() {
   const { sekolah, siswa, nilai, tujuanPembelajaran, mapel } = state;
   const displayedMapel = mapel.filter(m => m.tampilRapor !== false);
   const [selectedStudent, setSelectedStudent] = useState<string>(siswa[0]?.id || '');
+  const [isTanpaAngka, setIsTanpaAngka] = useState(false);
 
   // Effect to handle print mode styles
   useEffect(() => {
@@ -104,6 +105,12 @@ export default function CetakRapor() {
               ))}
             </select>
           </div>
+          {(sekolah.fase === 'A' || sekolah.kelas === '1' || sekolah.kelas === '2') && (
+            <div className="flex items-center gap-2 mb-2">
+              <input type="checkbox" id="tanpaAngka" checked={isTanpaAngka} onChange={e => setIsTanpaAngka(e.target.checked)} className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer" />
+              <label htmlFor="tanpaAngka" className="text-xs font-semibold text-slate-700 cursor-pointer">Cetak Rapor Fase A Tanpa Angka</label>
+            </div>
+          )}
           <button onClick={handlePrint} disabled={!s} className="bg-indigo-600 text-white px-5 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm shadow-sm transition-all hover:shadow">
             <Printer size={18} /> Cetak
           </button>
@@ -170,7 +177,7 @@ export default function CetakRapor() {
               <tr className="bg-slate-100 print:bg-slate-100">
                 <th className="border border-slate-800 py-3 px-1 w-10 text-center font-bold text-slate-800 uppercase text-[10px] tracking-wider">No</th>
                 <th className="border border-slate-800 py-3 px-3 w-48 text-left font-bold text-slate-800 uppercase text-[10px] tracking-wider">Mata Pelajaran</th>
-                <th className="border border-slate-800 py-3 px-1 w-16 text-center font-bold text-slate-800 uppercase text-[10px] tracking-wider">Nilai<br/>Akhir</th>
+                {!isTanpaAngka && <th className="border border-slate-800 py-3 px-1 w-16 text-center font-bold text-slate-800 uppercase text-[10px] tracking-wider">Nilai<br/>Akhir</th>}
                 <th className="border border-slate-800 py-3 px-3 text-left font-bold text-slate-800 uppercase text-[10px] tracking-wider">Capaian Kompetensi</th>
               </tr>
             </thead>
@@ -182,9 +189,11 @@ export default function CetakRapor() {
                   <tr key={m.id} className="even:bg-slate-50/50 print:even:bg-transparent">
                     <td className="border border-slate-800 p-2 text-center align-top font-mono text-xs">{idx + 1}</td>
                     <td className="border border-slate-800 p-2 font-semibold align-top text-slate-800">{m.nama}</td>
-                    <td className="border border-slate-800 p-2 text-center font-bold align-top text-slate-800 bg-slate-50/30 print:bg-transparent">
-                      {finalScore !== null ? finalScore : ''}
-                    </td>
+                    {!isTanpaAngka && (
+                      <td className="border border-slate-800 p-2 text-center font-bold align-top text-slate-800 bg-slate-50/30 print:bg-transparent">
+                        {finalScore !== null ? finalScore : ''}
+                      </td>
+                    )}
                     <td className="border border-slate-800 p-3 text-xs text-justify leading-relaxed align-top space-y-1.5 text-slate-700">
                       {deskripsiTertinggi && <p className="text-emerald-700 font-medium print:text-black">{deskripsiTertinggi}</p>}
                       {deskripsiTerendah && <p className="text-rose-700 font-medium print:text-black">{deskripsiTerendah}</p>}

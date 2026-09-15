@@ -68,6 +68,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
     {
       title: 'Sistem',
       items: [
+        { id: 'panduan-asesmen', label: 'Panduan Asesmen 2025', icon: <BookOpen size={18} /> },
         { id: 'petunjuk', label: 'Petunjuk Penggunaan', icon: <Lightbulb size={18} /> },
         { id: 'kotak-sampah', label: 'Kotak Sampah', icon: <Trash2 size={18} /> },
         { id: 'profil-pengembang', label: 'Profil Pengembang', icon: <UserCircle size={18} /> },

@@ -15,6 +15,7 @@ import CetakRapor from '@/views/CetakRapor';
 import KotakSampah from '@/views/KotakSampah';
 import Placeholder from '@/views/Placeholder';
 import Petunjuk from '@/views/Petunjuk';
+import PanduanAsesmen from '@/views/PanduanAsesmen';
 import LoginModal from '@/components/LoginModal';
 import DashboardView from '@/views/DashboardView';
 import DeveloperProfileModal from '@/components/DeveloperProfileModal';
@@ -71,6 +72,7 @@ function Dashboard() {
           {activeView === 'ai-assistant' && <Placeholder title="AI Assistant" />}
 
           {activeView === 'petunjuk' && <Petunjuk />}
+          {activeView === 'panduan-asesmen' && <PanduanAsesmen />}
         </main>
         <footer className="py-5 shrink-0 border-t border-slate-200/80 bg-slate-50/80 backdrop-blur-sm">
           <div 

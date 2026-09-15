@@ -1,3 +1,4 @@
+import { KriteriaKetuntasan } from '../components/KriteriaKetuntasan';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { TujuanPembelajaran } from '@/types';
@@ -208,7 +209,7 @@ export default function TujuanPembelajaranView() {
           </div>
         </div>
       </div>
-
+      {selectedMapel && <KriteriaKetuntasan mapelId={selectedMapel} />}
       <div className="overflow-auto bg-white rounded-b-2xl border-t border-gray-200" style={{ maxHeight: 'calc(100vh - 250px)' }}>
         <table className="w-full text-left text-xs whitespace-nowrap">
           <thead className="bg-[#F8FAFC] text-slate-500 font-bold border-b border-gray-200 sticky top-0 z-10 shadow-sm">
