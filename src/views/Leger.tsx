@@ -44,7 +44,7 @@ export default function Leger() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col h-[calc(100vh-8rem)]">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col h-[calc(100vh-8rem)]">
       <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100 shrink-0">Leger Nilai (Rekapitulasi)</h2>
 
       <div className="overflow-hidden rounded-xl border border-slate-200 flex-1">

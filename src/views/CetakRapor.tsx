@@ -92,7 +92,7 @@ export default function CetakRapor() {
   return (
     <div className="space-y-4">
       {/* Controls - Hidden when printing */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 print:hidden space-y-4">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 print:hidden space-y-4">
         <h2 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Cetak Rapor</h2>
         <div className="flex items-end gap-4 max-w-lg">
           <div className="flex-1">

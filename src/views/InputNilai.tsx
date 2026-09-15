@@ -47,7 +47,7 @@ export default function InputNilai() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
       <h2 className="text-lg font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">Input Nilai Akademik</h2>
 
       <div className="mb-6 max-w-xs">
