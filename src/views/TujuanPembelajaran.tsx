@@ -1,15 +1,23 @@
 import { KriteriaKetuntasan } from '../components/KriteriaKetuntasan';
+import { defaultTpPancasila } from '../data/defaultTpPancasila';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { TujuanPembelajaran } from '@/types';
-import { Plus, Trash2, Target, Download, Upload } from 'lucide-react';
+import { Plus, Trash2, Target, Download, Upload, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 export default function TujuanPembelajaranView() {
   const { state, updateState } = useAppStore();
   const { mapel } = state;
   const [selectedMapel, setSelectedMapel] = useState<string>('');
+  const [notification, setNotification] = useState<{message: string, type: 'error' | 'success'} | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showNotif = (message: string, type: 'error' | 'success' = 'error') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
+
 
   useEffect(() => {
     if (mapel.length > 0 && !selectedMapel) {
@@ -54,6 +62,73 @@ export default function TujuanPembelajaranView() {
       updateState('trash', [...(state.trash || []), newTrashItem]);
     }
     updateState('tujuanPembelajaran', state.tujuanPembelajaran.filter(tp => tp.id !== id));
+  };
+
+      const handleGenerateDefaultTp = () => {
+    if (!selectedMapel) return;
+    const mapelObj = mapel.find(m => m.id === selectedMapel);
+    if (!mapelObj) return;
+
+    if (!mapelObj.nama.toLowerCase().includes('pancasila')) {
+      showNotif("Maaf, muat TP otomatis saat ini baru tersedia untuk mapel Pendidikan Pancasila.", "error");
+      return;
+    }
+
+    const { kelas, semester } = state.sekolah;
+    
+    let sem = "1";
+    if (String(semester).toLowerCase().includes('genap') || String(semester).includes('2')) {
+      sem = "2";
+    }
+
+    let parsedKelas = String(kelas).replace(/[^0-9]/g, '');
+    
+    // Fallback if roman numerals or words are used
+    const kelasStr = String(kelas).toLowerCase();
+    if (!parsedKelas) {
+      if (kelasStr.includes('satu') || kelasStr.includes('i') && !kelasStr.includes('ii') && !kelasStr.includes('iii') && !kelasStr.includes('iv') && !kelasStr.includes('vi') && !kelasStr.includes('ix')) parsedKelas = '1';
+      else if (kelasStr.includes('dua') || kelasStr.includes('ii') && !kelasStr.includes('iii') && !kelasStr.includes('vii') && !kelasStr.includes('viii')) parsedKelas = '2';
+      else if (kelasStr.includes('tiga') || kelasStr.includes('iii') && !kelasStr.includes('viii')) parsedKelas = '3';
+      else if (kelasStr.includes('empat') || kelasStr.includes('iv')) parsedKelas = '4';
+      else if (kelasStr.includes('lima') || kelasStr.includes('v') && !kelasStr.includes('iv') && !kelasStr.includes('vi') && !kelasStr.includes('vii') && !kelasStr.includes('viii')) parsedKelas = '5';
+      else if (kelasStr.includes('enam') || kelasStr.includes('vi') && !kelasStr.includes('vii') && !kelasStr.includes('viii')) parsedKelas = '6';
+      else if (kelasStr.includes('tujuh') || kelasStr.includes('vii') && !kelasStr.includes('viii')) parsedKelas = '7';
+      else if (kelasStr.includes('delapan') || kelasStr.includes('viii')) parsedKelas = '8';
+      else if (kelasStr.includes('sembilan') || kelasStr.includes('ix')) parsedKelas = '9';
+      else if (kelasStr.includes('sepuluh') || kelasStr.includes('x') && !kelasStr.includes('xi') && !kelasStr.includes('xii')) parsedKelas = '10';
+      else if (kelasStr.includes('sebelas') || kelasStr.includes('xi') && !kelasStr.includes('xii')) parsedKelas = '11';
+      else if (kelasStr.includes('dua belas') || kelasStr.includes('xii')) parsedKelas = '12';
+    }
+
+    if (!parsedKelas) {
+      showNotif("Sistem tidak dapat mendeteksi Kelas. Silakan periksa isian di menu Data Dasar.", "error");
+      return;
+    }
+
+    const kelasData = defaultTpPancasila[parsedKelas];
+    if (!kelasData) {
+      showNotif(`Maaf, data TP default untuk Kelas ${parsedKelas} belum tersedia.`, "error");
+      return;
+    }
+
+    const tpsToInject = kelasData[sem];
+    if (!tpsToInject || tpsToInject.length === 0) {
+      showNotif(`Maaf, data TP default untuk Kelas ${parsedKelas} Semester ${sem} belum tersedia.`, "error");
+      return;
+    }
+
+    
+      let indexCounter = 0;
+      const newTps = tpsToInject.map(item => ({
+        id: 'tp_' + Date.now() + '_' + (indexCounter++),
+        mapelId: selectedMapel,
+        kode: item.kode,
+        deskripsi: item.deskripsi
+      }));
+
+      updateState('tujuanPembelajaran', [...state.tujuanPembelajaran, ...newTps]);
+      showNotif(`Berhasil memuat ${newTps.length} TP default Pendidikan Pancasila!`, "success");
+    
   };
 
   const handleDownloadTemplate = () => {
@@ -148,6 +223,17 @@ export default function TujuanPembelajaranView() {
 
   return (
     <div className="w-full animate-in fade-in duration-200">
+
+      {/* Toast Notification */}
+      {notification && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-5 fade-in duration-300">
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border ${notification.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}`}>
+            {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}
+            <p className="text-xs font-bold">{notification.message}</p>
+          </div>
+        </div>
+      )}
+
       <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-t-2xl">
         <div>
           <h1 className="text-sm font-bold text-slate-800 flex items-center gap-2">
@@ -195,6 +281,15 @@ export default function TujuanPembelajaranView() {
               <Download className="w-4 h-4" />
               <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
                 Template Excel (Semua Mapel)
+              </span>
+            </button>
+            <button 
+              onClick={handleGenerateDefaultTp} 
+              className="w-8 h-8 flex items-center justify-center bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg shadow-sm border border-amber-200 transition focus:outline-none group/tooltip relative"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                Muat TP Default
               </span>
             </button>
             <button 
