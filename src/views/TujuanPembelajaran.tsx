@@ -2,6 +2,7 @@ import { KriteriaKetuntasan } from '../components/KriteriaKetuntasan';
 import { defaultTpPancasila } from '../data/defaultTpPancasila';
 import { defaultTpBahasaInggris } from '../data/defaultTpBahasaInggris';
 import { defaultTpBahasaIndonesia } from '../data/defaultTpBahasaIndonesia';
+import { defaultTpMatematika } from '../data/defaultTpMatematika';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store';
 import { TujuanPembelajaran } from '@/types';
@@ -73,12 +74,14 @@ export default function TujuanPembelajaranView() {
 
     
     
+    
     const isPancasila = mapelObj.nama.toLowerCase().includes('pancasila');
     const isInggris = mapelObj.nama.toLowerCase().includes('inggris') || mapelObj.nama.toLowerCase().includes('english');
     const isIndonesia = mapelObj.nama.toLowerCase().includes('indonesia');
+    const isMatematika = mapelObj.nama.toLowerCase().includes('matematika') || mapelObj.nama.toLowerCase().includes('math');
 
-    if (!isPancasila && !isInggris && !isIndonesia) {
-      showNotif("Maaf, muat TP otomatis saat ini baru tersedia untuk mapel: Pancasila, Bahasa Inggris, dan Bahasa Indonesia.", "error");
+    if (!isPancasila && !isInggris && !isIndonesia && !isMatematika) {
+      showNotif("Maaf, muat TP otomatis saat ini baru tersedia untuk mapel: Pancasila, Bahasa Inggris, Bahasa Indonesia, dan Matematika.", "error");
       return;
     }
 
@@ -117,6 +120,7 @@ export default function TujuanPembelajaranView() {
     if (isPancasila) kelasData = defaultTpPancasila[parsedKelas];
     if (isInggris) kelasData = defaultTpBahasaInggris[parsedKelas];
     if (isIndonesia) kelasData = defaultTpBahasaIndonesia[parsedKelas];
+    if (isMatematika) kelasData = defaultTpMatematika[parsedKelas];
 
     if (!kelasData) {
       showNotif(`Maaf, data TP default untuk Kelas ${parsedKelas} belum tersedia.`, "error");
@@ -128,6 +132,7 @@ export default function TujuanPembelajaranView() {
       showNotif(`Maaf, data TP default untuk Kelas ${parsedKelas} Semester ${sem} belum tersedia.`, "error");
       return;
     }
+
 
 
 
