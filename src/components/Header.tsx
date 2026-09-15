@@ -11,7 +11,7 @@ export default function Header({ toggleSidebar, onOpenDevProfile }: HeaderProps)
   const { sekolah } = state;
 
   return (
-    <header className="main-header bg-blue-700 text-white shadow-md h-14 flex items-center px-4 md:px-6 justify-between sticky top-0 z-30 shrink-0">
+    <header className="main-header bg-gradient-to-r from-blue-800 to-blue-600 text-white shadow-md h-14 flex items-center px-4 md:px-6 justify-between sticky top-0 z-30 shrink-0">
       <div className="flex items-center gap-4">
         <button 
           onClick={toggleSidebar}
@@ -21,7 +21,7 @@ export default function Header({ toggleSidebar, onOpenDevProfile }: HeaderProps)
           <span className="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-b-slate-800">Toggle Sidebar</span>
         </button>
         <div>
-          <h2 className="text-blue-100 text-[10px] md:text-xs font-semibold uppercase tracking-wider">Dashboard &rsaquo; {sekolah.nama}</h2>
+          
           <p className="text-white font-bold text-sm md:text-base flex items-center gap-2">
             Aplikasi Rapor Kurikulum Merdeka
             <span 

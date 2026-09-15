@@ -36,25 +36,25 @@ export default function DashboardView({ onOpenDevProfile }: DashboardViewProps) 
       label: 'Total Mapel',
       value: state.mapel?.length.toString() || '0',
       icon: <BookOpen size={64} />,
-      bg: 'bg-blue-600',
+      bg: 'bg-gradient-to-br from-blue-700 to-blue-500',
     },
     {
       label: 'Total Rombel',
       value: totalSiswa > 0 ? (Math.floor(totalSiswa / 28) + 1).toString() : '0',
       icon: <Users size={64} />,
-      bg: 'bg-emerald-600',
+      bg: 'bg-gradient-to-br from-emerald-700 to-emerald-500',
     },
     {
       label: 'Peserta Didik',
       value: totalSiswa.toString(),
       icon: <Users size={64} />,
-      bg: 'bg-amber-500',
+      bg: 'bg-gradient-to-br from-amber-600 to-amber-400',
     },
     {
       label: 'Total Tujuan Pembelajaran',
       value: state.tujuanPembelajaran?.length.toString() || '0',
       icon: <School size={64} />,
-      bg: 'bg-rose-600',
+      bg: 'bg-gradient-to-br from-rose-700 to-rose-500',
     }
   ];
 
@@ -66,7 +66,7 @@ export default function DashboardView({ onOpenDevProfile }: DashboardViewProps) 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-5">
             <div className="w-16 h-16 bg-blue-50 border border-blue-200 rounded flex items-center justify-center text-blue-700">
-              <School size={36} />
+              <GraduationCap size={36} />
             </div>
             <div>
               <h1 className="text-xl font-bold text-slate-800 leading-tight">

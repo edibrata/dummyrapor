@@ -98,24 +98,27 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
   return (
     <aside className={`sidebar bg-white border-r border-slate-200 text-slate-800 flex flex-col h-screen sticky top-0 shadow-sm overflow-hidden transition-all duration-300 ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full opacity-0'}`}>
       <div className="h-16 flex items-center justify-center border-b border-slate-200 shrink-0 px-4">
-        <div className="flex items-center gap-3 mb-2 w-full">
+        <div className="flex items-center gap-3 w-full">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-600 text-white font-bold font-sans shrink-0 overflow-hidden border border-blue-200 cursor-pointer transition-transform duration-200 hover:scale-110">
             <img src="https://raw.githubusercontent.com/edibrata/image/main/FotoEdiBrata.jpg" alt="Edi Brata" className="w-full h-full object-cover" />
           </div>
-          <div className="flex-1 whitespace-nowrap transition-opacity duration-300">
-            <h1 className="font-extrabold text-base tracking-tight text-slate-800 leading-none mb-1">
-              E-Rapor <span className="text-blue-600 font-black">SD</span>
+          <div className="flex-1 whitespace-nowrap transition-opacity duration-300 flex flex-col justify-center -space-y-0.5">
+            <h1 className="font-extrabold text-[15px] tracking-tight text-slate-800 flex items-center gap-1.5 leading-none">
+              E-Rapor <span className="text-blue-600 font-black">Edi Brata</span>
             </h1>
-            <span 
-              className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none hover:text-blue-800 transition-colors cursor-pointer"
-              onClick={onOpenDevProfile}
-            >
-              v5.0 PRO
-            </span>
+            <div>
+              <span 
+                className="text-[9px] font-black text-white bg-gradient-to-r from-blue-700 to-blue-500 px-1.5 rounded shadow-sm uppercase tracking-widest leading-none hover:opacity-90 transition-opacity cursor-pointer inline-block"
+                onClick={onOpenDevProfile}
+                style={{ paddingTop: '2px', paddingBottom: '2px' }}
+              >
+                v5.0 PRO
+              </span>
+            </div>
           </div>
         </div>
       </div>
-      
+            
       <nav className="flex-1 py-4 px-3 space-y-2 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
         {menuGroups.map((group, idx) => (
           <div key={idx} className="mb-2">
@@ -123,13 +126,13 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
               onClick={() => toggleGroup(group.title)}
               className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors rounded-md focus:outline-none group opacity-90 hover:opacity-100"
             >
-              <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                 {group.title}
               </p>
               {expandedGroup === group.title ? (
-                <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600 transition-colors" />
+                <ChevronDown size={14} className="text-slate-500 group-hover:text-slate-700 transition-colors" />
               ) : (
-                <ChevronRight size={14} className="text-slate-400 group-hover:text-slate-600 transition-colors" />
+                <ChevronRight size={14} className="text-slate-500 group-hover:text-slate-700 transition-colors" />
               )}
             </button>
             
@@ -155,7 +158,7 @@ export default function Sidebar({ activeView, setActiveView, isOpen, onOpenDevPr
                           : 'hover:bg-slate-50 text-slate-500 hover:text-slate-800'
                       }`}
                     >
-                      <div className={activeView === item.id ? 'text-blue-700' : 'text-slate-400 group-hover:text-slate-600'}>
+                      <div className={activeView === item.id ? 'text-blue-700' : 'text-slate-500 group-hover:text-slate-700'}>
                         {item.icon}
                       </div>
                       {item.label}
