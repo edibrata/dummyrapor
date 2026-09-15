@@ -3,7 +3,7 @@ import {
   FileText, Calendar, School, Users, 
   MapPin, Percent, Info, Save, RotateCcw,
   Download, Upload, FileJson, CheckCircle2,
-  AlertCircle, Lock
+  AlertCircle, Lock, Settings
 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { INITIAL_STATE } from '@/constants';
@@ -13,6 +13,7 @@ export default function DataSekolah() {
   const { state, updateSekolah } = useAppStore();
   const { sekolah } = state;
 
+  const [activeTab, setActiveTab] = useState<'profil' | 'akademik' | 'guru' | 'output'>('profil');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -74,58 +75,63 @@ export default function DataSekolah() {
   };
 
   const requiredFields = [
-    { name: 'tahunAjaran', label: 'Tahun Ajaran' },
-    { name: 'semester', label: 'Semester' },
-    { name: 'kelas', label: 'Kelas' },
-    { name: 'ruangRombel', label: 'Ruang Rombel' },
-    { name: 'nama', label: 'Nama Lengkap Sekolah' },
-    { name: 'npsn', label: 'NPSN' },
-    { name: 'nss', label: 'Nomor Statistik Sekolah (NSS)' },
-    { name: 'nis', label: 'Nomor Induk Sekolah (NIS)' },
-    { name: 'alamat', label: 'Alamat Lengkap' },
-    { name: 'desaKelurahanJenis', label: 'Jenis Desa/Kelurahan' },
-    { name: 'desaKelurahanNama', label: 'Nama Desa/Kelurahan' },
-    { name: 'kecamatan', label: 'Kecamatan' },
-    { name: 'kabupatenKotaJenis', label: 'Jenis Kabupaten/Kota' },
-    { name: 'kabupatenKotaNama', label: 'Nama Kabupaten/Kota' },
-    { name: 'provinsi', label: 'Provinsi' },
-    { name: 'kodePos', label: 'Kode Pos' },
-    { name: 'kepsek', label: 'Nama Kepala Sekolah' },
-    { name: 'nipKepsek', label: 'NIP Kepala Sekolah' },
-    { name: 'waKepalaSekolah', label: 'WhatsApp Kepala Sekolah' },
-    { name: 'waliKelas', label: 'Nama Guru Kelas' },
-    { name: 'nipWaliKelas', label: 'NIP Guru Kelas' },
-    { name: 'waGuru', label: 'WhatsApp Guru' },
-    { name: 'lokasiTitimangsa', label: 'Lokasi Titimangsa' },
-    { name: 'tanggalBiodata', label: 'Tanggal Biodata' },
-    { name: 'tanggalRapor', label: 'Tanggal Rapor' }
+    { name: 'tahunAjaran', label: 'Tahun Ajaran', tab: 'akademik' },
+    { name: 'semester', label: 'Semester', tab: 'akademik' },
+    { name: 'kelas', label: 'Kelas', tab: 'akademik' },
+    { name: 'ruangRombel', label: 'Ruang Rombel', tab: 'akademik' },
+    { name: 'nama', label: 'Nama Lengkap Sekolah', tab: 'profil' },
+    { name: 'npsn', label: 'NPSN', tab: 'profil' },
+    { name: 'nss', label: 'Nomor Statistik Sekolah (NSS)', tab: 'profil' },
+    { name: 'nis', label: 'Nomor Induk Sekolah (NIS)', tab: 'profil' },
+    { name: 'alamat', label: 'Alamat Lengkap', tab: 'profil' },
+    { name: 'desaKelurahanJenis', label: 'Jenis Desa/Kelurahan', tab: 'profil' },
+    { name: 'desaKelurahanNama', label: 'Nama Desa/Kelurahan', tab: 'profil' },
+    { name: 'kecamatan', label: 'Kecamatan', tab: 'profil' },
+    { name: 'kabupatenKotaJenis', label: 'Jenis Kabupaten/Kota', tab: 'profil' },
+    { name: 'kabupatenKotaNama', label: 'Nama Kabupaten/Kota', tab: 'profil' },
+    { name: 'provinsi', label: 'Provinsi', tab: 'profil' },
+    { name: 'kodePos', label: 'Kode Pos', tab: 'profil' },
+    { name: 'kepsek', label: 'Nama Kepala Sekolah', tab: 'guru' },
+    { name: 'nipKepsek', label: 'NIP Kepala Sekolah', tab: 'guru' },
+    { name: 'waKepalaSekolah', label: 'WhatsApp Kepala Sekolah', tab: 'guru' },
+    { name: 'waliKelas', label: 'Nama Guru Kelas', tab: 'guru' },
+    { name: 'nipWaliKelas', label: 'NIP Guru Kelas', tab: 'guru' },
+    { name: 'waGuru', label: 'WhatsApp Guru', tab: 'guru' },
+    { name: 'lokasiTitimangsa', label: 'Lokasi Titimangsa', tab: 'output' },
+    { name: 'tanggalBiodata', label: 'Tanggal Biodata', tab: 'output' },
+    { name: 'tanggalRapor', label: 'Tanggal Rapor', tab: 'output' }
   ];
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const newErrors: Record<string, boolean> = {};
     const emptyLabels: string[] = [];
+    let firstErrorTab = '';
 
     requiredFields.forEach(field => {
       const val = sekolah[field.name as keyof typeof sekolah] as string | undefined;
       if (!val || val.toString().trim() === '') {
         newErrors[field.name] = true;
         emptyLabels.push(field.label);
+        if (!firstErrorTab) firstErrorTab = field.tab;
       }
     });
 
     if (emptyLabels.length > 0) {
       setErrors(newErrors);
       showToast('Terdapat isian yang masih kosong. Silakan periksa kolom dengan garis merah.', false);
+      if (firstErrorTab) setActiveTab(firstErrorTab as any);
       
-      const firstErrorField = requiredFields.find(f => newErrors[f.name]);
-      if (firstErrorField) {
-        const el = document.getElementById(firstErrorField.name);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.focus();
+      setTimeout(() => {
+        const firstErrorField = requiredFields.find(f => newErrors[f.name]);
+        if (firstErrorField) {
+          const el = document.getElementById(firstErrorField.name);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.focus();
+          }
         }
-      }
+      }, 100);
     } else {
       setErrors({});
     }
@@ -264,77 +270,260 @@ export default function DataSekolah() {
   // --- STYLING HELPERS ---
   const getFieldClass = (name: keyof typeof sekolah) => {
     const isError = errors[name];
-    let classes = "w-full rounded-lg px-3.5 py-2.5 text-sm transition-all focus:outline-none border shadow-sm ";
+    let classes = "w-full rounded-lg px-3 py-2 text-sm transition-all focus:outline-none border shadow-sm ";
     if (isError) {
-      classes += "border-red-500 bg-red-50/30 text-red-900 focus:ring-4 focus:ring-red-500/10 placeholder:text-red-300";
+      classes += "border-red-500 bg-red-50/30 text-red-900 focus:ring-2 focus:ring-red-500/20 placeholder:text-red-300";
     } else if (isLocked && ['nama', 'npsn', 'alamat', 'desaKelurahanJenis', 'desaKelurahanNama', 'kecamatan', 'kabupatenKotaJenis', 'kabupatenKotaNama', 'provinsi', 'tahunAjaran', 'semester', 'kelas', 'ruangRombel'].includes(name as string)) {
       classes += "border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed";
     } else {
-      classes += "border-slate-300 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-400";
+      classes += "border-gray-300 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 placeholder:text-slate-400";
     }
     return classes;
   };
 
   const getLabelClass = (name: keyof typeof sekolah) => {
     const isError = errors[name];
-    return `block text-[13px] font-semibold mb-1.5 ${isError ? 'text-red-600' : 'text-slate-700'}`;
+    return `block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isError ? 'text-red-600' : 'text-slate-600'}`;
   };
 
   const totalBobot = (Number(sekolah.bobotSumatifLingkup) || 0) + (Number(sekolah.bobotSumatifSemester) || 0);
 
   return (
-    <div className="max-w-5xl mx-auto pb-32 animate-in fade-in duration-500">
+    <div className="w-full">
       
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 pb-6 border-b border-slate-200">
+      {/* HEADER ACTIONS */}
+      <div className="px-6 py-5 border-b border-gray-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-t-2xl">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Data Dasar Sekolah</h1>
-          <p className="text-slate-500 text-sm mt-1">Lengkapi profil dan identitas lembaga sebagai metadata cetak rapor.</p>
+          <h3 className="font-bold text-sm text-slate-800">Data Dasar Sekolah</h3>
+          <p className="text-[11px] text-gray-500 mt-1">Lengkapi profil lembaga dan konfigurasi rapor.</p>
         </div>
         
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input type="file" ref={excelInputRef} onChange={handleImportExcel} accept=".xlsx, .xls" className="hidden" />
+          <input type="file" ref={jsonInputRef} onChange={handleImportJSON} accept=".json" className="hidden" />
+          
           {!isLocked && (
             <>
-              <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
-                <button type="button" onClick={handleDownloadExcel} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
-                  <Download size={14} /> <span className="hidden sm:inline">Unduh</span> Excel
-                </button>
-                <div className="w-px bg-slate-200 my-1 mx-1"></div>
-                <button type="button" onClick={() => excelInputRef.current?.click()} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
-                  <Upload size={14} /> Import Excel
-                </button>
-                <input type="file" ref={excelInputRef} onChange={handleImportExcel} accept=".xlsx, .xls" className="hidden" />
-              </div>
+              <button 
+                type="button"
+                onClick={handleDownloadExcel} 
+                className="w-8 h-8 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg shadow-sm border border-gray-200 transition focus:outline-none group/tooltip relative"
+              >
+                <Download className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Unduh Excel
+                </span>
+              </button>
+              
+              <button 
+                type="button"
+                onClick={() => excelInputRef.current?.click()} 
+                className="w-8 h-8 flex items-center justify-center bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg shadow-sm border border-emerald-200 transition focus:outline-none group/tooltip relative"
+              >
+                <Upload className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Import Excel
+                </span>
+              </button>
 
-              <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
-                <button type="button" onClick={handleDownloadJSON} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
-                   <Download size={14} /> Backup
-                </button>
-                <div className="w-px bg-slate-200 my-1 mx-1"></div>
-                <button type="button" onClick={() => jsonInputRef.current?.click()} className="hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-md text-[13px] font-medium flex items-center gap-2 transition-colors">
-                  <FileJson size={14} /> Restore
-                </button>
-                <input type="file" ref={jsonInputRef} onChange={handleImportJSON} accept=".json" className="hidden" />
-              </div>
+              <button 
+                type="button"
+                onClick={handleDownloadJSON} 
+                className="w-8 h-8 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg shadow-sm border border-gray-200 transition focus:outline-none group/tooltip relative"
+              >
+                <FileText className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Backup JSON
+                </span>
+              </button>
+
+              <button 
+                type="button"
+                onClick={() => jsonInputRef.current?.click()} 
+                className="w-8 h-8 flex items-center justify-center bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg shadow-sm border border-emerald-200 transition focus:outline-none group/tooltip relative"
+              >
+                <FileJson className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Restore JSON
+                </span>
+              </button>
+
+              <button 
+                type="button"
+                onClick={handleReset} 
+                className="w-8 h-8 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 rounded-lg shadow-sm border border-red-200 transition focus:outline-none group/tooltip relative"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Reset Default
+                </span>
+              </button>
+
+              <button 
+                type="button"
+                onClick={(e) => handleSubmit(e as any)} 
+                className="w-8 h-8 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm transition group/tooltip relative"
+              >
+                <Save className="w-4 h-4" />
+                <span className="absolute opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all bg-slate-800 text-white text-[10px] font-medium rounded px-2 py-1 top-full mt-1.5 right-0 whitespace-nowrap z-50 pointer-events-none shadow-sm before:absolute before:-top-1 before:right-3 before:border-4 before:border-transparent before:border-b-slate-800">
+                  Simpan Perubahan
+                </span>
+              </button>
             </>
           )}
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-12">
-        
-        {/* SECTION 1: AKADEMIK */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
-          <div className="md:col-span-4 lg:col-span-3">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Calendar className="text-indigo-600" size={18} /> Akademik & Rombel
-            </h3>
-            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
-              Konfigurasi tahun ajaran, semester, dan kelompok belajar yang aktif saat ini.
-            </p>
-          </div>
-          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <div className="space-y-6">
+      {/* TAB NAVIGATION */}
+      <div className="flex border-b border-slate-200 bg-[#F8FAFC] flex-wrap sticky top-0 z-10 shadow-sm">
+        <button
+          type="button"
+          onClick={() => setActiveTab('profil')}
+          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+            activeTab === 'profil'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          <School className="w-3.5 h-3.5" /> PROFIL SEKOLAH
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('akademik')}
+          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+            activeTab === 'akademik'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          <Calendar className="w-3.5 h-3.5" /> AKADEMIK & ROMBEL
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('guru')}
+          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+            activeTab === 'guru'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          <Users className="w-3.5 h-3.5" /> KEPALA SEKOLAH & GURU
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('output')}
+          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+            activeTab === 'output'
+              ? 'border-indigo-600 text-indigo-700 bg-white'
+              : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+          }`}
+        >
+          <Settings className="w-3.5 h-3.5" /> PENGATURAN OUTPUT
+        </button>
+      </div>
+
+      <div className="overflow-auto bg-white rounded-b-2xl border-t border-gray-200" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+        <form onSubmit={handleSubmit} className="p-5 md:p-6 min-h-[400px] max-w-4xl mx-auto">
+          
+          {/* TAB CONTENT: PROFIL SEKOLAH */}
+          {activeTab === 'profil' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                <div className="sm:col-span-12 space-y-1.5">
+                  <label htmlFor="nama" className={getLabelClass('nama')}>Nama Lengkap Sekolah</label>
+                  <input id="nama" name="nama" type="text" value={sekolah.nama || ''} onChange={handleChange} placeholder="Misal: SDN Legokmenteng Waringinkurung" className={getFieldClass('nama')} readOnly={isLocked} />
+                </div>
+                <div className="sm:col-span-4 space-y-1.5">
+                  <label htmlFor="npsn" className={getLabelClass('npsn')}>NPSN</label>
+                  <input id="npsn" name="npsn" type="text" value={sekolah.npsn || ''} onChange={handleChange} placeholder="8 Digit NPSN" className={getFieldClass('npsn')} readOnly={isLocked} />
+                </div>
+                <div className="sm:col-span-4 space-y-1.5">
+                  <label htmlFor="nss" className={getLabelClass('nss')}>NSS</label>
+                  <input id="nss" name="nss" type="text" value={sekolah.nss || ''} onChange={handleChange} placeholder="NSS Sekolah" className={getFieldClass('nss')} />
+                </div>
+                <div className="sm:col-span-4 space-y-1.5">
+                  <label htmlFor="nis" className={getLabelClass('nis')}>NIS</label>
+                  <input id="nis" name="nis" type="text" value={sekolah.nis || ''} onChange={handleChange} placeholder="NIS Sekolah" className={getFieldClass('nis')} />
+                </div>
+              </div>
+
+              <div className="bg-slate-50/50 p-5 -mx-4 sm:mx-0 sm:p-6 rounded-xl border border-slate-100 space-y-6">
+                <div className="space-y-1.5">
+                  <label htmlFor="alamat" className={getLabelClass('alamat')}>Jalan/Blok/RT RW</label>
+                  <input id="alamat" name="alamat" type="text" value={sekolah.alamat || ''} onChange={handleChange} placeholder="Nama jalan, RT/RW lengkap" className={getFieldClass('alamat')} readOnly={isLocked} />
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                  <div className="sm:col-span-4 space-y-1.5">
+                      <label htmlFor="desaKelurahanJenis" className={getLabelClass('desaKelurahanJenis')}>Desa/Kelurahan</label>
+                      {isLocked ? (
+                        <input id="desaKelurahanJenis" type="text" value={sekolah.desaKelurahanJenis === 'desa' ? 'Desa' : sekolah.desaKelurahanJenis === 'kelurahan' ? 'Kelurahan' : ''} className={getFieldClass('desaKelurahanJenis')} readOnly />
+                      ) : (
+                        <select id="desaKelurahanJenis" name="desaKelurahanJenis" value={getSelectValue(sekolah.desaKelurahanJenis)} onChange={handleChange} className={getFieldClass('desaKelurahanJenis')}>
+                            <option value="">Pilih</option><option value="desa">Desa</option><option value="kelurahan">Kelurahan</option>
+                        </select>
+                      )}
+                  </div>
+                  <div className="sm:col-span-8 space-y-1.5">
+                    <label htmlFor="desaKelurahanNama" className={getLabelClass('desaKelurahanNama')}>Nama Desa/Kelurahan</label>
+                    <input id="desaKelurahanNama" name="desaKelurahanNama" type="text" value={sekolah.desaKelurahanNama || ''} onChange={handleChange} placeholder="Nama wilayah desa/kelurahan" className={getFieldClass('desaKelurahanNama')} readOnly={isLocked} />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="kecamatan" className={getLabelClass('kecamatan')}>Kecamatan</label>
+                  <input id="kecamatan" name="kecamatan" type="text" value={sekolah.kecamatan || ''} onChange={handleChange} placeholder="Nama kecamatan" className={getFieldClass('kecamatan')} readOnly={isLocked} />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                  <div className="sm:col-span-4 space-y-1.5">
+                      <label htmlFor="kabupatenKotaJenis" className={getLabelClass('kabupatenKotaJenis')}>Kabupaten/Kota</label>
+                      {isLocked ? (
+                        <input id="kabupatenKotaJenis" type="text" value={sekolah.kabupatenKotaJenis === 'kabupaten' ? 'Kabupaten' : sekolah.kabupatenKotaJenis === 'kota' ? 'Kota' : ''} className={getFieldClass('kabupatenKotaJenis')} readOnly />
+                      ) : (
+                        <select id="kabupatenKotaJenis" name="kabupatenKotaJenis" value={getSelectValue(sekolah.kabupatenKotaJenis)} onChange={handleChange} className={getFieldClass('kabupatenKotaJenis')}>
+                            <option value="">Pilih</option><option value="kabupaten">Kabupaten</option><option value="kota">Kota</option>
+                        </select>
+                      )}
+                  </div>
+                  <div className="sm:col-span-8 space-y-1.5">
+                    <label htmlFor="kabupatenKotaNama" className={getLabelClass('kabupatenKotaNama')}>Nama Kabupaten/Kota</label>
+                    <input id="kabupatenKotaNama" name="kabupatenKotaNama" type="text" value={sekolah.kabupatenKotaNama || ''} onChange={handleChange} placeholder="Nama wilayah kabupaten/kota" className={getFieldClass('kabupatenKotaNama')} readOnly={isLocked} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="sm:col-span-1 space-y-1.5">
+                    <label htmlFor="provinsi" className={getLabelClass('provinsi')}>Provinsi</label>
+                    <input id="provinsi" name="provinsi" type="text" value={sekolah.provinsi || ''} onChange={handleChange} placeholder="Provinsi" className={getFieldClass('provinsi')} readOnly={isLocked} />
+                  </div>
+                  <div className="sm:col-span-1 space-y-1.5">
+                    <label htmlFor="kodePos" className={getLabelClass('kodePos')}>Kode Pos</label>
+                    <input id="kodePos" name="kodePos" type="text" value={sekolah.kodePos || ''} onChange={handleChange} placeholder="12345" className={getFieldClass('kodePos')} />
+                  </div>
+                  <div className="sm:col-span-1 space-y-1.5">
+                    <label htmlFor="telepon" className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-slate-600">Telepon <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                    <input id="telepon" name="telepon" type="text" value={sekolah.telepon || ''} onChange={handleChange} placeholder="0254-xxx" className={getFieldClass('telepon')} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-200/60">
+                  <div className="space-y-1.5">
+                    <label htmlFor="email" className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-slate-600">Email <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                    <input id="email" name="email" type="email" value={sekolah.email || ''} onChange={handleChange} placeholder="sekolah@email.com" className={getFieldClass('email')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="website" className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-slate-600">Website <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
+                    <input id="website" name="website" type="url" value={sekolah.website || ''} onChange={handleChange} placeholder="https://..." className={getFieldClass('website')} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB CONTENT: AKADEMIK & ROMBEL */}
+          {activeTab === 'akademik' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
                   <label htmlFor="tahunAjaran" className={getLabelClass('tahunAjaran')}>Tahun Ajaran</label>
@@ -342,35 +531,43 @@ export default function DataSekolah() {
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="semester" className={getLabelClass('semester')}>Semester</label>
-                  <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')} disabled={isLocked}>
-                    <option value="">Pilih Semester</option>
-                    <option value="1">1 (Ganjil)</option>
-                    <option value="2">2 (Genap)</option>
-                  </select>
+                  {isLocked ? (
+                    <input id="semester" type="text" value={sekolah.semester == '1' ? '1 (Ganjil)' : sekolah.semester == '2' ? '2 (Genap)' : ''} className={getFieldClass('semester')} readOnly />
+                  ) : (
+                    <select id="semester" name="semester" value={getSelectValue(sekolah.semester)} onChange={handleChange} className={getFieldClass('semester')}>
+                      <option value="">Pilih Semester</option>
+                      <option value="1">1 (Ganjil)</option>
+                      <option value="2">2 (Genap)</option>
+                    </select>
+                  )}
                 </div>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="space-y-1.5">
                   <label htmlFor="kelas" className={getLabelClass('kelas')}>Kelas</label>
-                  <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')} disabled={isLocked}>
-                    <option value="">Pilih Kelas</option>
-                    {(() => {
-                      if (sekolah.allowedKelas && sekolah.allowedKelas.length > 0) {
-                        const sorted = [...sekolah.allowedKelas].sort((a, b) => parseInt(a.toString(), 10) - parseInt(b.toString(), 10));
-                        return sorted.map((k) => (
-                          <option key={k} value={k.toString()}>{k}</option>
-                        ));
-                      } else {
-                         return [1, 2, 3, 4, 5, 6].map(k => (
-                           <option key={k} value={k.toString()}>{k}</option>
-                         ));
-                      }
-                    })()}
-                  </select>
+                  {isLocked ? (
+                    <input id="kelas" type="text" value={sekolah.kelas || ''} className={getFieldClass('kelas')} readOnly />
+                  ) : (
+                    <select id="kelas" name="kelas" value={getSelectValue(sekolah.kelas)} onChange={handleChange} className={getFieldClass('kelas')}>
+                      <option value="">Pilih Kelas</option>
+                      {(() => {
+                        if (sekolah.allowedKelas && sekolah.allowedKelas.length > 0) {
+                          const sorted = [...sekolah.allowedKelas].sort((a, b) => parseInt(a.toString(), 10) - parseInt(b.toString(), 10));
+                          return sorted.map((k) => (
+                            <option key={k} value={k.toString()}>{k}</option>
+                          ));
+                        } else {
+                           return [1, 2, 3, 4, 5, 6].map(k => (
+                             <option key={k} value={k.toString()}>{k}</option>
+                           ));
+                        }
+                      })()}
+                    </select>
+                  )}
                 </div>
                 <div className="space-y-1.5">
-                  <label htmlFor="fase" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Fase</label>
+                  <label htmlFor="fase" className="block text-[10px] font-bold uppercase tracking-wider mb-1.5 text-slate-600">Fase</label>
                   <input 
                     id="fase" 
                     name="fase" 
@@ -383,130 +580,25 @@ export default function DataSekolah() {
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="ruangRombel" className={getLabelClass('ruangRombel')}>Ruang Rombongan Belajar</label>
-                  <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')} disabled={isLocked}>
-                    <option value="">Pilih Rombel</option>
-                    <option value="satu">Hanya Satu (Default)</option>
-                    <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                    <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <hr className="border-slate-200" />
-
-        {/* SECTION 2: PROFIL SEKOLAH */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
-          <div className="md:col-span-4 lg:col-span-3">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <School className="text-indigo-600" size={18} /> Profil Sekolah
-            </h3>
-            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
-              Mencakup identitas lengkap institusi sesuai data Dapodik untuk kebutuhan kop rapor.
-            </p>
-          </div>
-          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
-              <div className="sm:col-span-12 space-y-1.5">
-                <label htmlFor="nama" className={getLabelClass('nama')}>Nama Lengkap Sekolah</label>
-                <input id="nama" name="nama" type="text" value={sekolah.nama || ''} onChange={handleChange} placeholder="Misal: SDN Legokmenteng Waringinkurung" className={getFieldClass('nama')} readOnly={isLocked} />
-              </div>
-              <div className="sm:col-span-4 space-y-1.5">
-                <label htmlFor="npsn" className={getLabelClass('npsn')}>NPSN</label>
-                <input id="npsn" name="npsn" type="text" value={sekolah.npsn || ''} onChange={handleChange} placeholder="8 Digit NPSN" className={getFieldClass('npsn')} readOnly={isLocked} />
-              </div>
-              <div className="sm:col-span-4 space-y-1.5">
-                <label htmlFor="nss" className={getLabelClass('nss')}>NSS</label>
-                <input id="nss" name="nss" type="text" value={sekolah.nss || ''} onChange={handleChange} placeholder="NSS Sekolah" className={getFieldClass('nss')} />
-              </div>
-              <div className="sm:col-span-4 space-y-1.5">
-                <label htmlFor="nis" className={getLabelClass('nis')}>NIS</label>
-                <input id="nis" name="nis" type="text" value={sekolah.nis || ''} onChange={handleChange} placeholder="NIS Sekolah" className={getFieldClass('nis')} />
-              </div>
-            </div>
-
-            <div className="bg-slate-50/50 p-5 -mx-4 sm:mx-0 sm:p-6 rounded-xl border border-slate-100 space-y-6">
-              <div className="space-y-1.5">
-                <label htmlFor="alamat" className={getLabelClass('alamat')}>Jalan/Blok/RT RW</label>
-                <input id="alamat" name="alamat" type="text" value={sekolah.alamat || ''} onChange={handleChange} placeholder="Nama jalan, RT/RW lengkap" className={getFieldClass('alamat')} readOnly={isLocked} />
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                <div className="sm:col-span-4 space-y-1.5">
-                    <label htmlFor="desaKelurahanJenis" className={getLabelClass('desaKelurahanJenis')}>Desa/Kelurahan</label>
-                    <select id="desaKelurahanJenis" name="desaKelurahanJenis" value={getSelectValue(sekolah.desaKelurahanJenis)} onChange={handleChange} className={getFieldClass('desaKelurahanJenis')} disabled={isLocked}>
-                        <option value="">Pilih</option><option value="desa">Desa</option><option value="kelurahan">Kelurahan</option>
+                  {isLocked ? (
+                    <input id="ruangRombel" type="text" value={sekolah.ruangRombel === 'satu' ? 'Hanya Satu (Default)' : sekolah.ruangRombel || ''} className={getFieldClass('ruangRombel')} readOnly />
+                  ) : (
+                    <select id="ruangRombel" name="ruangRombel" value={getSelectValue(sekolah.ruangRombel)} onChange={handleChange} className={getFieldClass('ruangRombel')}>
+                      <option value="">Pilih Rombel</option>
+                      <option value="satu">Hanya Satu (Default)</option>
+                      <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                      <option value="D">D</option><option value="E">E</option><option value="F">F</option>
                     </select>
-                </div>
-                <div className="sm:col-span-8 space-y-1.5">
-                  <label htmlFor="desaKelurahanNama" className={getLabelClass('desaKelurahanNama')}>Nama Desa/Kelurahan</label>
-                  <input id="desaKelurahanNama" name="desaKelurahanNama" type="text" value={sekolah.desaKelurahanNama || ''} onChange={handleChange} placeholder="Nama wilayah desa/kelurahan" className={getFieldClass('desaKelurahanNama')} readOnly={isLocked} />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label htmlFor="kecamatan" className={getLabelClass('kecamatan')}>Kecamatan</label>
-                <input id="kecamatan" name="kecamatan" type="text" value={sekolah.kecamatan || ''} onChange={handleChange} placeholder="Nama kecamatan" className={getFieldClass('kecamatan')} readOnly={isLocked} />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                <div className="sm:col-span-4 space-y-1.5">
-                    <label htmlFor="kabupatenKotaJenis" className={getLabelClass('kabupatenKotaJenis')}>Kabupaten/Kota</label>
-                    <select id="kabupatenKotaJenis" name="kabupatenKotaJenis" value={getSelectValue(sekolah.kabupatenKotaJenis)} onChange={handleChange} className={getFieldClass('kabupatenKotaJenis')} disabled={isLocked}>
-                        <option value="">Pilih</option><option value="kabupaten">Kabupaten</option><option value="kota">Kota</option>
-                    </select>
-                </div>
-                <div className="sm:col-span-8 space-y-1.5">
-                  <label htmlFor="kabupatenKotaNama" className={getLabelClass('kabupatenKotaNama')}>Nama Kabupaten/Kota</label>
-                  <input id="kabupatenKotaNama" name="kabupatenKotaNama" type="text" value={sekolah.kabupatenKotaNama || ''} onChange={handleChange} placeholder="Nama wilayah kabupaten/kota" className={getFieldClass('kabupatenKotaNama')} readOnly={isLocked} />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="sm:col-span-1 space-y-1.5">
-                  <label htmlFor="provinsi" className={getLabelClass('provinsi')}>Provinsi</label>
-                  <input id="provinsi" name="provinsi" type="text" value={sekolah.provinsi || ''} onChange={handleChange} placeholder="Provinsi" className={getFieldClass('provinsi')} readOnly={isLocked} />
-                </div>
-                <div className="sm:col-span-1 space-y-1.5">
-                  <label htmlFor="kodePos" className={getLabelClass('kodePos')}>Kode Pos</label>
-                  <input id="kodePos" name="kodePos" type="text" value={sekolah.kodePos || ''} onChange={handleChange} placeholder="12345" className={getFieldClass('kodePos')} />
-                </div>
-                <div className="sm:col-span-1 space-y-1.5">
-                  <label htmlFor="telepon" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Telepon <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
-                  <input id="telepon" name="telepon" type="text" value={sekolah.telepon || ''} onChange={handleChange} placeholder="0254-xxx" className={getFieldClass('telepon')} />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-200/60">
-                <div className="space-y-1.5">
-                  <label htmlFor="email" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Email <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
-                  <input id="email" name="email" type="email" value={sekolah.email || ''} onChange={handleChange} placeholder="sekolah@email.com" className={getFieldClass('email')} />
-                </div>
-                <div className="space-y-1.5">
-                  <label htmlFor="website" className="block text-[13px] font-semibold mb-1.5 text-slate-700">Website <span className="text-slate-400 font-normal ml-1">(Ops.)</span></label>
-                  <input id="website" name="website" type="url" value={sekolah.website || ''} onChange={handleChange} placeholder="https://..." className={getFieldClass('website')} />
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          )}
 
-        <hr className="border-slate-200" />
-
-        {/* SECTION 3: KEPSEK & GURU */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
-          <div className="md:col-span-4 lg:col-span-3">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Users className="text-indigo-600" size={18} /> Kepala Sekolah & Guru
-            </h3>
-            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
-              Pegawai yang menandatangani halaman biodata dan leger rapor akhir.
-            </p>
-          </div>
-          <div className="md:col-span-8 lg:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          {/* TAB CONTENT: KEPALA SEKOLAH & GURU */}
+          {activeTab === 'guru' && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 <div className="space-y-5">
                    <h4 className="font-bold text-sm tracking-widest text-slate-400 uppercase border-b border-slate-100 pb-2">Kepala Sekolah</h4>
                    <div className="space-y-1.5">
@@ -538,79 +630,68 @@ export default function DataSekolah() {
                      <input id="waGuru" name="waGuru" type="text" value={sekolah.waGuru || ''} onChange={handleChange} placeholder="Contoh: 0812..." className={getFieldClass('waGuru')} />
                    </div>
                 </div>
-             </div>
-          </div>
-        </section>
-
-        <hr className="border-slate-200" />
-
-        {/* SECTION 4: CETAK & BOBOT */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
-          <div className="md:col-span-4 lg:col-span-3">
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Percent className="text-indigo-600" size={18} /> Pengaturan Output
-            </h3>
-            <p className="text-[13px] text-slate-500 mt-2 leading-relaxed">
-              Atur lokasi tanda tangan, titimangsa, dan rasio pembobotan nilai akhir rapor.
-            </p>
-          </div>
-          <div className="md:col-span-8 lg:col-span-9 space-y-6">
-            
-            {/* Titimangsa Panel */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h4 className="flex items-center gap-2 font-bold text-[15px] mb-5 text-slate-800"><MapPin size={18} className="text-slate-400" /> Titimangsa Penandatanganan</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="space-y-1.5">
-                  <label htmlFor="lokasiTitimangsa" className={getLabelClass('lokasiTitimangsa')}>Lokasi Cetak</label>
-                  <select id="lokasiTitimangsa" name="lokasiTitimangsa" value={getSelectValue(sekolah.lokasiTitimangsa)} onChange={handleChange} className={getFieldClass('lokasiTitimangsa')}>
-                    <option value="">Pilih Asal Referensi</option>
-                    <option value="kabupaten_kota">Kabupaten/Kota</option>
-                    <option value="kecamatan">Kecamatan</option>
-                    <option value="desa_kelurahan">Desa/Kelurahan</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label htmlFor="tanggalBiodata" className={getLabelClass('tanggalBiodata')}>Tanggal Biodata</label>
-                  <input id="tanggalBiodata" name="tanggalBiodata" type="date" value={sekolah.tanggalBiodata || ''} onChange={handleChange} className={getFieldClass('tanggalBiodata')} />
-                </div>
-                <div className="space-y-1.5">
-                  <label htmlFor="tanggalRapor" className={getLabelClass('tanggalRapor')}>Tanggal Rapor</label>
-                  <input id="tanggalRapor" name="tanggalRapor" type="date" value={sekolah.tanggalRapor || ''} onChange={handleChange} className={getFieldClass('tanggalRapor')} />
-                </div>
               </div>
             </div>
+          )}
 
-            {/* Bobot Panel */}
-            <div className="bg-indigo-50/50 rounded-2xl border border-indigo-100 p-6 md:p-8">
-                <h4 className="font-bold text-[15px] mb-5 text-indigo-900 border-b border-indigo-100 pb-3">Rasio Bobot Penilaian Rapor</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label htmlFor="bobotSumatifLingkup" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Lingkup Materi</label>
-                    <div className="flex items-center gap-3">
-                      <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup === '' ? '' : (sekolah.bobotSumatifLingkup !== undefined ? String(sekolah.bobotSumatifLingkup) : '75')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
-                      <span className="text-indigo-600 font-bold text-lg">%</span>
-                    </div>
+          {/* TAB CONTENT: PENGATURAN OUTPUT */}
+          {activeTab === 'output' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {/* Titimangsa Panel */}
+              <div>
+                <h4 className="flex items-center gap-2 font-bold text-xs tracking-widest text-slate-800 uppercase mb-4"><MapPin size={18} className="text-slate-400" /> Titimangsa Penandatanganan</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="space-y-1.5">
+                    <label htmlFor="lokasiTitimangsa" className={getLabelClass('lokasiTitimangsa')}>Lokasi Cetak</label>
+                    <select id="lokasiTitimangsa" name="lokasiTitimangsa" value={getSelectValue(sekolah.lokasiTitimangsa)} onChange={handleChange} className={getFieldClass('lokasiTitimangsa')}>
+                      <option value="">Pilih Asal Referensi</option>
+                      <option value="kabupaten_kota">Kabupaten/Kota</option>
+                      <option value="kecamatan">Kecamatan</option>
+                      <option value="desa_kelurahan">Desa/Kelurahan</option>
+                    </select>
                   </div>
-                  <div className="space-y-3">
-                    <label htmlFor="bobotSumatifSemester" className="block text-[13px] font-semibold text-indigo-800">Bobot Sumatif Akhir Semester</label>
-                    <div className="flex items-center gap-3">
-                      <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester === '' ? '' : (sekolah.bobotSumatifSemester !== undefined ? String(sekolah.bobotSumatifSemester) : '25')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
-                      <span className="text-indigo-600 font-bold text-lg">%</span>
-                    </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="tanggalBiodata" className={getLabelClass('tanggalBiodata')}>Tanggal Biodata</label>
+                    <input id="tanggalBiodata" name="tanggalBiodata" type="date" value={sekolah.tanggalBiodata || ''} onChange={handleChange} className={getFieldClass('tanggalBiodata')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="tanggalRapor" className={getLabelClass('tanggalRapor')}>Tanggal Rapor</label>
+                    <input id="tanggalRapor" name="tanggalRapor" type="date" value={sekolah.tanggalRapor || ''} onChange={handleChange} className={getFieldClass('tanggalRapor')} />
                   </div>
                 </div>
+              </div>
 
-                {totalBobot !== 100 && (
-                  <div className="mt-5 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3">
-                    <AlertCircle size={18} className="shrink-0" />
-                    <p>Total bobot wajib berjumlah 100%. Pembobotan Anda saat ini: {totalBobot}%. Silakan sesuaikan rasio.</p>
+              {/* Bobot Panel */}
+              <div className="bg-indigo-50/50 rounded-2xl border border-indigo-100 p-6">
+                  <h4 className="font-bold text-xs tracking-widest text-indigo-900 uppercase mb-4 border-b border-indigo-100 pb-2">Rasio Bobot Penilaian Rapor</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="space-y-3 flex flex-col items-center text-center">
+                      <label htmlFor="bobotSumatifLingkup" className="block text-[10px] font-bold uppercase tracking-wider text-indigo-800 text-center">Bobot Sumatif Lingkup Materi</label>
+                      <div className="flex items-center justify-center gap-3">
+                        <input id="bobotSumatifLingkup" name="bobotSumatifLingkup" type="number" min="0" max="100" value={sekolah.bobotSumatifLingkup === '' ? '' : (sekolah.bobotSumatifLingkup !== undefined ? String(sekolah.bobotSumatifLingkup) : '75')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                        <span className="text-indigo-600 font-bold text-lg">%</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3 flex flex-col items-center text-center">
+                      <label htmlFor="bobotSumatifSemester" className="block text-[10px] font-bold uppercase tracking-wider text-indigo-800 text-center">Bobot Sumatif Akhir Semester</label>
+                      <div className="flex items-center justify-center gap-3">
+                        <input id="bobotSumatifSemester" name="bobotSumatifSemester" type="number" min="0" max="100" value={sekolah.bobotSumatifSemester === '' ? '' : (sekolah.bobotSumatifSemester !== undefined ? String(sekolah.bobotSumatifSemester) : '25')} onChange={handleChange} className="w-20 rounded-lg px-3 py-2.5 text-base font-bold text-center border-indigo-200 border bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                        <span className="text-indigo-600 font-bold text-lg">%</span>
+                      </div>
+                    </div>
                   </div>
-                )}
-            </div>
 
-          </div>
-        </section>
-      </form>
+                  {totalBobot !== 100 && (
+                    <div className="mt-5 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3">
+                      <AlertCircle size={18} className="shrink-0" />
+                      <p>Total bobot wajib berjumlah 100%. Pembobotan Anda saat ini: {totalBobot}%. Silakan sesuaikan rasio.</p>
+                    </div>
+                  )}
+              </div>
+            </div>
+          )}
+        </form>
+      </div>
 
       {/* TOAST WARNING/SUCCESS OVERLAY */}
       {toastMessage && (
