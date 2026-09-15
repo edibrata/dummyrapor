@@ -149,7 +149,7 @@ export default function TabManajemenEkskul() {
           <h3 className="font-bold text-sm text-slate-800">Manajemen Ekstrakurikuler</h3>
           <p className="text-[11px] text-gray-500 mt-1">Kelola daftar program ekstrakurikuler yang ada di sekolah.</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-row gap-2 mt-4 sm:mt-0">
           <input 
             type="file" 
             accept=".xlsx, .xls" 

@@ -394,7 +394,7 @@ export default function DataSekolah() {
         <button
           type="button"
           onClick={() => setActiveTab('profil')}
-          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+          className={`whitespace-nowrap flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
             activeTab === 'profil'
               ? 'border-indigo-600 text-indigo-700 bg-white'
               : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
@@ -405,7 +405,7 @@ export default function DataSekolah() {
         <button
           type="button"
           onClick={() => setActiveTab('akademik')}
-          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+          className={`whitespace-nowrap flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
             activeTab === 'akademik'
               ? 'border-indigo-600 text-indigo-700 bg-white'
               : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
@@ -416,7 +416,7 @@ export default function DataSekolah() {
         <button
           type="button"
           onClick={() => setActiveTab('guru')}
-          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+          className={`whitespace-nowrap flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
             activeTab === 'guru'
               ? 'border-indigo-600 text-indigo-700 bg-white'
               : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
@@ -427,7 +427,7 @@ export default function DataSekolah() {
         <button
           type="button"
           onClick={() => setActiveTab('output')}
-          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+          className={`whitespace-nowrap flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
             activeTab === 'output'
               ? 'border-indigo-600 text-indigo-700 bg-white'
               : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
@@ -438,7 +438,7 @@ export default function DataSekolah() {
         <button
           type="button"
           onClick={() => setActiveTab('aplikasi')}
-          className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
+          className={`whitespace-nowrap flex items-center justify-center gap-2 px-6 py-3 text-[11px] font-bold transition-all uppercase tracking-wider border-b-2 ${
             activeTab === 'aplikasi'
               ? 'border-indigo-600 text-indigo-700 bg-white'
               : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'

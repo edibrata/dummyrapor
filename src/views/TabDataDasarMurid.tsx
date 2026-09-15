@@ -234,7 +234,7 @@ export default function TabDataDasarMurid() {
           <h3 className="font-bold text-sm text-slate-800">Pendaftaran & Pengelolaan Data Murid</h3>
           <p className="text-[11px] text-gray-500 mt-1">Kelola data murid utama (Nama, NIS, NISN, Ortu, dan TTL).</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-row gap-2 mt-4 sm:mt-0">
           <input 
             type="file" 
             accept=".xlsx, .xls" 
