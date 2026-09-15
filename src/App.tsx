@@ -21,12 +21,26 @@ import DeveloperProfileModal from '@/components/DeveloperProfileModal';
 
 function Dashboard() {
   const [activeView, setActiveView] = useState('dashboard');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
   const [showDevProfileModal, setShowDevProfileModal] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] text-slate-800 font-sans overflow-hidden">
-      <Sidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} onOpenDevProfile={() => setShowDevProfileModal(true)} />
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-30 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      <Sidebar 
+        activeView={activeView} 
+        setActiveView={(v) => { 
+          setActiveView(v); 
+          if (window.innerWidth < 768) setIsSidebarOpen(false); 
+        }} 
+        isOpen={isSidebarOpen} 
+        onOpenDevProfile={() => setShowDevProfileModal(true)} 
+      />
       
       <div className="flex-1 flex flex-col min-w-0 main-content h-screen overflow-y-auto">
         <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} onOpenDevProfile={() => setShowDevProfileModal(true)} />

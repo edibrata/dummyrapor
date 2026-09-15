@@ -111,7 +111,7 @@ export default function DashboardView({ onOpenDevProfile }: DashboardViewProps) 
              </h3>
            </div>
            
-           <div className="p-0">
+           <div className="p-0 overflow-x-auto">
              <table className="w-full text-left border-collapse text-sm">
                <thead>
                  <tr className="bg-slate-100 border-b border-slate-200 text-slate-600">
